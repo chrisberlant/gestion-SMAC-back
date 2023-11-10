@@ -1,5 +1,18 @@
 import Joi from 'joi';
 
+// TODO replace Joi with Zod
+// import { z } from "zod";
+
+// const User = z.object({
+//   username: z.string(),
+// });
+
+// User.parse({ username: "Ludwig" });
+
+// // extract the inferred type
+// type User = z.infer<typeof User>;
+// // { username: string }
+
 // Schema used to select anything using its id
 export const selectionSchema = Joi.object({
 	id: Joi.string().uuid().required().messages({

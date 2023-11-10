@@ -1,7 +1,10 @@
-import jwt from 'jsonwebtoken';
+import jwt, { Secret } from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const jwtMiddleware = (req, res, next) => {
 	const token = req.cookies.jobmemo_token;
+	const secretKey: Secret = process.env.SECRET_KEY!;
 
 	if (!token)
 		// Check for the cookie presence
@@ -9,7 +12,7 @@ const jwtMiddleware = (req, res, next) => {
 
 	try {
 		// Verify if token is valid
-		const verifiedToken = jwt.verify(token, process.env.SECRET_KEY);
+		const verifiedToken = jwt.verify(token, secretKey);
 		req.user = verifiedToken;
 		next();
 	} catch (error) {
