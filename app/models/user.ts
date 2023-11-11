@@ -1,15 +1,13 @@
-import { DataTypes, Model } from 'sequelize';
-import sequelize from '../sequelize-client.js';
+import { DataTypes } from 'sequelize';
+import sequelize from '../sequelize-client.ts';
 
-class User extends Model {}
-
-User.init(
+const User = sequelize.define(
+	'User',
 	{
 		id: {
-			type: DataTypes.UUID,
+			type: DataTypes.INTEGER,
 			primaryKey: true,
-			allowNull: false,
-			defaultValue: DataTypes.UUIDV4,
+			autoIncrement: true,
 		},
 		email: {
 			type: DataTypes.TEXT,
@@ -30,7 +28,6 @@ User.init(
 		},
 	},
 	{
-		sequelize,
 		tableName: 'user',
 	}
 );

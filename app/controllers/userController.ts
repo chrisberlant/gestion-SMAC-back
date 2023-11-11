@@ -1,14 +1,15 @@
-import { User } from '../models/index.js';
+import { User } from '../models/index.ts';
+import { UserType } from '../@types/types.ts';
+import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 const userController = {
-	async login(req, res) {
+	async login(req: Request, res: Response) {
 		try {
 			const { email, password } = req.body;
-
-			const userSearched = await User.findOne({
-				// Find user in DB
+			// TODO type with sequelize response
+			const userSearched: UserType | null = await User.findOne({
 				where: { email: email.toLowerCase() },
 			});
 			if (!userSearched)
@@ -30,12 +31,12 @@ const userController = {
 			delete user.id;
 
 			// We set a variable containing the token that will be sent to the browser
-			const token = jwt.sign({ id }, process.env.SECRET_KEY, {
+			const token = jwt.sign({ id }, process.env.SECRET_KEY!, {
 				expiresIn: '6h',
 			});
 
 			// Send the JWT as cookie
-			res.cookie('jobmemo_token', token, {
+			res.cookie('smac_token', token, {
 				httpOnly: true,
 				sameSite: true,
 			});

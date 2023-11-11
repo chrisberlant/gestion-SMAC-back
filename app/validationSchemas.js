@@ -1,5 +1,7 @@
 import Joi from 'joi';
 
+import { z } from 'zod';
+
 // TODO replace Joi with Zod
 // import { z } from "zod";
 

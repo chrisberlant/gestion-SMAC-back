@@ -1,10 +1,12 @@
-import jwt, { Secret } from 'jsonwebtoken';
-import dotenv from 'dotenv';
-dotenv.config();
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import { Request, Response, NextFunction } from 'express';
 
-const jwtMiddleware = (req, res, next) => {
-	const token = req.cookies.jobmemo_token;
-	const secretKey: Secret = process.env.SECRET_KEY!;
+interface UserRequest extends Request {
+	user?: string | JwtPayload;
+}
+
+const jwtMiddleware = (req: UserRequest, res: Response, next: NextFunction) => {
+	const token = req.cookies.smac_token;
 
 	if (!token)
 		// Check for the cookie presence
@@ -12,11 +14,11 @@ const jwtMiddleware = (req, res, next) => {
 
 	try {
 		// Verify if token is valid
-		const verifiedToken = jwt.verify(token, secretKey);
+		const verifiedToken = jwt.verify(token, process.env.SECRET_KEY!);
 		req.user = verifiedToken;
 		next();
 	} catch (error) {
-		return res.status(403).json('Token invalide');
+		return res.clearCookie('smac_token').status(403).json('Token invalide');
 	}
 };
 

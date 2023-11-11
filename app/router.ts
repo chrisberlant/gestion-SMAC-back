@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import jwtMiddleware from './middlewares/jwtMidleware.js';
-import requestsLimitMiddleware from './middlewares/requestsLimitMiddleware.js';
-import userController from './controllers/userController.js';
-import dataValidation from './middlewares/dataValidationMiddleware.js';
+import jwtMiddleware from './middlewares/jwtMidleware.ts';
+import requestsLimitMiddleware from './middlewares/requestsLimitMiddleware.ts';
+import userController from './controllers/userController.ts';
+import dataValidation from './middlewares/dataValidationMiddleware.ts';
 import {
 	userLoginSchema,
 	userModificationSchema,
