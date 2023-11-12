@@ -2,9 +2,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
 import cookieParser from 'cookie-parser';
-import router from './app/router.js';
+import router from './app/router.ts';
 import cors from 'cors';
-import pageNotFoundMiddleware from './app/middlewares/pageNotFoundMiddleware.js';
+import pageNotFoundMiddleware from './app/middlewares/pageNotFoundMiddleware.ts';
 
 const app = express();
 app.use(cookieParser());

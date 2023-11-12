@@ -5,17 +5,16 @@
 		"lib": ["ESNext"],
 		"allowJs": true,
 		"skipLibCheck": true,
-		"esModuleInterop": false,
+		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
 		"strict": true,
 		"forceConsistentCasingInFileNames": true,
-		"module": "ESNext",
+		"module": "commonjs",
 		"moduleResolution": "Node",
 		"resolveJsonModule": true,
 		"isolatedModules": true,
 		"noEmit": true,
-		"allowImportingTsExtensions": true,
-		"allowSyntheticDefaultImports": true
+		"allowImportingTsExtensions": true
 	},
 	"include": [".eslintrc.json", "app"]
 }

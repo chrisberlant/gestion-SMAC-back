@@ -14,36 +14,6 @@ import {
 const router = Router();
 
 /* ------------- USER/AUTH ROUTES ------------- */
-router.post(
-	'/login',
-	requestsLimitMiddleware,
-	dataValidation(userLoginSchema),
-	userController.login
-);
-router.post(
-	'/register',
-	dataValidation(userRegistrationSchema),
-	userController.register
-);
-router.get('/getUserInfos', jwtMiddleware, userController.getUserInfos);
-router.patch(
-	'/modifyUserInfos',
-	jwtMiddleware,
-	dataValidation(userModificationSchema),
-	userController.modifyUserInfos
-);
-router.patch(
-	'/modifyUserPassword',
-	jwtMiddleware,
-	dataValidation(passwordModificationSchema),
-	userController.modifyUserPassword
-);
-router.get('/logout', userController.logout);
-router.delete(
-	'/deleteUser',
-	jwtMiddleware,
-	dataValidation(userDeletionSchema),
-	userController.deleteUser
-);
-
+router.post('/login', requestsLimitMiddleware, userController.login);
+router.post('/register', userController.register);
 export default router;

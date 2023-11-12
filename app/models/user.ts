@@ -1,7 +1,21 @@
-import { DataTypes } from 'sequelize';
+import { Model, Optional, DataTypes } from 'sequelize';
 import sequelize from '../sequelize-client.ts';
 
-const User = sequelize.define(
+interface UserAttributes {
+	id?: number;
+	email?: string;
+	firstName?: string;
+	lastName?: string;
+	password?: string;
+}
+
+interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
+
+interface UserInstance
+	extends Model<UserAttributes, UserCreationAttributes>,
+		UserAttributes {}
+
+const User = sequelize.define<UserInstance>(
 	'User',
 	{
 		id: {
