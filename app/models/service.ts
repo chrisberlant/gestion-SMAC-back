@@ -1,7 +1,12 @@
-import { DataTypes } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import sequelize from '../sequelize-client.ts';
 
-const Service = sequelize.define(
+interface ServiceType extends Model {
+	id?: number;
+	title: string;
+}
+
+const Service = sequelize.define<ServiceType>(
 	'Service',
 	{
 		id: {

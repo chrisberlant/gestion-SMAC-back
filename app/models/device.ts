@@ -1,7 +1,17 @@
-import { DataTypes } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import sequelize from '../sequelize-client.ts';
 
-const Device = sequelize.define(
+interface DeviceType extends Model {
+	id?: number;
+	IMEI: string;
+	preparationDate?: Date;
+	attributiontionDate?: Date;
+	status: string;
+	condition: string;
+	comments?: string;
+}
+
+const Device = sequelize.define<DeviceType>(
 	'Device',
 	{
 		id: {
@@ -30,7 +40,6 @@ const Device = sequelize.define(
 		},
 		comments: {
 			type: DataTypes.TEXT,
-			allowNull: false,
 		},
 	},
 	{

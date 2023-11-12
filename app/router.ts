@@ -15,5 +15,6 @@ const router = Router();
 
 /* ------------- USER/AUTH ROUTES ------------- */
 router.post('/login', requestsLimitMiddleware, userController.login);
-router.post('/register', userController.register);
+// Route used to create the first user
+// router.post('/register', userController.register);
 export default router;

@@ -1,7 +1,14 @@
-import { DataTypes } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import sequelize from '../sequelize-client.ts';
 
-const Agent = sequelize.define(
+interface AgentType extends Model {
+	id?: number;
+	email: string;
+	firstName: string;
+	lastName: string;
+}
+
+const Agent = sequelize.define<AgentType>(
 	'Agent',
 	{
 		id: {
