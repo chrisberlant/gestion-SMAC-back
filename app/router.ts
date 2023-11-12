@@ -2,6 +2,7 @@ import { Router } from 'express';
 import jwtMiddleware from './middlewares/jwtMidleware.ts';
 import requestsLimitMiddleware from './middlewares/requestsLimitMiddleware.ts';
 import userController from './controllers/userController.ts';
+import lineController from './controllers/lineController.ts';
 import dataValidation from './middlewares/dataValidationMiddleware.ts';
 import { selectionSchema, userLoginSchema } from './validationSchemas.ts';
 
@@ -17,4 +18,12 @@ router.post(
 router.get('/getUserInfos', jwtMiddleware, userController.getUserInfos);
 // Route used to create the first user
 // router.post('/register', userController.register);
+
+/* ------------- LINES ROUTES ------------- */
+router.get(
+	'/getAllActiveLines',
+	jwtMiddleware,
+	lineController.getAllActiveLines
+);
+
 export default router;

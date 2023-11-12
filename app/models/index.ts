@@ -8,7 +8,7 @@ import User from './user.ts';
 // Relations between an agent and its lines
 Agent.hasMany(Line, {
 	as: 'lines',
-	foreignKey: { name: 'agentId', allowNull: false },
+	foreignKey: 'agentId',
 });
 
 Line.belongsTo(Agent, {
@@ -19,7 +19,7 @@ Line.belongsTo(Agent, {
 // Relations between an agent and its devices
 Agent.hasMany(Device, {
 	as: 'devices',
-	foreignKey: { name: 'agentId', allowNull: false },
+	foreignKey: 'agentId',
 });
 
 Device.belongsTo(Agent, {
@@ -52,7 +52,7 @@ Device.belongsTo(Model, {
 // Relations between a device and its line
 Device.hasOne(Line, {
 	as: 'line',
-	foreignKey: { name: 'deviceId', allowNull: false },
+	foreignKey: 'deviceId',
 });
 
 Line.belongsTo(Device, {

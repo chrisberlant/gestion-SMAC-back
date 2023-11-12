@@ -23,7 +23,6 @@ export const dataValidation =
 					if (key !== 'password') req.body[key] = xss(req.body[key]);
 				}
 			}
-
 			next();
 		} catch (error) {
 			if (error instanceof ZodError)
