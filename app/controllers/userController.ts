@@ -1,5 +1,6 @@
 import { User } from '../models/index.ts';
 import { Request, Response } from 'express';
+import { UserRequest } from '../middlewares/jwtMidleware.ts';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
@@ -7,6 +8,7 @@ const userController = {
 	async login(req: Request, res: Response) {
 		try {
 			const { email, password } = req.body;
+			console.log(req.body);
 
 			const userSearched = await User.findOne({
 				where: { email: email.toLowerCase() },
@@ -73,24 +75,28 @@ const userController = {
 		}
 	},
 
-	// async logout(req, res) {
-	// 	res.clearCookie('jobmemo_token');
-	// 	res.status(200).json('Déconnexion effectuée');
-	// },
+	async logout(req: Request, res: Response) {
+		res.clearCookie('smac_token');
+		res.status(200).json('Déconnexion effectuée');
+	},
 
-	// async getUserInfos(req, res) {
-	// 	try {
-	// 		const userId = req.user.id;
+	async getUserInfos(req: UserRequest, res: Response) {
+		try {
+			const userId = req.user!.id;
 
-	// 		const user = await User.findByPk(userId);
-	// 		if (!user) return res.status(404).json('Utilisateur introuvable');
+			const user = await User.findByPk(userId);
+			if (!user) return res.status(404).json('Utilisateur introuvable');
 
-	// 		res.status(200).json(user);
-	// 	} catch (error) {
-	// 		console.error(error);
-	// 		res.status(500).json(error);
-	// 	}
-	// },
+			const connectedUser = user.get({ plain: true });
+			delete connectedUser.password;
+			delete connectedUser.id;
+
+			res.status(200).json(connectedUser);
+		} catch (error) {
+			console.error(error);
+			res.status(500).json(error);
+		}
+	},
 
 	// async modifyUserInfos(req, res) {
 	// 	try {

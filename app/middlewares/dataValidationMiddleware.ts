@@ -1,26 +1,34 @@
 import xss from 'xss';
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
+import { ValidationSchema } from '../@types/types.ts';
+import { UserRequest } from './jwtMidleware.ts';
+import { ZodError } from 'zod';
 
 // This middleware allows us to validate every data sent by the user
 // We also sanitize the data here before sending it to the database
 export const dataValidation =
-	(schema) => (req: Request, res: Response, next: NextFunction) => {
+	(schema: ValidationSchema) =>
+	(req: UserRequest, res: Response, next: NextFunction) => {
 		// We check here if user request is GET or any other type to either validate the req.params or the req.body
-		const objectToValidate = req.method === 'GET' ? req.params : req.body;
+		try {
+			if (req.method === 'GET') {
+				req.params = schema.parse(req.params);
+				for (const key in req.params) {
+					req.params[key] = xss(req.params[key]);
+				}
+			} else {
+				req.body = schema.parse(req.body);
+				for (const key in req.body) {
+					// Each value besides the password will be sanitized from malicious inserts
+					if (key !== 'password') req.body[key] = xss(req.body[key]);
+				}
+			}
 
-		const { error, value } = schema.validate(objectToValidate);
-
-		// Joi returns an object with attribute "error" if the data didn't pass the validation schema
-		if (error) return res.status(400).json(error.details[0].message);
-
-		for (const key in objectToValidate) {
-			// Each value besides the password will be sanitized from malicious inserts
-			if (key !== 'password')
-				objectToValidate[key] = xss(objectToValidate[key]);
+			next();
+		} catch (error) {
+			if (error instanceof ZodError)
+				return res.status(400).json(error.issues[0].message);
 		}
-
-		req.body = value; // Get the value returned by the validation using a schema
-		next();
 	};
 
 export default dataValidation;

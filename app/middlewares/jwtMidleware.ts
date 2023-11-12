@@ -1,8 +1,8 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 
-interface UserRequest extends Request {
-	user?: string | JwtPayload;
+export interface UserRequest extends Request {
+	user?: JwtPayload;
 }
 
 const jwtMiddleware = (req: UserRequest, res: Response, next: NextFunction) => {
@@ -14,7 +14,10 @@ const jwtMiddleware = (req: UserRequest, res: Response, next: NextFunction) => {
 
 	try {
 		// Verify if token is valid
-		const verifiedToken = jwt.verify(token, process.env.SECRET_KEY!);
+		const verifiedToken = jwt.verify(
+			token,
+			process.env.SECRET_KEY!
+		) as JwtPayload;
 		req.user = verifiedToken;
 		next();
 	} catch (error) {

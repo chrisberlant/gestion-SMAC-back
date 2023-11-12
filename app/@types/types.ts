@@ -1,14 +1,3 @@
-export interface UserType {
-	id: number;
-	email: string;
-	firstName: string;
-	lastName: string;
-	password: string;
-}
+import { selectionSchema } from '../validationSchemas';
 
-export interface AgentType {
-	id: number;
-	email: string;
-	firstName: string;
-	lastName: string;
-}
+export type ValidationSchema = typeof selectionSchema;
