@@ -3,19 +3,31 @@ import { Response } from 'express';
 import { UserRequest } from '../middlewares/jwtMidleware.ts';
 
 const lineController = {
-	async getAllActiveLines(req: UserRequest, res: Response) {
+	async getAllLines(req: UserRequest, res: Response) {
 		try {
+			let status = '';
+			switch (req.params.status) {
+				case 'attributed':
+					status = 'Attribuée';
+					break;
+				case 'in-progress':
+					status = 'En cours';
+					break;
+				case 'terminated':
+					status = 'Résiliée';
+					break;
+			}
 			const allActiveLines = await Line.findAll({
-				where: { status: 'Attribuée' },
+				where: { status },
 				include: [
 					{
 						association: 'agent',
 						include: [{ association: 'service' }],
 					},
-					// {
-					// 	association: 'device',
-					// 	include: [{ association: 'model' }],
-					// },
+					{
+						association: 'device',
+						include: [{ association: 'model' }],
+					},
 				],
 			});
 			if (!allActiveLines) {

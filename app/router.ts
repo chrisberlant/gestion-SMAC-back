@@ -20,10 +20,6 @@ router.get('/getUserInfos', jwtMiddleware, userController.getUserInfos);
 // router.post('/register', userController.register);
 
 /* ------------- LINES ROUTES ------------- */
-router.get(
-	'/getAllActiveLines',
-	jwtMiddleware,
-	lineController.getAllActiveLines
-);
+router.get('/getAllLines/:status', jwtMiddleware, lineController.getAllLines);
 
 export default router;

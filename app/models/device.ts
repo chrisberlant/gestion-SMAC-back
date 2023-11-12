@@ -23,6 +23,7 @@ const Device = sequelize.define<DeviceType>(
 			type: DataTypes.TEXT,
 			allowNull: false,
 			unique: true,
+			field: 'IMEI',
 		},
 		preparationDate: {
 			type: DataTypes.DATEONLY,
