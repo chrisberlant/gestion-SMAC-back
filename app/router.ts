@@ -37,5 +37,17 @@ router.post(
 	adminMiddleware,
 	adminController.createNewUser
 );
+router.post(
+	'/createNewModel',
+	jwtMiddleware,
+	adminMiddleware,
+	adminController.createNewModel
+);
+router.patch(
+	'/modifyModel',
+	jwtMiddleware,
+	adminMiddleware,
+	adminController.modifyModel
+);
 
 export default router;

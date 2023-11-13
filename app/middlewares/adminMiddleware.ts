@@ -7,14 +7,23 @@ const adminMiddleware = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	const userId = req.user!.id;
-	const user = await User.findByPk(userId);
+	try {
+		const userId = req.user!.id;
+		const user = await User.findByPk(userId, {
+			attributes: ['isAdmin'],
+		});
 
-	if (!user) return res.status(404).json('Utilisateur introuvable');
+		if (!user) return res.status(404).json('Utilisateur introuvable');
 
-	if (!user.isAdmin)
-		return res.status(403).json("Vous n'avez pas les droits nécessaires");
-	next();
+		if (!user.isAdmin)
+			return res
+				.status(403)
+				.json("Vous n'avez pas les droits nécessaires");
+		next();
+	} catch (error) {
+		console.error(error);
+		res.status(500).json(error);
+	}
 };
 
 export default adminMiddleware;

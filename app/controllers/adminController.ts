@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { UserRequest } from '../middlewares/jwtMidleware.ts';
-import { User } from '../models/index.ts';
+import { Model, User } from '../models/index.ts';
 import generateRandomPassword from '../utils/passwordGeneration.ts';
 import bcrypt from 'bcrypt';
 
@@ -8,7 +8,6 @@ const adminController = {
 	async createNewUser(req: UserRequest, res: Response) {
 		try {
 			const infos = req.body;
-			console.log('Entrée dans le contrôleur');
 
 			const generatedPassword = generateRandomPassword();
 			const saltRounds = parseInt(process.env.SALT_ROUNDS!);
@@ -33,6 +32,50 @@ const adminController = {
 			if (!user) throw new Error("Impossible de créer l'utilisateur");
 
 			res.status(201).json({ user, generatedPassword });
+		} catch (error) {
+			console.error(error);
+			res.status(500).json(error);
+		}
+	},
+
+	async createNewModel(req: UserRequest, res: Response) {
+		try {
+			const infos = req.body;
+			const { brand, reference, storage } = infos;
+
+			const existingModel = await Model.findOne({
+				where: {
+					reference,
+					brand,
+					storage,
+				},
+			});
+			if (existingModel)
+				return res.status(401).json('Le modèle existe déjà');
+
+			const newModel = await Model.create(infos);
+
+			if (!newModel) throw new Error('Impossible de créer le modèle');
+
+			res.status(201).json(newModel);
+		} catch (error) {
+			console.error(error);
+			res.status(500).json(error);
+		}
+	},
+	async modifyModel(req: UserRequest, res: Response) {
+		try {
+			const { id, ...newInfos } = req.body;
+
+			const model = await Model.findByPk(id);
+			if (!model) return res.status(404).json("Le modèle n'existe pas");
+
+			const modelIsModified = await model.update({ ...newInfos });
+
+			if (!modelIsModified)
+				throw new Error('Impossible de créer le modèle');
+
+			res.status(200).json(modelIsModified);
 		} catch (error) {
 			console.error(error);
 			res.status(500).json(error);
