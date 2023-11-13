@@ -49,5 +49,11 @@ router.patch(
 	adminMiddleware,
 	adminController.modifyModel
 );
+router.delete(
+	'/deleteModel',
+	jwtMiddleware,
+	adminMiddleware,
+	adminController.deleteModel
+);
 
 export default router;

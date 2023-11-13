@@ -81,6 +81,21 @@ const adminController = {
 			res.status(500).json(error);
 		}
 	},
+	async deleteModel(req: UserRequest, res: Response) {
+		try {
+			const { id } = req.body;
+
+			const model = await Model.findByPk(id);
+			if (!model) return res.status(404).json("Le modèle n'existe pas");
+
+			await model.destroy();
+
+			res.status(200).json(id);
+		} catch (error) {
+			console.error(error);
+			res.status(500).json(error);
+		}
+	},
 };
 
 export default adminController;
