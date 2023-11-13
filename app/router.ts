@@ -3,8 +3,10 @@ import jwtMiddleware from './middlewares/jwtMidleware.ts';
 import requestsLimitMiddleware from './middlewares/requestsLimitMiddleware.ts';
 import userController from './controllers/userController.ts';
 import lineController from './controllers/lineController.ts';
+import adminController from './controllers/adminController.ts';
 import dataValidation from './middlewares/dataValidationMiddleware.ts';
 import { selectionSchema, userLoginSchema } from './validationSchemas.ts';
+import adminMiddleware from './middlewares/adminMiddleware.ts';
 
 const router = Router();
 
@@ -27,5 +29,13 @@ router.patch(
 
 /* ------------- LINES ROUTES ------------- */
 router.get('/getAllLines/:status', jwtMiddleware, lineController.getAllLines);
+
+/* ------------- ADMIN ROUTES ------------- */
+router.post(
+	'/createNewUser',
+	jwtMiddleware,
+	adminMiddleware,
+	adminController.createNewUser
+);
 
 export default router;
