@@ -8,6 +8,7 @@ const adminController = {
 	async createNewUser(req: UserRequest, res: Response) {
 		try {
 			const infos = req.body;
+			console.log('Entrée dans le contrôleur');
 
 			const generatedPassword = generateRandomPassword();
 			const saltRounds = parseInt(process.env.SALT_ROUNDS!);

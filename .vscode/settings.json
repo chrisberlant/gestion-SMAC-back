@@ -1,0 +1,13 @@
+{
+	"sqltools.connections": [
+		{
+			"previewLimit": 50,
+			"server": "flora.db.elephantsql.com",
+			"port": 5432,
+			"driver": "PostgreSQL",
+			"name": "SMAC",
+			"database": "jfjptfky",
+			"username": "jfjptfky"
+		}
+	]
+}
