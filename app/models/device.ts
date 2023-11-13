@@ -3,7 +3,7 @@ import sequelize from '../sequelize-client.ts';
 
 interface DeviceType extends Model {
 	id?: number;
-	IMEI: string;
+	imei: string;
 	preparationDate?: Date;
 	attributiontionDate?: Date;
 	status: string;
@@ -19,7 +19,7 @@ const Device = sequelize.define<DeviceType>(
 			primaryKey: true,
 			autoIncrement: true,
 		},
-		IMEI: {
+		imei: {
 			type: DataTypes.TEXT,
 			allowNull: false,
 			unique: true,

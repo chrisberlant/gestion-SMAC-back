@@ -16,6 +16,12 @@ router.post(
 	userController.login
 );
 router.get('/getUserInfos', jwtMiddleware, userController.getUserInfos);
+router.patch('/modifyUserInfos', jwtMiddleware, userController.modifyUserInfos);
+router.patch(
+	'/modifyUserPassword',
+	jwtMiddleware,
+	userController.modifyUserPassword
+);
 // Route used to create the first user
 // router.post('/register', userController.register);
 
