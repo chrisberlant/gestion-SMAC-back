@@ -1,3 +1,3 @@
-import { selectionSchema } from '../validationSchemas';
+import { selectionSchema } from '../validationSchemas.ts';
 
 export type ValidationSchema = typeof selectionSchema;

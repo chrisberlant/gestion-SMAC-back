@@ -7,6 +7,7 @@ interface UserType extends Model {
 	firstName: string;
 	lastName: string;
 	password?: string;
+	isAdmin?: boolean;
 }
 
 const User = sequelize.define<UserType>(

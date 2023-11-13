@@ -6,7 +6,7 @@ import { ZodError } from 'zod';
 
 // This middleware allows us to validate every data sent by the user
 // We also sanitize the data here before sending it to the database
-export const dataValidation =
+const dataValidation =
 	(schema: ValidationSchema) =>
 	(req: UserRequest, res: Response, next: NextFunction) => {
 		// We check here if user request is GET or any other type to either validate the req.params or the req.body

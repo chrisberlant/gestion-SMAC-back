@@ -9,12 +9,13 @@
 		"allowSyntheticDefaultImports": true,
 		"strict": true,
 		"forceConsistentCasingInFileNames": true,
-		"module": "commonjs",
+		"module": "ESNext",
 		"moduleResolution": "Node",
 		"resolveJsonModule": true,
 		"isolatedModules": true,
 		"noEmit": true,
-		"allowImportingTsExtensions": true
+		"allowImportingTsExtensions": true,
+		"importHelpers": true
 	},
-	"include": [".eslintrc.json", "app"]
+	"include": ["app/**/*.d.ts", "app/**/*.ts"]
 }

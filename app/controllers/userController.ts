@@ -118,6 +118,7 @@ const userController = {
 			const newUserInfos = userIsModified.get({ plain: true }); // Create a copy of the sequelize object with only the infos needed
 			delete newUserInfos.password;
 			delete newUserInfos.id;
+			delete newUserInfos.isAdmin;
 
 			res.status(200).json(newUserInfos);
 		} catch (error) {
