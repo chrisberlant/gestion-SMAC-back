@@ -88,9 +88,10 @@ const adminController = {
 			if (!model) return res.status(404).json("Le modèle n'existe pas");
 
 			const modelIsModified = await model.update(newInfos);
+			console.log(modelIsModified);
 
 			if (!modelIsModified)
-				throw new Error('Impossible de créer le modèle');
+				throw new Error('Impossible de modifier le modèle');
 
 			res.status(200).json(modelIsModified);
 		} catch (error) {

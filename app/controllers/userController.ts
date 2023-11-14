@@ -56,7 +56,7 @@ const userController = {
 
 			const alreadyExistingUser = await User.findOne({
 				where: { email },
-			}); // Check if user already exists
+			});
 			if (alreadyExistingUser)
 				return res.status(401).json("Une erreur s'est produite");
 
@@ -76,7 +76,7 @@ const userController = {
 		}
 	},
 
-	async logout(req: Request, res: Response) {
+	async logout(req: UserRequest, res: Response) {
 		res.clearCookie('smac_token');
 		res.status(200).json('Déconnexion effectuée');
 	},
@@ -85,14 +85,12 @@ const userController = {
 		try {
 			const userId = req.user!.id;
 
-			const user = await User.findByPk(userId);
+			const user = await User.findByPk(userId, {
+				attributes: ['firstName', 'lastName', 'email'],
+			});
 			if (!user) return res.status(404).json('Utilisateur introuvable');
 
-			const connectedUser = user.get({ plain: true });
-			delete connectedUser.password;
-			delete connectedUser.id;
-
-			res.status(200).json(connectedUser);
+			res.status(200).json(user);
 		} catch (error) {
 			console.error(error);
 			res.status(500).json(error);
@@ -114,13 +112,14 @@ const userController = {
 					.status(404)
 					.json("Impossible de trouver l'utilisateur dans la base");
 
-			const userIsModified = await user.update({ ...infosToModify });
-			if (!userIsModified)
-				throw new Error('Impossible de modifier les infos utilisateur');
-			const newUserInfos = userIsModified.get({ plain: true }); // Create a copy of the sequelize object with only the infos needed
-			delete newUserInfos.password;
-			delete newUserInfos.id;
-			delete newUserInfos.isAdmin;
+			await user.update(infosToModify);
+
+			const { firstName, lastName, email } = user;
+			const newUserInfos = {
+				firstName,
+				lastName,
+				email,
+			};
 
 			res.status(200).json(newUserInfos);
 		} catch (error) {
@@ -160,11 +159,9 @@ const userController = {
 				saltRounds
 			);
 
-			const passwordIsModified = await user.update({
+			await user.update({
 				password: newHashedPassword,
 			});
-			if (!passwordIsModified)
-				throw new Error('Impossible de modifier le mot de passe');
 
 			res.status(200).json('Mot de passe changé.');
 		} catch (error) {
