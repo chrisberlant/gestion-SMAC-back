@@ -38,6 +38,23 @@ const adminController = {
 		}
 	},
 
+	async modifyUserRights(req: UserRequest, res: Response) {
+		try {
+			const { id, isAdmin } = req.body;
+
+			const user = await User.findByPk(id);
+			if (!user)
+				return res.status(404).json("L'utilisateur n'existe pas");
+
+			await user.update({ isAdmin });
+
+			res.status(200).json(id);
+		} catch (error) {
+			console.error(error);
+			res.status(500).json(error);
+		}
+	},
+
 	async createNewModel(req: UserRequest, res: Response) {
 		try {
 			const infos = req.body;
@@ -70,7 +87,7 @@ const adminController = {
 			const model = await Model.findByPk(id);
 			if (!model) return res.status(404).json("Le modèle n'existe pas");
 
-			const modelIsModified = await model.update({ ...newInfos });
+			const modelIsModified = await model.update(newInfos);
 
 			if (!modelIsModified)
 				throw new Error('Impossible de créer le modèle');

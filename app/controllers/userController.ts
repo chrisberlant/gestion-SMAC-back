@@ -11,7 +11,9 @@ const userController = {
 
 			const userSearched = await User.findOne({
 				where: { email: email.toLowerCase() },
+				attributes: { exclude: ['isAdmin'] },
 			});
+
 			if (!userSearched)
 				// If user cannot be found
 				return res.status(401).json('Email ou mot de passe incorrect');
