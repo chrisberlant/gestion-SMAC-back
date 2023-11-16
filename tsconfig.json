@@ -15,7 +15,11 @@
 		"isolatedModules": true,
 		"noEmit": true,
 		"allowImportingTsExtensions": true,
-		"importHelpers": true
+		"importHelpers": true,
+		"baseUrl": ".",
+		"paths": {
+			"*": ["*", "src/*"]
+		}
 	},
 	"include": ["app/**/*.d.ts", "app/**/*.ts"]
 }

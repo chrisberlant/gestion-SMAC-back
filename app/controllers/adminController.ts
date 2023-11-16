@@ -22,7 +22,7 @@ const adminController = {
 				},
 			});
 			if (existingUserCheck)
-				return res.status(401).json("L'utilisateur existe déjà");
+				return res.status(409).json("L'utilisateur existe déjà");
 
 			const user = await User.create({
 				...infos,
@@ -48,7 +48,7 @@ const adminController = {
 
 			await user.update({ isAdmin });
 
-			res.status(200).json(id);
+			res.status(200).json({ id, isAdmin });
 		} catch (error) {
 			console.error(error);
 			res.status(500).json(error);
@@ -80,6 +80,7 @@ const adminController = {
 			res.status(500).json(error);
 		}
 	},
+
 	async modifyModel(req: UserRequest, res: Response) {
 		try {
 			const { id, ...newInfos } = req.body;
@@ -88,10 +89,6 @@ const adminController = {
 			if (!model) return res.status(404).json("Le modèle n'existe pas");
 
 			const modelIsModified = await model.update(newInfos);
-			console.log(modelIsModified);
-
-			if (!modelIsModified)
-				throw new Error('Impossible de modifier le modèle');
 
 			res.status(200).json(modelIsModified);
 		} catch (error) {
@@ -99,6 +96,7 @@ const adminController = {
 			res.status(500).json(error);
 		}
 	},
+
 	async deleteModel(req: UserRequest, res: Response) {
 		try {
 			const { id } = req.body;

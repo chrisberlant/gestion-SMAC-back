@@ -5,7 +5,13 @@ import userController from './controllers/userController.ts';
 import lineController from './controllers/lineController.ts';
 import adminController from './controllers/adminController.ts';
 import dataValidation from './middlewares/dataValidationMiddleware.ts';
-import { selectionSchema, userLoginSchema } from './validationSchemas.ts';
+import {
+	userLoginSchema,
+	userModificationSchema,
+	userRegistrationSchema,
+	passwordModificationSchema,
+} from './validationSchemas/userSchemas.ts';
+import { userRightsModificationSchema } from './validationSchemas/adminSchemas.ts';
 import adminMiddleware from './middlewares/adminMiddleware.ts';
 
 const router = Router();
@@ -18,14 +24,24 @@ router.post(
 	userController.login
 );
 router.get('/getUserInfos', jwtMiddleware, userController.getUserInfos);
-router.patch('/modifyUserInfos', jwtMiddleware, userController.modifyUserInfos);
+router.patch(
+	'/modifyUserInfos',
+	jwtMiddleware,
+	dataValidation(userModificationSchema),
+	userController.modifyUserInfos
+);
 router.patch(
 	'/modifyUserPassword',
 	jwtMiddleware,
+	dataValidation(passwordModificationSchema),
 	userController.modifyUserPassword
 );
-// Route used to create the first user
-// router.post('/register', userController.register);
+// ! Route used to create the first user
+router.post(
+	'/register',
+	dataValidation(userRegistrationSchema),
+	userController.register
+);
 
 /* ------------- LINES ROUTES ------------- */
 router.get('/getAllLines/:status', jwtMiddleware, lineController.getAllLines);
@@ -59,6 +75,7 @@ router.patch(
 	'/modifyUserRights',
 	jwtMiddleware,
 	adminMiddleware,
+	dataValidation(userRightsModificationSchema),
 	adminController.modifyUserRights
 );
 
