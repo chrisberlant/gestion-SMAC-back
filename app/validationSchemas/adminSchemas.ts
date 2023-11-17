@@ -1,7 +1,7 @@
-import { z, ZodSchema } from 'zod';
+import { z } from 'zod';
 import selectionSchema from './index.ts';
 
-export const newUserCreationSchema: ZodSchema = z.object({
+export const newUserCreationSchema = z.object({
 	email: z
 		.string({
 			required_error: "L'adresse mail doit être renseignée",
@@ -18,20 +18,13 @@ export const newUserCreationSchema: ZodSchema = z.object({
 	}),
 });
 
-export const userRightsModificationSchema: ZodSchema = selectionSchema.extend({
-	id: z
-		.number({
-			required_error: "L'id doit être renseigné",
-			invalid_type_error: "L'id doit être un nombre entier",
-		})
-		.int()
-		.min(1, { message: "L'id fourni est incorrect" }),
+export const userRightsModificationSchema = selectionSchema.extend({
 	isAdmin: z.boolean({
 		required_error: 'La valeur isAdmin doit être renseignée',
 	}),
 });
 
-export const modelCreationSchema: ZodSchema = z.object({
+export const modelCreationSchema = z.object({
 	brand: z.string({
 		required_error: 'La marque doit être renseignée',
 	}),
@@ -43,14 +36,7 @@ export const modelCreationSchema: ZodSchema = z.object({
 	}),
 });
 
-export const modelModificationSchema: ZodSchema = z.object({
-	id: z
-		.number({
-			required_error: "L'id doit être renseigné",
-			invalid_type_error: "L'id doit être un nombre entier",
-		})
-		.int()
-		.min(1, { message: "L'id fourni est incorrect" }),
+export const modelModificationSchema = selectionSchema.extend({
 	brand: z.string().optional(),
 	reference: z.string().optional(),
 	storage: z.string().optional(),

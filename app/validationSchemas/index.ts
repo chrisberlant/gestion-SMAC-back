@@ -1,6 +1,6 @@
-import { z, ZodSchema } from 'zod';
+import { z } from 'zod';
 
-const selectionSchema: ZodSchema = z.object({
+const selectionSchema = z.object({
 	id: z
 		.number({
 			required_error: "L'id doit être renseigné",
