@@ -11,7 +11,7 @@ import {
 	userRegistrationSchema,
 	passwordModificationSchema,
 } from './validationSchemas/userSchemas.ts';
-import { userRightsModificationSchema } from './validationSchemas/adminSchemas.ts';
+import { userRightsModificationSchema } from './validationSchemas/userSchemas.ts';
 import adminMiddleware from './middlewares/adminMiddleware.ts';
 
 const router = Router();

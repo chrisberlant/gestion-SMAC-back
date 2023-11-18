@@ -1,6 +1,7 @@
-import { z, ZodSchema } from 'zod';
+import { z } from 'zod';
+import selectionSchema from './index.ts';
 
-export const userLoginSchema: ZodSchema = z.object({
+export const userLoginSchema = z.object({
 	email: z
 		.string({
 			required_error: "L'adresse mail doit être renseignée",
@@ -15,7 +16,7 @@ export const userLoginSchema: ZodSchema = z.object({
 		.min(8, { message: 'Le mot de passe doit faire minimum 8 caractères' }),
 });
 
-export const userRegistrationSchema: ZodSchema = z.object({
+export const userRegistrationSchema = z.object({
 	email: z
 		.string({ required_error: "L'adresse mail doit être renseignée" })
 		.email({ message: "Le format de l'adresse mail est incorrect" }),
@@ -37,7 +38,7 @@ export const userRegistrationSchema: ZodSchema = z.object({
 	}),
 });
 
-export const userModificationSchema: ZodSchema = z.object({
+export const userModificationSchema = z.object({
 	email: z
 		.string()
 		.email({ message: "Le format de l'adresse mail est incorrect" })
@@ -54,7 +55,7 @@ export const userModificationSchema: ZodSchema = z.object({
 		.optional(),
 });
 
-export const passwordModificationSchema: ZodSchema = z.object({
+export const passwordModificationSchema = z.object({
 	oldPassword: z
 		.string({ required_error: "L'ancien mot de passe doit être renseigné" })
 		.min(8, {
@@ -67,4 +68,27 @@ export const passwordModificationSchema: ZodSchema = z.object({
 		.min(8, {
 			message: 'Le nouveau mot de passe doit faire minimum 8 caractères',
 		}),
+});
+
+export const newUserCreationSchema = z.object({
+	email: z
+		.string({
+			required_error: "L'adresse mail doit être renseignée",
+		})
+		.email({ message: "Le format de l'adresse mail est incorrect" }),
+	lastName: z.string({
+		required_error: 'Le nom de famille doit être renseigné',
+		invalid_type_error:
+			'Le nom de famille doit être une chaîne de caractères',
+	}),
+	firstName: z.string({
+		required_error: 'Le prénom doit être renseigné',
+		invalid_type_error: 'Le prénom doit être une chaîne de caractères',
+	}),
+});
+
+export const userRightsModificationSchema = selectionSchema.extend({
+	isAdmin: z.boolean({
+		required_error: 'La valeur isAdmin doit être renseignée',
+	}),
 });
