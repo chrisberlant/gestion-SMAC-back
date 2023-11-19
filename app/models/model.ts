@@ -1,12 +1,6 @@
-import { Model as SequelizeModel, DataTypes } from 'sequelize';
+import { DataTypes } from 'sequelize';
 import sequelize from '../sequelize-client.ts';
-
-interface ModelType extends SequelizeModel {
-	id?: number;
-	brand: string;
-	reference: string;
-	storage?: string;
-}
+import { ModelType } from '../@types/models.ts';
 
 const Model = sequelize.define<ModelType>(
 	'Model',

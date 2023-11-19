@@ -1,14 +1,6 @@
-import { Model, DataTypes } from 'sequelize';
+import { DataTypes } from 'sequelize';
 import sequelize from '../sequelize-client.ts';
-
-interface UserType extends Model {
-	id?: number;
-	email: string;
-	firstName: string;
-	lastName: string;
-	password?: string;
-	isAdmin?: boolean;
-}
+import { UserType } from '../@types/models.ts';
 
 const User = sequelize.define<UserType>(
 	'User',

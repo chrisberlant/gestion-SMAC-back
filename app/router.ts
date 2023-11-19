@@ -13,34 +13,43 @@ import {
 } from './validationSchemas/userSchemas.ts';
 import { userRightsModificationSchema } from './validationSchemas/userSchemas.ts';
 import adminMiddleware from './middlewares/adminMiddleware.ts';
+import selectionSchema from './validationSchemas/index.ts';
+import authController from './controllers/authController.ts';
 
 const router = Router();
 
-/* ------------- USER/AUTH ROUTES ------------- */
+/* ------------- AUTH ROUTES ------------- */
 router.post(
 	'/login',
 	requestsLimitMiddleware,
 	dataValidation(userLoginSchema),
-	userController.login
+	authController.login
 );
-router.get('/getUserInfos', jwtMiddleware, userController.getUserInfos);
-router.patch(
-	'/modifyUserInfos',
-	jwtMiddleware,
-	dataValidation(userModificationSchema),
-	userController.modifyUserInfos
-);
-router.patch(
-	'/modifyUserPassword',
-	jwtMiddleware,
-	dataValidation(passwordModificationSchema),
-	userController.modifyUserPassword
-);
+router.get('/logout', authController.logout);
 // ! Route used to create the first user
 router.post(
 	'/register',
 	dataValidation(userRegistrationSchema),
-	userController.register
+	authController.register
+);
+
+/* ------------- USER ROUTES ------------- */
+router.get(
+	'/getCurrentUserInfos',
+	jwtMiddleware,
+	userController.getCurrentUserInfos
+);
+router.patch(
+	'/modifyUserInfos',
+	jwtMiddleware,
+	dataValidation(userModificationSchema),
+	userController.modifyCurrentUserInfos
+);
+router.patch(
+	'/modifyCurrentUserPassword',
+	jwtMiddleware,
+	dataValidation(passwordModificationSchema),
+	userController.modifyCurrentUserPassword
 );
 
 /* ------------- LINES ROUTES ------------- */
@@ -52,6 +61,20 @@ router.post(
 	jwtMiddleware,
 	adminMiddleware,
 	adminController.createNewUser
+);
+router.patch(
+	'/modifyUserRights',
+	jwtMiddleware,
+	adminMiddleware,
+	dataValidation(userRightsModificationSchema),
+	adminController.modifyUserRights
+);
+router.delete(
+	'/deleteUser',
+	jwtMiddleware,
+	adminMiddleware,
+	dataValidation(selectionSchema),
+	adminController.deleteUser
 );
 router.post(
 	'/createNewModel',
@@ -70,13 +93,6 @@ router.delete(
 	jwtMiddleware,
 	adminMiddleware,
 	adminController.deleteModel
-);
-router.patch(
-	'/modifyUserRights',
-	jwtMiddleware,
-	adminMiddleware,
-	dataValidation(userRightsModificationSchema),
-	adminController.modifyUserRights
 );
 
 export default router;

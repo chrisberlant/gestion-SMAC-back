@@ -1,13 +1,6 @@
-import { Model, DataTypes } from 'sequelize';
+import { DataTypes } from 'sequelize';
 import sequelize from '../sequelize-client.ts';
-
-interface LineType extends Model {
-	id?: number;
-	number: string;
-	profile: string;
-	status: string;
-	comments?: string;
-}
+import { LineType } from '../@types/models.ts';
 
 const Line = sequelize.define<LineType>(
 	'Line',

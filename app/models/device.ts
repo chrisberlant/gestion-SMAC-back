@@ -1,15 +1,6 @@
-import { Model, DataTypes } from 'sequelize';
+import { DataTypes } from 'sequelize';
 import sequelize from '../sequelize-client.ts';
-
-interface DeviceType extends Model {
-	id?: number;
-	imei: string;
-	preparationDate?: Date;
-	attributiontionDate?: Date;
-	status: string;
-	condition: string;
-	comments?: string;
-}
+import { DeviceType } from '../@types/models.ts';
 
 const Device = sequelize.define<DeviceType>(
 	'Device',
