@@ -1,6 +1,6 @@
-import { Line } from '../models/index.ts';
+import { Line } from '../models';
 import { Response } from 'express';
-import { UserRequest } from '../middlewares/jwtMidleware.ts';
+import { UserRequest } from '../middlewares/jwtMidleware';
 
 const lineController = {
 	async getAllLines(req: UserRequest, res: Response) {

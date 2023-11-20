@@ -1,15 +1,5 @@
 import { z } from 'zod';
 
-interface DeviceType {
-	id?: number;
-	imei: string;
-	preparationDate?: Date;
-	attributiontionDate?: Date;
-	status: string;
-	condition: string;
-	comments?: string;
-}
-
 export const deviceCreationSchema = z.object({
 	imei: z
 		.string({

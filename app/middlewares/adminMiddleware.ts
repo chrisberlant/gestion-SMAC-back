@@ -1,6 +1,6 @@
 import { NextFunction, Response } from 'express';
-import { User } from '../models/index.ts';
-import { UserRequest } from './jwtMidleware.ts';
+import { User } from '../models';
+import { UserRequest } from './jwtMidleware';
 
 const adminMiddleware = async (
 	req: UserRequest,

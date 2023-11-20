@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import selectionSchema from './index.ts';
+import selectionSchema from '.';
 
 export const modelCreationSchema = z.object({
 	brand: z.string({

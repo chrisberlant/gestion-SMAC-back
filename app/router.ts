@@ -1,20 +1,20 @@
 import { Router } from 'express';
-import jwtMiddleware from './middlewares/jwtMidleware.ts';
-import requestsLimitMiddleware from './middlewares/requestsLimitMiddleware.ts';
-import userController from './controllers/userController.ts';
-import lineController from './controllers/lineController.ts';
-import adminController from './controllers/adminController.ts';
-import dataValidation from './middlewares/dataValidationMiddleware.ts';
+import jwtMiddleware from './middlewares/jwtMidleware';
+import requestsLimitMiddleware from './middlewares/requestsLimitMiddleware';
+import userController from './controllers/userController';
+import lineController from './controllers/lineController';
+import adminController from './controllers/adminController';
+import dataValidation from './middlewares/dataValidationMiddleware';
 import {
 	userLoginSchema,
 	userModificationSchema,
 	userRegistrationSchema,
 	passwordModificationSchema,
-} from './validationSchemas/userSchemas.ts';
-import { userRightsModificationSchema } from './validationSchemas/userSchemas.ts';
-import adminMiddleware from './middlewares/adminMiddleware.ts';
-import selectionSchema from './validationSchemas/index.ts';
-import authController from './controllers/authController.ts';
+	userRightsModificationSchema,
+} from './validationSchemas/userSchemas';
+import adminMiddleware from './middlewares/adminMiddleware';
+import selectionSchema from './validationSchemas';
+import authController from './controllers/authController';
 
 const router = Router();
 

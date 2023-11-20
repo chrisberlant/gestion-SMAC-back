@@ -1,6 +1,6 @@
-import { User } from '../models/index.ts';
+import { User } from '../models';
 import { Response } from 'express';
-import { UserRequest } from '../middlewares/jwtMidleware.ts';
+import { UserRequest } from '../middlewares/jwtMidleware';
 
 import bcrypt from 'bcrypt';
 

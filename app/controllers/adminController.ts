@@ -1,7 +1,7 @@
 import { Response } from 'express';
-import { UserRequest } from '../middlewares/jwtMidleware.ts';
-import { Model, User } from '../models/index.ts';
-import generateRandomPassword from '../utils/passwordGeneration.ts';
+import { UserRequest } from '../middlewares/jwtMidleware';
+import { Model, User } from '../models';
+import generateRandomPassword from '../utils/passwordGeneration';
 import bcrypt from 'bcrypt';
 
 const adminController = {

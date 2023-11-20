@@ -1,6 +1,6 @@
 import xss from 'xss';
 import { Response, NextFunction } from 'express';
-import { UserRequest } from './jwtMidleware.ts';
+import { UserRequest } from './jwtMidleware';
 import { ZodSchema } from 'zod';
 
 // This middleware allows us to validate every data sent by the user

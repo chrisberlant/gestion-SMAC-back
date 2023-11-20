@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../sequelize-client.ts';
-import { AgentType } from '../@types/models.ts';
+import sequelize from '../sequelize-client';
+import { AgentType } from '../@types/models';
 
 const Agent = sequelize.define<AgentType>(
 	'Agent',

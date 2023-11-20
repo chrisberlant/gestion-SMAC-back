@@ -1,9 +1,9 @@
-import Agent from './agent.ts';
-import Device from './device.ts';
-import Line from './line.ts';
-import Model from './model.ts';
-import Service from './service.ts';
-import User from './user.ts';
+import Agent from './agent';
+import Device from './device';
+import Line from './line';
+import Model from './model';
+import Service from './service';
+import User from './user';
 
 // Relations between an agent and its lines
 Agent.hasMany(Line, {
