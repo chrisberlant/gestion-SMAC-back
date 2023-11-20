@@ -1,10 +1,25 @@
 import { Response } from 'express';
 import { UserRequest } from '../middlewares/jwtMidleware';
-import { Model, User } from '../models';
+import { Model, Service, User } from '../models';
 import generateRandomPassword from '../utils/passwordGeneration';
 import bcrypt from 'bcrypt';
 
 const adminController = {
+	async getAdminDashboard(req: UserRequest, res: Response) {
+		try {
+			const users = await User.findAll({
+				attributes: { exclude: ['password'] },
+			});
+			const models = await Model.findAll();
+			const services = await Service.findAll();
+
+			res.status(200).json({ users, models, services });
+		} catch (error) {
+			console.error(error);
+			res.status(500).json(error);
+		}
+	},
+
 	async createNewUser(req: UserRequest, res: Response) {
 		try {
 			const infos = req.body;

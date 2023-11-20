@@ -56,6 +56,12 @@ router.patch(
 router.get('/getAllLines/:status', jwtMiddleware, lineController.getAllLines);
 
 /* ------------- ADMIN ROUTES ------------- */
+router.get(
+	'/getAdminDashboard',
+	jwtMiddleware,
+	adminMiddleware,
+	adminController.getAdminDashboard
+);
 router.post(
 	'/createNewUser',
 	jwtMiddleware,
