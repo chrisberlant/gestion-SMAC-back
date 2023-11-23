@@ -9,7 +9,7 @@ export const userLoginSchema = z.object({
 		.email({ message: "Le format de l'adresse mail est incorrect" }),
 	password: z
 		.string({
-			required_error: 'Le mot de passe doit être renseignée',
+			required_error: 'Le mot de passe doit être renseigné',
 			invalid_type_error:
 				'Le mot de passe doit être une chaîne de caractères',
 		})

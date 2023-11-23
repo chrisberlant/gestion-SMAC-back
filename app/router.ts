@@ -62,6 +62,24 @@ router.get(
 	// adminMiddleware,
 	adminController.getAdminDashboard
 );
+router.get(
+	'/getAllUsers',
+	// jwtMiddleware,
+	// adminMiddleware,
+	adminController.getAllUsers
+);
+router.get(
+	'/getAllServices',
+	// jwtMiddleware,
+	// adminMiddleware,
+	adminController.getAllServices
+);
+router.get(
+	'/getAllModels',
+	// jwtMiddleware,
+	// adminMiddleware,
+	adminController.getAllModels
+);
 router.post(
 	'/createNewUser',
 	jwtMiddleware,

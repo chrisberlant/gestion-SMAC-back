@@ -3,6 +3,7 @@ import { UserRequest } from '../middlewares/jwtMidleware';
 import { Model, Service, User } from '../models';
 import generateRandomPassword from '../utils/passwordGeneration';
 import bcrypt from 'bcrypt';
+import { ModelType, ServiceType, UserType } from '../@types/models';
 
 const adminController = {
 	async getAdminDashboard(req: UserRequest, res: Response) {
@@ -14,6 +15,41 @@ const adminController = {
 			const services = await Service.findAll();
 
 			res.status(200).json({ users, models, services });
+		} catch (error) {
+			console.error(error);
+			res.status(500).json(error);
+		}
+	},
+
+	async getAllUsers(req: UserRequest, res: Response) {
+		try {
+			const users: UserType[] = await User.findAll({
+				attributes: { exclude: ['password'] },
+			});
+
+			res.status(200).json(users);
+		} catch (error) {
+			console.error(error);
+			res.status(500).json(error);
+		}
+	},
+
+	async getAllServices(req: UserRequest, res: Response) {
+		try {
+			const services: ServiceType[] = await Service.findAll();
+
+			res.status(200).json(services);
+		} catch (error) {
+			console.error(error);
+			res.status(500).json(error);
+		}
+	},
+
+	async getAllModels(req: UserRequest, res: Response) {
+		try {
+			const models: ModelType[] = await Model.findAll();
+
+			res.status(200).json(models);
 		} catch (error) {
 			console.error(error);
 			res.status(500).json(error);
