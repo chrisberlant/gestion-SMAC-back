@@ -6,21 +6,6 @@ import bcrypt from 'bcrypt';
 import { ModelType, ServiceType, UserType } from '../@types/models';
 
 const adminController = {
-	async getAdminDashboard(req: UserRequest, res: Response) {
-		try {
-			const users = await User.findAll({
-				attributes: { exclude: ['password'] },
-			});
-			const models = await Model.findAll();
-			const services = await Service.findAll();
-
-			res.status(200).json({ users, models, services });
-		} catch (error) {
-			console.error(error);
-			res.status(500).json(error);
-		}
-	},
-
 	async getAllUsers(req: UserRequest, res: Response) {
 		try {
 			const users: UserType[] = await User.findAll({
@@ -58,7 +43,7 @@ const adminController = {
 
 	async createNewUser(req: UserRequest, res: Response) {
 		try {
-			const infos = req.body;
+			const infos: UserType = req.body;
 
 			const generatedPassword = generateRandomPassword();
 			const saltRounds = parseInt(process.env.SALT_ROUNDS!);

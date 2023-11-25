@@ -34,11 +34,7 @@ router.post(
 );
 
 /* ------------- USER ROUTES ------------- */
-router.get(
-	'/getCurrentUserInfos',
-	jwtMiddleware,
-	userController.getCurrentUserInfos
-);
+router.get('/getCurrentUser', jwtMiddleware, userController.getCurrentUser);
 router.patch(
 	'/modifyUserInfos',
 	jwtMiddleware,
@@ -57,27 +53,21 @@ router.get('/getAllLines/:status', jwtMiddleware, lineController.getAllLines);
 
 /* ------------- ADMIN ROUTES ------------- */
 router.get(
-	'/getAdminDashboard',
-	// jwtMiddleware,
-	// adminMiddleware,
-	adminController.getAdminDashboard
-);
-router.get(
 	'/getAllUsers',
-	// jwtMiddleware,
-	// adminMiddleware,
+	jwtMiddleware,
+	adminMiddleware,
 	adminController.getAllUsers
 );
 router.get(
 	'/getAllServices',
-	// jwtMiddleware,
-	// adminMiddleware,
+	jwtMiddleware,
+	adminMiddleware,
 	adminController.getAllServices
 );
 router.get(
 	'/getAllModels',
-	// jwtMiddleware,
-	// adminMiddleware,
+	jwtMiddleware,
+	adminMiddleware,
 	adminController.getAllModels
 );
 router.post(

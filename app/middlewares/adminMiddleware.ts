@@ -19,6 +19,7 @@ const adminMiddleware = async (
 			return res
 				.status(403)
 				.json("Vous n'avez pas les droits nécessaires");
+
 		next();
 	} catch (error) {
 		console.error(error);

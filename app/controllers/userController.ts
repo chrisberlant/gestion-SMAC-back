@@ -5,12 +5,14 @@ import { UserRequest } from '../middlewares/jwtMidleware';
 import bcrypt from 'bcrypt';
 
 const userController = {
-	async getCurrentUserInfos(req: UserRequest, res: Response) {
+	async getCurrentUser(req: UserRequest, res: Response) {
 		try {
 			const userId = req.user!.id;
 
 			const user = await User.findByPk(userId, {
-				attributes: ['firstName', 'lastName', 'email'],
+				attributes: {
+					exclude: ['id', 'password'],
+				},
 			});
 			if (!user) return res.status(404).json('Utilisateur introuvable');
 
