@@ -23,7 +23,7 @@ const userController = {
 		}
 	},
 
-	async modifyCurrentUserInfos(req: UserRequest, res: Response) {
+	async modifyCurrentUser(req: UserRequest, res: Response) {
 		try {
 			const userId = req.user!.id;
 			const infosToModify = req.body;
@@ -34,9 +34,7 @@ const userController = {
 
 			const user = await User.findByPk(userId);
 			if (!user)
-				return res
-					.status(404)
-					.json("Impossible de trouver l'utilisateur dans la base");
+				return res.status(404).json("L'utilisateur n'existe pas");
 
 			await user.update(infosToModify);
 

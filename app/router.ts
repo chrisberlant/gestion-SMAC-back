@@ -7,10 +7,10 @@ import adminController from './controllers/adminController';
 import dataValidation from './middlewares/dataValidationMiddleware';
 import {
 	userLoginSchema,
-	userModificationSchema,
+	currentUserModificationSchema,
 	userRegistrationSchema,
 	passwordModificationSchema,
-	userRightsModificationSchema,
+	userModificationSchema,
 } from './validationSchemas/userSchemas';
 import adminMiddleware from './middlewares/adminMiddleware';
 import selectionSchema from './validationSchemas';
@@ -36,10 +36,10 @@ router.post(
 /* ------------- USER ROUTES ------------- */
 router.get('/getCurrentUser', jwtMiddleware, userController.getCurrentUser);
 router.patch(
-	'/modifyUserInfos',
+	'/modifyCurrentUser',
 	jwtMiddleware,
-	dataValidation(userModificationSchema),
-	userController.modifyCurrentUserInfos
+	dataValidation(currentUserModificationSchema),
+	userController.modifyCurrentUser
 );
 router.patch(
 	'/modifyCurrentUserPassword',
@@ -77,11 +77,11 @@ router.post(
 	adminController.createNewUser
 );
 router.patch(
-	'/modifyUserRights',
+	'/modifyUser',
 	jwtMiddleware,
 	adminMiddleware,
-	dataValidation(userRightsModificationSchema),
-	adminController.modifyUserRights
+	dataValidation(userModificationSchema),
+	adminController.modifyUser
 );
 router.delete(
 	'/deleteUser',

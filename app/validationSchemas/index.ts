@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const selectionSchema = z.object({
+const selectionSchema = z.strictObject({
 	id: z
 		.number({
 			required_error: "L'id doit être renseigné",

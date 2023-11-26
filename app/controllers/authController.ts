@@ -52,7 +52,9 @@ const authController = {
 	async register(req: Request, res: Response) {
 		try {
 			const userToRegister = req.body;
-			const { email, password } = userToRegister;
+			const { email, password, isAdmin } = userToRegister;
+			let parsedIsAdmin = 'false';
+			if (isAdmin) parsedIsAdmin = 'true';
 
 			const alreadyExistingUser = await User.findOne({
 				where: { email },
@@ -66,6 +68,7 @@ const authController = {
 			const user = await User.create({
 				...userToRegister,
 				password: hashedPassword,
+				isAdmin: parsedIsAdmin,
 			});
 			if (!user) throw new Error("Impossible de créer l'utilisateur");
 

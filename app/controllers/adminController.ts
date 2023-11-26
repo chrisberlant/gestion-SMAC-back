@@ -74,17 +74,29 @@ const adminController = {
 		}
 	},
 
-	async modifyUserRights(req: UserRequest, res: Response) {
+	async modifyUser(req: UserRequest, res: Response) {
 		try {
-			const { id, isAdmin } = req.body;
+			const { id, isAdmin, ...infosToModify } = req.body;
+			let parsedIsAdmin = 'false';
+			if (isAdmin) parsedIsAdmin = 'true';
 
 			const user = await User.findByPk(id);
 			if (!user)
 				return res.status(404).json("L'utilisateur n'existe pas");
 
-			await user.update({ isAdmin });
+			await user.update({ ...infosToModify, isAdmin: parsedIsAdmin });
 
-			res.status(200).json({ id, isAdmin });
+			const { firstName, lastName, email } = user;
+
+			const newUserInfos = {
+				id,
+				firstName,
+				lastName,
+				email,
+				isAdmin: parsedIsAdmin,
+			};
+
+			res.status(200).json(newUserInfos);
 		} catch (error) {
 			console.error(error);
 			res.status(500).json(error);

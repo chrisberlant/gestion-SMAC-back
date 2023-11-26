@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
-export const deviceCreationSchema = z.object({
+export const deviceCreationSchema = z.strictObject({
 	imei: z
 		.string({
 			required_error: "L'IMEI doit être renseigné",
 			invalid_type_error: "L'IMEI doit être une chaîne de caractères",
 		})
-		.length(15, { message: "L'IMEI fourni est incorrect" }),
+		.length(15, "L'IMEI fourni est incorrect"),
 	preparationDate: z.date().optional(),
 	attributionDate: z.date().optional(),
 	status: z.enum([
@@ -26,12 +26,12 @@ export const deviceCreationSchema = z.object({
 		.optional(),
 });
 
-export const deviceModificationSchema = z.object({
+export const deviceModificationSchema = z.strictObject({
 	imei: z
 		.string({
 			invalid_type_error: "L'IMEI doit être une chaîne de caractères",
 		})
-		.length(15, { message: "L'IMEI fourni est incorrect" })
+		.length(15, "L'IMEI fourni est incorrect")
 		.optional(),
 	preparationDate: z.date().optional(),
 	attributionDate: z.date().optional(),

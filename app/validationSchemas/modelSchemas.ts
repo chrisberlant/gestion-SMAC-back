@@ -1,15 +1,19 @@
 import { z } from 'zod';
 import selectionSchema from '.';
 
-export const modelCreationSchema = z.object({
-	brand: z.string({
-		required_error: 'La marque doit être renseignée',
-		invalid_type_error: 'La marque doit être une chaîne de caractères',
-	}),
-	reference: z.string({
-		required_error: 'La référence doit être renseignée',
-		invalid_type_error: 'La référence doit être une chaîne de caractères',
-	}),
+export const modelCreationSchema = z.strictObject({
+	brand: z
+		.string({
+			required_error: 'La marque doit être renseignée',
+			invalid_type_error: 'La marque doit être une chaîne de caractères',
+		})
+		.min(1, 'La marque ne peut pas être vide'),
+	reference: z
+		.string({
+			required_error: 'Le modèle doit être renseigné',
+			invalid_type_error: 'Le modèle doit être une chaîne de caractères',
+		})
+		.min(1, 'Le modèle ne peut pas être vide'),
 	storage: z
 		.string({
 			invalid_type_error:
@@ -26,9 +30,9 @@ export const modelModificationSchema = selectionSchema.extend({
 		.optional(),
 	reference: z
 		.string({
-			invalid_type_error:
-				'La référence doit être une chaîne de caractères',
+			invalid_type_error: 'Le modèle doit être une chaîne de caractères',
 		})
+		.min(1, 'Le modèle ne peut pas être vide')
 		.optional(),
 	storage: z
 		.string({
