@@ -15,6 +15,7 @@ import {
 import adminMiddleware from './middlewares/adminMiddleware';
 import selectionSchema from './validationSchemas';
 import authController from './controllers/authController';
+import deviceController from './controllers/deviceController';
 
 const router = Router();
 
@@ -51,6 +52,11 @@ router.patch(
 /* ------------- LINES ROUTES ------------- */
 router.get('/getAllLines/:status', jwtMiddleware, lineController.getAllLines);
 router.get('/getLineById/:id', jwtMiddleware, lineController.getLineById);
+
+/* ------------- DEVICES ROUTES ------------- */
+
+router.get('/getAllDevices', jwtMiddleware, deviceController.getAllDevices);
+router.get('/getDeviceById/:id', jwtMiddleware, deviceController.getDeviceById);
 
 /* ------------- ADMIN ROUTES ------------- */
 router.get(

@@ -30,6 +30,9 @@ const lineController = {
 					},
 					{
 						association: 'device',
+						attributes: {
+							exclude: ['agentId'],
+						},
 						include: [{ association: 'model' }],
 					},
 				],
@@ -49,7 +52,21 @@ const lineController = {
 		try {
 			const { id } = req.params;
 
-			const line = await Line.findByPk(id);
+			const line = await Line.findByPk(id, {
+				include: [
+					{
+						association: 'agent',
+						include: [{ association: 'service' }],
+					},
+					{
+						association: 'device',
+						attributes: {
+							exclude: ['agentId'],
+						},
+						include: [{ association: 'model' }],
+					},
+				],
+			});
 			if (!line) {
 				res.status(404).json('Aucune ligne trouvée');
 			}
