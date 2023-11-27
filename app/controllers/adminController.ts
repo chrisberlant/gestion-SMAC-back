@@ -77,14 +77,14 @@ const adminController = {
 	async modifyUser(req: UserRequest, res: Response) {
 		try {
 			const { id, isAdmin, ...infosToModify } = req.body;
-			let parsedIsAdmin = 'false';
-			if (isAdmin) parsedIsAdmin = 'true';
 
 			const user = await User.findByPk(id);
 			if (!user)
 				return res.status(404).json("L'utilisateur n'existe pas");
 
-			await user.update({ ...infosToModify, isAdmin: parsedIsAdmin });
+			const isAdminBoolean = isAdmin === true || isAdmin === 'true';
+
+			await user.update({ ...infosToModify, isAdmin: isAdminBoolean });
 
 			const { firstName, lastName, email } = user;
 
@@ -93,7 +93,7 @@ const adminController = {
 				firstName,
 				lastName,
 				email,
-				isAdmin: parsedIsAdmin,
+				isAdmin: isAdminBoolean,
 			};
 
 			res.status(200).json(newUserInfos);

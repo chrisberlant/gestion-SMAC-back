@@ -23,11 +23,11 @@ export interface DeviceType
 	> {
 	id: CreationOptional<number>;
 	imei: string;
-	preparationDate?: Date;
-	attributionDate?: Date;
+	preparationDate: Date | null;
+	attributionDate: Date | null;
 	status: string;
 	condition: string;
-	comments?: string;
+	comments: string | null;
 }
 
 export interface LineType
@@ -39,7 +39,7 @@ export interface LineType
 	number: string;
 	profile: string;
 	status: string;
-	comments?: string;
+	comments: string | null;
 }
 
 export interface ModelType
@@ -50,7 +50,7 @@ export interface ModelType
 	id: CreationOptional<number>;
 	brand: string;
 	reference: string;
-	storage?: string;
+	storage: string | null;
 }
 
 export interface ServiceType
@@ -72,5 +72,5 @@ export interface UserType
 	firstName: string;
 	lastName: string;
 	password?: string;
-	isAdmin?: boolean;
+	isAdmin: boolean;
 }

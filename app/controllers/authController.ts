@@ -9,32 +9,25 @@ const authController = {
 		try {
 			const { email, password } = req.body;
 
-			const userSearched = await User.findOne({
+			const user = await User.findOne({
 				where: { email: email.toLowerCase() },
-				attributes: { exclude: ['isAdmin'] },
 			});
 
-			if (!userSearched)
+			if (!user)
 				// If user cannot be found
 				return res.status(401).json('Email ou mot de passe incorrect');
 
 			// Hashing the password provided by the user to compare it with the one in the DB
 			const passwordsMatch = await bcrypt.compare(
 				password,
-				userSearched.password!
+				user.password!
 			);
 			if (!passwordsMatch)
 				return res.status(401).json('Email ou mot de passe incorrect');
 
-			const id = userSearched.id;
-
-			const user = userSearched.get({ plain: true }); // Create a copy of the sequelize object with only the infos needed
-			delete user.password; // Removing the password before using the object
-			delete user.id;
-
 			// We set a variable containing the token that will be sent to the browser
-			const token = jwt.sign({ id }, process.env.SECRET_KEY!, {
-				expiresIn: '6h',
+			const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY!, {
+				expiresIn: '10h',
 			});
 
 			// Send the JWT as cookie
@@ -42,7 +35,16 @@ const authController = {
 				httpOnly: true,
 				sameSite: true,
 			});
-			res.status(200).json(user);
+
+			const { firstName, lastName, isAdmin } = user;
+			const loggedUser = {
+				email,
+				firstName,
+				lastName,
+				isAdmin,
+			};
+
+			res.status(200).json(loggedUser);
 		} catch (error) {
 			console.error(error);
 			res.status(500).json(error);

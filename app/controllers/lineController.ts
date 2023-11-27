@@ -13,11 +13,15 @@ const lineController = {
 				case 'in-progress':
 					status = 'En cours';
 					break;
-				case 'terminated':
+				case 'resiliated':
 					status = 'Résiliée';
 					break;
+				default:
+					status = 'Attribuée';
 			}
-			const allActiveLines = await Line.findAll({
+
+			console.log(status);
+			const lines = await Line.findAll({
 				where: { status },
 				include: [
 					{
@@ -30,11 +34,27 @@ const lineController = {
 					},
 				],
 			});
-			if (!allActiveLines) {
+			if (!lines) {
 				res.status(404).json('Aucune ligne trouvée');
 			}
 
-			res.status(200).json(allActiveLines);
+			res.status(200).json(lines);
+		} catch (error) {
+			console.error(error);
+			res.status(500).json(error);
+		}
+	},
+
+	async getLineById(req: UserRequest, res: Response) {
+		try {
+			const { id } = req.params;
+
+			const line = await Line.findByPk(id);
+			if (!line) {
+				res.status(404).json('Aucune ligne trouvée');
+			}
+
+			res.status(200).json(line);
 		} catch (error) {
 			console.error(error);
 			res.status(500).json(error);

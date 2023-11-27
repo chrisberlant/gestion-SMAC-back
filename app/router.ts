@@ -8,9 +8,9 @@ import dataValidation from './middlewares/dataValidationMiddleware';
 import {
 	userLoginSchema,
 	currentUserModificationSchema,
-	userRegistrationSchema,
 	passwordModificationSchema,
 	userModificationSchema,
+	newUserCreationSchema,
 } from './validationSchemas/userSchemas';
 import adminMiddleware from './middlewares/adminMiddleware';
 import selectionSchema from './validationSchemas';
@@ -29,7 +29,7 @@ router.get('/logout', authController.logout);
 // ! Route used to create the first user
 router.post(
 	'/register',
-	dataValidation(userRegistrationSchema),
+	dataValidation(newUserCreationSchema),
 	authController.register
 );
 
@@ -50,6 +50,7 @@ router.patch(
 
 /* ------------- LINES ROUTES ------------- */
 router.get('/getAllLines/:status', jwtMiddleware, lineController.getAllLines);
+router.get('/getLineById/:id', jwtMiddleware, lineController.getLineById);
 
 /* ------------- ADMIN ROUTES ------------- */
 router.get(
