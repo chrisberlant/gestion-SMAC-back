@@ -16,6 +16,8 @@ import adminMiddleware from './middlewares/adminMiddleware';
 import selectionSchema from './validationSchemas';
 import authController from './controllers/authController';
 import deviceController from './controllers/deviceController';
+import serviceController from './controllers/serviceController';
+import modelController from './controllers/modelController';
 
 const router = Router();
 
@@ -58,24 +60,18 @@ router.get('/getLineById/:id', jwtMiddleware, lineController.getLineById);
 router.get('/getAllDevices', jwtMiddleware, deviceController.getAllDevices);
 router.get('/getDeviceById/:id', jwtMiddleware, deviceController.getDeviceById);
 
+/* ------------- MODELS ROUTES ------------- */
+router.get('/getAllModels', jwtMiddleware, modelController.getAllModels);
+
+/* ------------- SERVICES ROUTES ------------- */
+router.get('/getAllServices', jwtMiddleware, serviceController.getAllServices);
+
 /* ------------- ADMIN ROUTES ------------- */
 router.get(
 	'/getAllUsers',
 	jwtMiddleware,
 	adminMiddleware,
 	adminController.getAllUsers
-);
-router.get(
-	'/getAllServices',
-	jwtMiddleware,
-	adminMiddleware,
-	adminController.getAllServices
-);
-router.get(
-	'/getAllModels',
-	jwtMiddleware,
-	adminMiddleware,
-	adminController.getAllModels
 );
 router.post(
 	'/createNewUser',

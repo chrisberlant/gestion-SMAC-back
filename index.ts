@@ -4,7 +4,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import router from './app/router';
 import cors from 'cors';
-import pageNotFoundMiddleware from './app/middlewares/pageNotFoundMiddleware';
+import requestNotFoundMiddleware from './app/middlewares/requestNotFoundMiddleware';
 
 const app = express();
 app.use(cookieParser());
@@ -19,7 +19,7 @@ app.use(express.json());
 
 app.use(router);
 
-app.use(pageNotFoundMiddleware);
+app.use(requestNotFoundMiddleware);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

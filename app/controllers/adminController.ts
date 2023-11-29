@@ -1,40 +1,22 @@
 import { Response } from 'express';
 import { UserRequest } from '../middlewares/jwtMidleware';
-import { Model, Service, User } from '../models';
+import { Model, User } from '../models';
 import generateRandomPassword from '../utils/passwordGeneration';
 import bcrypt from 'bcrypt';
-import { ModelType, ServiceType, UserType } from '../@types/models';
+import { UserType } from '../@types/models';
 
 const adminController = {
 	async getAllUsers(req: UserRequest, res: Response) {
 		try {
 			const users: UserType[] = await User.findAll({
 				attributes: { exclude: ['password'] },
+				order: [
+					['isAdmin', 'DESC'],
+					['lastName', 'ASC'],
+				],
 			});
 
 			res.status(200).json(users);
-		} catch (error) {
-			console.error(error);
-			res.status(500).json(error);
-		}
-	},
-
-	async getAllServices(req: UserRequest, res: Response) {
-		try {
-			const services: ServiceType[] = await Service.findAll();
-
-			res.status(200).json(services);
-		} catch (error) {
-			console.error(error);
-			res.status(500).json(error);
-		}
-	},
-
-	async getAllModels(req: UserRequest, res: Response) {
-		try {
-			const models: ModelType[] = await Model.findAll();
-
-			res.status(200).json(models);
 		} catch (error) {
 			console.error(error);
 			res.status(500).json(error);
