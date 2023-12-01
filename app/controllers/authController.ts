@@ -8,9 +8,10 @@ const authController = {
 	async login(req: Request, res: Response) {
 		try {
 			const { email, password } = req.body;
+			const lowerCaseEmail = email.toLowerCase();
 
 			const user = await User.findOne({
-				where: { email: email.toLowerCase() },
+				where: { email: lowerCaseEmail },
 			});
 
 			if (!user)
@@ -38,7 +39,7 @@ const authController = {
 
 			const { firstName, lastName, isAdmin } = user;
 			const loggedUser = {
-				email,
+				email: lowerCaseEmail,
 				firstName,
 				lastName,
 				isAdmin,
@@ -47,7 +48,7 @@ const authController = {
 			res.status(200).json(loggedUser);
 		} catch (error) {
 			console.error(error);
-			res.status(500).json(error);
+			res.status(500).json('Erreur serveur');
 		}
 	},
 
@@ -77,7 +78,7 @@ const authController = {
 			res.status(201).json('Le compte a été créé');
 		} catch (error) {
 			console.error(error);
-			res.status(500).json(error);
+			res.status(500).json('Erreur serveur');
 		}
 	},
 

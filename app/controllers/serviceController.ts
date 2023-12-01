@@ -13,7 +13,7 @@ const serviceController = {
 			res.status(200).json(services);
 		} catch (error) {
 			console.error(error);
-			res.status(500).json(error);
+			res.status(500).json('Erreur serveur');
 		}
 	},
 };

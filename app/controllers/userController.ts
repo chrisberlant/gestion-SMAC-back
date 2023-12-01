@@ -23,7 +23,7 @@ const userController = {
 			res.status(200).json(user);
 		} catch (error) {
 			console.error(error);
-			res.status(500).json(error);
+			res.status(500).json('Erreur serveur');
 		}
 	},
 
@@ -55,7 +55,7 @@ const userController = {
 			res.status(200).json(newUserInfos);
 		} catch (error) {
 			console.error(error);
-			res.status(500).json(error);
+			res.status(500).json('Erreur serveur');
 		}
 	},
 
@@ -98,7 +98,7 @@ const userController = {
 			res.status(200).json('Mot de passe changé.');
 		} catch (error) {
 			console.error(error);
-			res.status(500).json(error);
+			res.status(500).json('Erreur serveur');
 		}
 	},
 };

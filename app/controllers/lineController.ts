@@ -43,7 +43,7 @@ const lineController = {
 			res.status(200).json(lines);
 		} catch (error) {
 			console.error(error);
-			res.status(500).json(error);
+			res.status(500).json('Erreur serveur');
 		}
 	},
 
@@ -73,7 +73,7 @@ const lineController = {
 			res.status(200).json(line);
 		} catch (error) {
 			console.error(error);
-			res.status(500).json(error);
+			res.status(500).json('Erreur serveur');
 		}
 	},
 };

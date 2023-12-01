@@ -27,7 +27,7 @@ const adminMiddleware = async (
 		next();
 	} catch (error) {
 		console.error(error);
-		res.status(500).json(error);
+		res.status(500).json('Erreur serveur');
 	}
 };
 

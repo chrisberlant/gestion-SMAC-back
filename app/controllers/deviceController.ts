@@ -23,7 +23,7 @@ const deviceController = {
 			res.status(200).json(devices);
 		} catch (error) {
 			console.error(error);
-			res.status(500).json(error);
+			res.status(500).json('Erreur serveur');
 		}
 	},
 
@@ -49,7 +49,7 @@ const deviceController = {
 			res.status(200).json(device);
 		} catch (error) {
 			console.error(error);
-			res.status(500).json(error);
+			res.status(500).json('Erreur serveur');
 		}
 	},
 };
