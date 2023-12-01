@@ -25,8 +25,8 @@ const Device = sequelize.define<DeviceType>(
 			type: DataTypes.TEXT,
 			allowNull: false,
 		},
-		condition: {
-			type: DataTypes.TEXT,
+		isNew: {
+			type: DataTypes.BOOLEAN,
 			allowNull: false,
 		},
 		comments: {

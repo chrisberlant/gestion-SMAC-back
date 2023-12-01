@@ -26,7 +26,7 @@ export interface DeviceType
 	preparationDate: Date | null;
 	attributionDate: Date | null;
 	status: string;
-	condition: string;
+	isNew: boolean;
 	comments: string | null;
 }
 

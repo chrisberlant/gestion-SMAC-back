@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import selectionSchema from '.';
 
 export const deviceCreationSchema = z.strictObject({
 	imei: z
@@ -17,7 +18,7 @@ export const deviceCreationSchema = z.strictObject({
 		'En panne',
 		'Vol',
 	]),
-	condition: z.enum(['Neuf', 'Reconditionné']),
+	isNew: z.boolean(),
 	comments: z
 		.string({
 			invalid_type_error:
@@ -26,7 +27,7 @@ export const deviceCreationSchema = z.strictObject({
 		.optional(),
 });
 
-export const deviceModificationSchema = z.strictObject({
+export const deviceModificationSchema = selectionSchema.extend({
 	imei: z
 		.string({
 			invalid_type_error: "L'IMEI doit être une chaîne de caractères",
@@ -45,7 +46,7 @@ export const deviceModificationSchema = z.strictObject({
 			'Vol',
 		])
 		.optional(),
-	condition: z.enum(['Neuf', 'Reconditionné']).optional(),
+	isNew: z.boolean().optional(),
 	comments: z
 		.string({
 			invalid_type_error:

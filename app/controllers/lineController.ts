@@ -20,7 +20,6 @@ const lineController = {
 					status = 'Attribuée';
 			}
 
-			console.log(status);
 			const lines = await Line.findAll({
 				where: { status },
 				include: [
