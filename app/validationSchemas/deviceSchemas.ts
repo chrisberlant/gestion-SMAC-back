@@ -16,7 +16,7 @@ export const deviceCreationSchema = z.strictObject({
 		'En attente de restitution',
 		'En prêt',
 		'En panne',
-		'Vol',
+		'Volé',
 	]),
 	isNew: z.boolean(),
 	comments: z
@@ -43,7 +43,7 @@ export const deviceModificationSchema = selectionSchema.extend({
 			'En attente de restitution',
 			'En prêt',
 			'En panne',
-			'Vol',
+			'Volé',
 		])
 		.optional(),
 	isNew: z.boolean().optional(),
