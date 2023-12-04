@@ -13,14 +13,17 @@ const dataValidation =
 			const result = schema.safeParse(req.params);
 			if (!result.success)
 				return res.status(400).json(result.error.issues[0].message);
-			for (const key in req.params) {
-				req.params[key] = xss(req.params[key]);
-			}
 		} else {
-			console.log(req.body);
+			if (Object.keys(req.body).length === 0)
+				// If no data were provided by the user
+				return res.status(400).json('Aucune information fournie');
+
+			console.log('Validation : ' + JSON.stringify(req.body));
+
 			const result = schema.safeParse(req.body);
 			if (!result.success)
 				return res.status(400).json(result.error.issues[0].message);
+
 			for (const key in req.body) {
 				// Each value besides the password will be sanitized from malicious inserts
 				if (key !== 'password') req.body[key] = xss(req.body[key]);

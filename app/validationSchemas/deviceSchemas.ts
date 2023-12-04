@@ -27,30 +27,27 @@ export const deviceCreationSchema = z.strictObject({
 		.optional(),
 });
 
-export const deviceModificationSchema = selectionSchema.extend({
-	imei: z
-		.string({
-			invalid_type_error: "L'IMEI doit être une chaîne de caractères",
-		})
-		.length(15, "L'IMEI fourni est incorrect")
-		.optional(),
-	preparationDate: z.date().optional(),
-	attributionDate: z.date().optional(),
-	status: z
-		.enum([
+export const deviceModificationSchema = selectionSchema
+	.extend({
+		imei: z
+			.string({
+				invalid_type_error: "L'IMEI doit être une chaîne de caractères",
+			})
+			.length(15, "L'IMEI fourni est incorrect"),
+		preparationDate: z.date().optional(),
+		attributionDate: z.date().optional(),
+		status: z.enum([
 			'Attribué',
 			'Restitué',
 			'En attente de restitution',
 			'En prêt',
 			'En panne',
 			'Volé',
-		])
-		.optional(),
-	isNew: z.boolean().optional(),
-	comments: z
-		.string({
+		]),
+		isNew: z.boolean().optional(),
+		comments: z.string({
 			invalid_type_error:
 				'Les commentaires doivent être une chaîne de caractères',
-		})
-		.optional(),
-});
+		}),
+	})
+	.partial();

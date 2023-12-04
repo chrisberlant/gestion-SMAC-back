@@ -8,7 +8,7 @@ import dataValidation from './middlewares/dataValidationMiddleware';
 import {
 	userLoginSchema,
 	currentUserModificationSchema,
-	passwordModificationSchema,
+	currentUserPasswordModificationSchema,
 	userModificationSchema,
 	newUserCreationSchema,
 } from './validationSchemas/userSchemas';
@@ -47,7 +47,7 @@ router.patch(
 router.patch(
 	'/modifyCurrentUserPassword',
 	jwtMiddleware,
-	dataValidation(passwordModificationSchema),
+	dataValidation(currentUserPasswordModificationSchema),
 	userController.modifyCurrentUserPassword
 );
 

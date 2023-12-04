@@ -22,22 +22,20 @@ export const modelCreationSchema = z.strictObject({
 		.optional(),
 });
 
-export const modelModificationSchema = selectionSchema.extend({
-	brand: z
-		.string({
+export const modelModificationSchema = selectionSchema
+	.extend({
+		brand: z.string({
 			invalid_type_error: 'La marque doit être une chaîne de caractères',
-		})
-		.optional(),
-	reference: z
-		.string({
-			invalid_type_error: 'Le modèle doit être une chaîne de caractères',
-		})
-		.min(1, 'Le modèle ne peut pas être vide')
-		.optional(),
-	storage: z
-		.string({
+		}),
+		reference: z
+			.string({
+				invalid_type_error:
+					'Le modèle doit être une chaîne de caractères',
+			})
+			.min(1, 'Le modèle ne peut pas être vide'),
+		storage: z.string({
 			invalid_type_error:
 				'Le stockage doit être une chaîne de caractères',
-		})
-		.optional(),
-});
+		}),
+	})
+	.partial();

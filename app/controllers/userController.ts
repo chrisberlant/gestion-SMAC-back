@@ -32,10 +32,6 @@ const userController = {
 			const userId = req.user!.id;
 			const infosToModify = req.body;
 
-			if (Object.keys(infosToModify).length === 0)
-				// If no data were provided by the user
-				return res.status(400).json('Aucune information fournie');
-
 			const user = await User.findByPk(userId);
 			if (!user)
 				return res
@@ -63,13 +59,6 @@ const userController = {
 		try {
 			const userId = req.user!.id;
 			const { oldPassword, newPassword } = req.body;
-
-			if (oldPassword === newPassword)
-				return res
-					.status(400)
-					.json(
-						"L'ancien et le nouveau mot de passe sont identiques"
-					);
 
 			const user = await User.findByPk(userId);
 			if (!user)
