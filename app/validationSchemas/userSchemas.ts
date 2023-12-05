@@ -73,12 +73,12 @@ export const currentUserPasswordModificationSchema = z
 			),
 	})
 	.refine(
-		(data) => data.newPassword === data.confirmPassword,
-		'Le nouveau mot de passe et sa confirmation sont différents'
-	)
-	.refine(
 		(data) => data.oldPassword !== data.newPassword,
 		"L'ancien mot de passe et le nouveau sont identiques"
+	)
+	.refine(
+		(data) => data.newPassword === data.confirmPassword,
+		'Le nouveau mot de passe et sa confirmation sont différents'
 	);
 
 export const newUserCreationSchema = z.strictObject({

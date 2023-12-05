@@ -1,4 +1,3 @@
-import { ServiceType } from '../@types/models';
 import { UserRequest } from '../middlewares/jwtMidleware';
 import { Service } from '../models';
 import { Response } from 'express';
@@ -6,7 +5,7 @@ import { Response } from 'express';
 const serviceController = {
 	async getAllServices(req: UserRequest, res: Response) {
 		try {
-			const services: ServiceType[] = await Service.findAll({
+			const services = await Service.findAll({
 				order: [['title', 'ASC']],
 			});
 

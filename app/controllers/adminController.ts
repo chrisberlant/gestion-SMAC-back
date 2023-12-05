@@ -8,7 +8,7 @@ import { UserType } from '../@types/models';
 const adminController = {
 	async getAllUsers(req: UserRequest, res: Response) {
 		try {
-			const users: UserType[] = await User.findAll({
+			const users = await User.findAll({
 				attributes: { exclude: ['password'] },
 				order: [
 					['isAdmin', 'DESC'],

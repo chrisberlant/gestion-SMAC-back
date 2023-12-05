@@ -1,4 +1,3 @@
-import { ModelType } from '../@types/models';
 import { UserRequest } from '../middlewares/jwtMidleware';
 import { Model } from '../models';
 import { Response } from 'express';
@@ -6,7 +5,7 @@ import { Response } from 'express';
 const modelController = {
 	async getAllModels(req: UserRequest, res: Response) {
 		try {
-			const models: ModelType[] = await Model.findAll({
+			const models = await Model.findAll({
 				order: [
 					['brand', 'ASC'],
 					['reference', 'ASC'],
