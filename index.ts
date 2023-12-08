@@ -9,8 +9,11 @@ import requestNotFoundMiddleware from './app/middlewares/requestNotFoundMiddlewa
 const app = express();
 app.use(cookieParser());
 
+const port = process.env.PORT || 3000;
+const clientUrl = process.env.CLIENT_URL;
+
 const corsOptions = {
-	origin: 'http://localhost:5173',
+	origin: clientUrl,
 	credentials: true, // Authorize credentials (used for cookies)
 };
 
@@ -21,7 +24,6 @@ app.use(router);
 
 app.use(requestNotFoundMiddleware);
 
-const port = process.env.PORT || 3000;
 app.listen(port, () => {
 	console.log(`Listening on <http://localhost>:${port}`);
 });
