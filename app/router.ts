@@ -30,11 +30,14 @@ router.post(
 );
 router.get('/logout', authController.logout);
 // ! Route used to create the first user
-router.post(
-	'/register',
-	dataValidation(newUserCreationSchema),
-	authController.register
-);
+// router.post(
+// 	'/register',
+// 	dataValidation(newUserCreationSchema),
+// 	authController.register
+// );
+router.get('/healthCheck', (_, res) => {
+	res.status(200).json('Serveur en ligne');
+});
 
 /* ------------- USER ROUTES ------------- */
 router.get('/getCurrentUser', jwtMiddleware, userController.getCurrentUser);
