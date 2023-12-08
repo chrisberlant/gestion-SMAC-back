@@ -35,6 +35,7 @@ const authController = {
 			res.cookie('smac_token', token, {
 				httpOnly: true,
 				sameSite: true,
+				domain: process.env.CLIENT_URL,
 			});
 
 			const { firstName, lastName, isAdmin } = user;
