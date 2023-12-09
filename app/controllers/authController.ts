@@ -34,7 +34,8 @@ const authController = {
 			// Send the JWT as cookie
 			res.cookie('smac_token', token, {
 				httpOnly: true,
-				sameSite: true,
+				sameSite: 'none',
+				secure: true,
 			});
 
 			const { firstName, lastName, isAdmin } = user;
@@ -56,6 +57,7 @@ const authController = {
 		try {
 			const userToRegister = req.body;
 			const { email, password, isAdmin } = userToRegister;
+
 			let parsedIsAdmin = 'false';
 			if (isAdmin) parsedIsAdmin = 'true';
 
