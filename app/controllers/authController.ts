@@ -57,6 +57,7 @@ const authController = {
 		try {
 			const userToRegister = req.body;
 			const { email, password, isAdmin } = userToRegister;
+
 			let parsedIsAdmin = 'false';
 			if (isAdmin) parsedIsAdmin = 'true';
 
