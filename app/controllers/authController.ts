@@ -34,7 +34,8 @@ const authController = {
 			// Send the JWT as cookie
 			res.cookie('smac_token', token, {
 				httpOnly: true,
-				sameSite: false,
+				sameSite: 'none',
+				secure: true,
 			});
 
 			const { firstName, lastName, isAdmin } = user;
