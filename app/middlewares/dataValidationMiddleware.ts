@@ -10,6 +10,7 @@ const dataValidation =
 	(req: UserRequest, res: Response, next: NextFunction) => {
 		// We check here if user request is GET or any other type to either validate the req.params or the req.body
 		if (req.method === 'GET') {
+			// if (req.params.id) req.params.id = Number(req.params.id);
 			const result = schema.safeParse(req.params);
 			if (!result.success)
 				return res.status(400).json(result.error.issues[0].message);
@@ -17,9 +18,9 @@ const dataValidation =
 			if (Object.keys(req.body).length === 0)
 				// If no data were provided by the user
 				return res.status(400).json('Aucune information fournie');
-
 			console.log('Validation : ' + JSON.stringify(req.body));
 
+			if (req.body.id) req.body.id = parseInt(req.body.id);
 			const result = schema.safeParse(req.body);
 			if (!result.success)
 				return res.status(400).json(result.error.issues[0].message);

@@ -16,8 +16,6 @@ const lineController = {
 				case 'resiliated':
 					status = 'Résiliée';
 					break;
-				default:
-					status = 'Attribuée';
 			}
 
 			const lines = await Line.findAll({

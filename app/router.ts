@@ -13,11 +13,12 @@ import {
 	newUserCreationSchema,
 } from './validationSchemas/userSchemas';
 import adminMiddleware from './middlewares/adminMiddleware';
-import selectionSchema from './validationSchemas';
+import { getByIdSchema, updateByIdSchema } from './validationSchemas';
 import authController from './controllers/authController';
 import deviceController from './controllers/deviceController';
 import serviceController from './controllers/serviceController';
 import modelController from './controllers/modelController';
+import lineStatusSchema from './validationSchemas/lineSchemas';
 
 const router = Router();
 
@@ -55,13 +56,28 @@ router.patch(
 );
 
 /* ------------- LINES ROUTES ------------- */
-router.get('/getAllLines/:status', jwtMiddleware, lineController.getAllLines);
-router.get('/getLineById/:id', jwtMiddleware, lineController.getLineById);
+router.get(
+	'/getAllLines/:status',
+	jwtMiddleware,
+	dataValidation(lineStatusSchema),
+	lineController.getAllLines
+);
+router.get(
+	'/getLineById/:id',
+	jwtMiddleware,
+	dataValidation(getByIdSchema),
+	lineController.getLineById
+);
 
 /* ------------- DEVICES ROUTES ------------- */
 
 router.get('/getAllDevices', jwtMiddleware, deviceController.getAllDevices);
-router.get('/getDeviceById/:id', jwtMiddleware, deviceController.getDeviceById);
+router.get(
+	'/getDeviceById/:id',
+	jwtMiddleware,
+	dataValidation(getByIdSchema),
+	deviceController.getDeviceById
+);
 
 /* ------------- MODELS ROUTES ------------- */
 router.get('/getAllModels', jwtMiddleware, modelController.getAllModels);
@@ -79,21 +95,22 @@ router.get(
 router.post(
 	'/createNewUser',
 	jwtMiddleware,
+	dataValidation(newUserCreationSchema),
 	adminMiddleware,
 	adminController.createNewUser
 );
 router.patch(
 	'/modifyUser',
 	jwtMiddleware,
-	adminMiddleware,
 	dataValidation(userModificationSchema),
+	adminMiddleware,
 	adminController.modifyUser
 );
 router.delete(
 	'/deleteUser',
 	jwtMiddleware,
+	dataValidation(updateByIdSchema),
 	adminMiddleware,
-	dataValidation(selectionSchema),
 	adminController.deleteUser
 );
 router.post(
@@ -111,6 +128,7 @@ router.patch(
 router.delete(
 	'/deleteModel',
 	jwtMiddleware,
+	dataValidation(updateByIdSchema),
 	adminMiddleware,
 	adminController.deleteModel
 );
