@@ -14,6 +14,7 @@ export interface AgentType
 	email: string;
 	firstName: string;
 	lastName: string;
+	service?: ServiceType;
 }
 
 export interface DeviceType
@@ -28,6 +29,7 @@ export interface DeviceType
 	status: string;
 	isNew: boolean;
 	comments: string | null;
+	agent?: AgentType;
 }
 
 export interface LineType

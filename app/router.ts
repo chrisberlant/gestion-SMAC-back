@@ -19,6 +19,7 @@ import deviceController from './controllers/deviceController';
 import serviceController from './controllers/serviceController';
 import modelController from './controllers/modelController';
 import lineStatusSchema from './validationSchemas/lineSchemas';
+import statsController from './controllers/statsController';
 
 const router = Router();
 
@@ -84,6 +85,18 @@ router.get('/getAllModels', jwtMiddleware, modelController.getAllModels);
 
 /* ------------- SERVICES ROUTES ------------- */
 router.get('/getAllServices', jwtMiddleware, serviceController.getAllServices);
+
+/* ------------- STATS ROUTES ------------- */
+router.get(
+	'/getAgentsAndDevicesPerService',
+	jwtMiddleware,
+	statsController.getAgentsAndDevicesPerService
+);
+router.get(
+	'/getDevicesAmountPerModel',
+	jwtMiddleware,
+	statsController.getDevicesAmountPerModel
+);
 
 /* ------------- ADMIN ROUTES ------------- */
 router.get(

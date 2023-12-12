@@ -9,6 +9,7 @@ const modelController = {
 				order: [
 					['brand', 'ASC'],
 					['reference', 'ASC'],
+					['storage', 'ASC'],
 				],
 			});
 
