@@ -31,7 +31,7 @@ router.post(
 	authController.login
 );
 router.get('/logout', authController.logout);
-// ! Route used to create the first user
+// ! Route used to create a user
 // router.post(
 // 	'/register',
 // 	dataValidation(newUserCreationSchema),

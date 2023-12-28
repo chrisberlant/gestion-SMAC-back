@@ -3,12 +3,22 @@
 		"node": true,
 		"es2020": true
 	},
+	"settings": {
+		"import/resolver": {
+			"node": {
+				"paths": ["src"],
+				"extensions": [".js", ".ts", ".d.ts"]
+			}
+		}
+	},
 	"extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
 	"parserOptions": {
 		"ecmaVersion": "latest",
 		"sourceType": "module"
 	},
+	"plugins": ["import"],
 	"rules": {
-		"@typescript-eslint/no-unused-vars": "warn"
+		"@typescript-eslint/no-unused-vars": "warn",
+		"import/no-unresolved": "error"
 	}
 }

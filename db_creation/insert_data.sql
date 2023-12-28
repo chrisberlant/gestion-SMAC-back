@@ -1,10 +1,9 @@
 BEGIN;
 
 INSERT INTO "public"."user" ("id", "last_name", "first_name", "email", "password", "is_admin") VALUES
-(1, 'Fatah', 'Adrien', 'adrien.fatah@developpement-durable.gouv.fr', '$2b$10$NnmL.2mcKchpFMhrUWZJIOkBAZPn.cn/YGCoABvzY0chEGLcw7SG6', 't'),
-(2, 'Face', 'Maïté', 'maite.face@developpement-durable.gouv.fr', '$2b$10$/WS5ty0w9.S7QDvhtqosyuj42C27X8nHro3acLCMCja8wAPEXelXC', 'f');
+(1, 'Admin', 'Super', 'super.admin@gmail.com', '$2a$10$Fk6Nl6in0E9cO6XrmTDeseOJ3mbLuULupvOp10lPmBhtnu.93alwS', 't')
 
-INSERT INTO "public"."service" ("id", "title") VALUES 
+INSERT INTO "public"."service" ("id", "title") VALUES
 (1, 'SG'), (2, 'OH'), (3, 'DAF'), (4, 'DNUM');
 
 INSERT INTO "public"."agent" ("id", "last_name", "first_name", "email", "service_id") VALUES
