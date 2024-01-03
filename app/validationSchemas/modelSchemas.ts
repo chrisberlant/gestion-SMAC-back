@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { updateByIdSchema } from '.';
+import selectionSchema from '.';
 
 export const modelCreationSchema = z.strictObject({
 	brand: z
@@ -22,7 +22,7 @@ export const modelCreationSchema = z.strictObject({
 		.optional(),
 });
 
-export const modelModificationSchema = updateByIdSchema
+export const modelModificationSchema = selectionSchema
 	.extend({
 		brand: z.string({
 			invalid_type_error: 'La marque doit être une chaîne de caractères',

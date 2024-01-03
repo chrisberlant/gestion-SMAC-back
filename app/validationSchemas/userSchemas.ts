@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { updateByIdSchema } from '.';
+import selectionSchema from '.';
 
 export const userLoginSchema = z.strictObject({
 	email: z
@@ -102,7 +102,7 @@ export const newUserCreationSchema = z.strictObject({
 	}),
 });
 
-export const userModificationSchema = updateByIdSchema
+export const userModificationSchema = selectionSchema
 	.extend({
 		email: z
 			.string()

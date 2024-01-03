@@ -56,10 +56,7 @@ const authController = {
 	async register(req: Request, res: Response) {
 		try {
 			const userToRegister = req.body;
-			const { email, password, isAdmin } = userToRegister;
-
-			let parsedIsAdmin = 'false';
-			if (isAdmin) parsedIsAdmin = 'true';
+			const { email, password } = userToRegister;
 
 			const alreadyExistingUser = await User.findOne({
 				where: { email },
@@ -73,7 +70,6 @@ const authController = {
 			const user = await User.create({
 				...userToRegister,
 				password: hashedPassword,
-				isAdmin: parsedIsAdmin,
 			});
 			if (!user) throw new Error("Impossible de créer l'utilisateur");
 
@@ -84,9 +80,13 @@ const authController = {
 		}
 	},
 
-	async logout(req: UserRequest, res: Response) {
+	async logout(_: UserRequest, res: Response) {
 		res.clearCookie('smac_token');
 		res.status(200).json('Déconnexion effectuée');
+	},
+
+	async healthCheck(_: Request | UserRequest, res: Response) {
+		res.status(200).json('Serveur en ligne');
 	},
 };
 

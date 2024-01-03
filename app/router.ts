@@ -13,7 +13,7 @@ import {
 	newUserCreationSchema,
 } from './validationSchemas/userSchemas';
 import adminMiddleware from './middlewares/adminMiddleware';
-import { getByIdSchema, updateByIdSchema } from './validationSchemas';
+import selectionSchema from './validationSchemas';
 import authController from './controllers/authController';
 import deviceController from './controllers/deviceController';
 import serviceController from './controllers/serviceController';
@@ -37,9 +37,9 @@ router.get('/logout', authController.logout);
 // 	dataValidation(newUserCreationSchema),
 // 	authController.register
 // );
-router.get('/healthCheck', (_, res) => {
-	res.status(200).json('Serveur en ligne');
-});
+
+// Route used to check if server is online
+router.get('/healthCheck', authController.healthCheck);
 
 /* ------------- USER ROUTES ------------- */
 router.get('/getCurrentUser', jwtMiddleware, userController.getCurrentUser);
@@ -66,7 +66,7 @@ router.get(
 router.get(
 	'/getLineById/:id',
 	jwtMiddleware,
-	dataValidation(getByIdSchema),
+	dataValidation(selectionSchema),
 	lineController.getLineById
 );
 
@@ -76,7 +76,7 @@ router.get('/getAllDevices', jwtMiddleware, deviceController.getAllDevices);
 router.get(
 	'/getDeviceById/:id',
 	jwtMiddleware,
-	dataValidation(getByIdSchema),
+	dataValidation(selectionSchema),
 	deviceController.getDeviceById
 );
 
@@ -122,7 +122,7 @@ router.patch(
 router.delete(
 	'/deleteUser',
 	jwtMiddleware,
-	dataValidation(updateByIdSchema),
+	dataValidation(selectionSchema),
 	adminMiddleware,
 	adminController.deleteUser
 );
@@ -141,7 +141,7 @@ router.patch(
 router.delete(
 	'/deleteModel',
 	jwtMiddleware,
-	dataValidation(updateByIdSchema),
+	dataValidation(selectionSchema),
 	adminMiddleware,
 	adminController.deleteModel
 );

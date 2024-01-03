@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { updateByIdSchema } from '.';
+import selectionSchema from '.';
 
 export const deviceCreationSchema = z.strictObject({
 	imei: z
@@ -27,7 +27,7 @@ export const deviceCreationSchema = z.strictObject({
 		.optional(),
 });
 
-export const deviceModificationSchema = updateByIdSchema
+export const deviceModificationSchema = selectionSchema
 	.extend({
 		imei: z
 			.string({
