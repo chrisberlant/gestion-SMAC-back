@@ -11,6 +11,7 @@ import {
 	currentUserPasswordModificationSchema,
 	userModificationSchema,
 	newUserCreationSchema,
+	userDeletionSchema,
 } from './validationSchemas/userSchemas';
 import adminMiddleware from './middlewares/adminMiddleware';
 import selectionSchema from './validationSchemas';
@@ -122,7 +123,7 @@ router.patch(
 router.delete(
 	'/deleteUser',
 	jwtMiddleware,
-	dataValidation(selectionSchema),
+	dataValidation(userDeletionSchema),
 	adminMiddleware,
 	adminController.deleteUser
 );

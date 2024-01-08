@@ -4,9 +4,10 @@ import { Model, User } from '../models';
 import generateRandomPassword from '../utils/passwordGeneration';
 import bcrypt from 'bcrypt';
 import { UserType } from '../@types/models';
+import { Op } from 'sequelize';
 
 const adminController = {
-	async getAllUsers(req: UserRequest, res: Response) {
+	async getAllUsers(_: UserRequest, res: Response) {
 		try {
 			const users = await User.findAll({
 				attributes: { exclude: ['password'] },
@@ -63,8 +64,6 @@ const adminController = {
 			const user = await User.findByPk(id);
 			if (!user)
 				return res.status(404).json("L'utilisateur n'existe pas");
-
-			// const isAdminBoolean = isAdmin === true || isAdmin === 'true';
 
 			await user.update(infosToModify);
 

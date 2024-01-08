@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import selectionSchema from '.';
 
 export const userLoginSchema = z.strictObject({
 	email: z
@@ -102,8 +101,19 @@ export const newUserCreationSchema = z.strictObject({
 	}),
 });
 
-export const userModificationSchema = selectionSchema
-	.extend({
+export const userModificationSchema = z
+	.strictObject({
+		id: z
+			.number({
+				required_error: "L'id doit être renseigné",
+				invalid_type_error: "L'id doit être un nombre",
+			})
+			.int("L'id doit être un nombre entier")
+			.positive("L'id fourni est incorrect")
+			.refine(
+				(data) => data !== 1,
+				"Vous n'avez pas les droits pour modifier cet utilisateur"
+			),
 		email: z
 			.string()
 			.min(1, "L'adresse mail ne peut pas être vide")
@@ -126,3 +136,17 @@ export const userModificationSchema = selectionSchema
 		}),
 	})
 	.partial();
+
+export const userDeletionSchema = z.strictObject({
+	id: z
+		.number({
+			required_error: "L'id doit être renseigné",
+			invalid_type_error: "L'id doit être un nombre",
+		})
+		.int("L'id doit être un nombre entier")
+		.positive("L'id fourni est incorrect")
+		.refine(
+			(data) => data !== 1,
+			"Vous n'avez pas les droits pour modifier cet utilisateur"
+		),
+});
