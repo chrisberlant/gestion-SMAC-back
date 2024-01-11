@@ -21,6 +21,8 @@ import serviceController from './controllers/serviceController';
 import modelController from './controllers/modelController';
 import lineStatusSchema from './validationSchemas/lineSchemas';
 import statsController from './controllers/statsController';
+import { modelCreationSchema } from './validationSchemas/modelSchemas';
+import { serviceCreationSchema } from './validationSchemas/serviceSchemas';
 
 const router = Router();
 
@@ -130,6 +132,7 @@ router.delete(
 router.post(
 	'/createNewModel',
 	jwtMiddleware,
+	dataValidation(modelCreationSchema),
 	adminMiddleware,
 	adminController.createNewModel
 );
@@ -145,6 +148,12 @@ router.delete(
 	dataValidation(selectionSchema),
 	adminMiddleware,
 	adminController.deleteModel
+);
+router.post(
+	'/createNewService',
+	jwtMiddleware,
+	dataValidation(serviceCreationSchema),
+	adminController.createNewService
 );
 router.patch('/updateService', jwtMiddleware, adminController.updateService);
 router.delete('/deleteService', jwtMiddleware, adminController.deleteService);

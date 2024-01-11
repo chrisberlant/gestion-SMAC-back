@@ -172,6 +172,29 @@ const adminController = {
 		}
 	},
 
+	async createNewService(req: UserRequest, res: Response) {
+		try {
+			const { title } = req.body;
+
+			const existingService = await Service.findOne({
+				where: {
+					title,
+				},
+			});
+			if (existingService)
+				return res.status(401).json('Le service existe déjà');
+
+			const newService = await Service.create({ title });
+
+			if (!newService) throw new Error('Impossible de créer le modèle');
+
+			res.status(201).json(newService);
+		} catch (error) {
+			console.error(error);
+			res.status(500).json(error);
+		}
+	},
+
 	async updateService(req: UserRequest, res: Response) {
 		try {
 			const { id, title } = req.body;
