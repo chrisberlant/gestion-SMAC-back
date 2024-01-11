@@ -1,10 +1,9 @@
 import { Response } from 'express';
 import { UserRequest } from '../middlewares/jwtMidleware';
-import { Model, User } from '../models';
+import { Model, Service, User } from '../models';
 import generateRandomPassword from '../utils/passwordGeneration';
 import bcrypt from 'bcrypt';
 import { UserType } from '../@types/models';
-import { Op } from 'sequelize';
 
 const adminController = {
 	async getAllUsers(_: UserRequest, res: Response) {
@@ -151,6 +150,40 @@ const adminController = {
 			if (!model) return res.status(404).json("Le modèle n'existe pas");
 
 			await model.destroy();
+
+			res.status(200).json(id);
+		} catch (error) {
+			console.error(error);
+			res.status(500).json(error);
+		}
+	},
+
+	async modifyService(req: UserRequest, res: Response) {
+		try {
+			const { id, title } = req.body;
+
+			const service = await Service.findByPk(id);
+			if (!service)
+				return res.status(404).json("Le service n'existe pas");
+
+			const serviceIsModified = await service.update({ title });
+
+			res.status(200).json(serviceIsModified);
+		} catch (error) {
+			console.error(error);
+			res.status(500).json('Erreur serveur');
+		}
+	},
+
+	async deleteService(req: UserRequest, res: Response) {
+		try {
+			const { id } = req.body;
+
+			const service = await Service.findByPk(id);
+			if (!service)
+				return res.status(404).json("Le service n'existe pas");
+
+			await service.destroy();
 
 			res.status(200).json(id);
 		} catch (error) {

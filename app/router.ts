@@ -146,5 +146,7 @@ router.delete(
 	adminMiddleware,
 	adminController.deleteModel
 );
+router.patch('/modifyService', jwtMiddleware, adminController.modifyService);
+router.delete('/deleteService', jwtMiddleware, adminController.deleteService);
 
 export default router;

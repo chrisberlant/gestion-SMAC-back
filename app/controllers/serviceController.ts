@@ -3,7 +3,7 @@ import { Service } from '../models';
 import { Response } from 'express';
 
 const serviceController = {
-	async getAllServices(req: UserRequest, res: Response) {
+	async getAllServices(_: UserRequest, res: Response) {
 		try {
 			const services = await Service.findAll({
 				order: [['title', 'ASC']],
