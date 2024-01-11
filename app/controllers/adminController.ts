@@ -56,15 +56,15 @@ const adminController = {
 		}
 	},
 
-	async modifyUser(req: UserRequest, res: Response) {
+	async updateUser(req: UserRequest, res: Response) {
 		try {
-			const { id, ...infosToModify } = req.body;
+			const { id, ...infosToUpdate } = req.body;
 
 			const user = await User.findByPk(id);
 			if (!user)
 				return res.status(404).json("L'utilisateur n'existe pas");
 
-			await user.update(infosToModify);
+			await user.update(infosToUpdate);
 
 			const { firstName, lastName, email, isAdmin } = user;
 
@@ -126,7 +126,7 @@ const adminController = {
 		}
 	},
 
-	async modifyModel(req: UserRequest, res: Response) {
+	async updateModel(req: UserRequest, res: Response) {
 		try {
 			const { id, ...newInfos } = req.body;
 
@@ -158,7 +158,7 @@ const adminController = {
 		}
 	},
 
-	async modifyService(req: UserRequest, res: Response) {
+	async updateService(req: UserRequest, res: Response) {
 		try {
 			const { id, title } = req.body;
 

@@ -27,10 +27,10 @@ const userController = {
 		}
 	},
 
-	async modifyCurrentUser(req: UserRequest, res: Response) {
+	async updateCurrentUser(req: UserRequest, res: Response) {
 		try {
 			const userId = req.user!.id;
-			const infosToModify = req.body;
+			const infosToUpdate = req.body;
 
 			const user = await User.findByPk(userId);
 			if (!user)
@@ -39,7 +39,7 @@ const userController = {
 					.status(404)
 					.json("L'utilisateur n'existe pas");
 
-			await user.update(infosToModify);
+			await user.update(infosToUpdate);
 
 			const { firstName, lastName, email } = user;
 			const newUserInfos = {
@@ -55,7 +55,7 @@ const userController = {
 		}
 	},
 
-	async modifyCurrentUserPassword(req: UserRequest, res: Response) {
+	async updateCurrentUserPassword(req: UserRequest, res: Response) {
 		try {
 			const userId = req.user!.id;
 			const { oldPassword, newPassword } = req.body;

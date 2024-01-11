@@ -45,16 +45,16 @@ router.get('/healthCheck', authController.healthCheck);
 /* ------------- USER ROUTES ------------- */
 router.get('/getCurrentUser', jwtMiddleware, userController.getCurrentUser);
 router.patch(
-	'/modifyCurrentUser',
+	'/updateCurrentUser',
 	jwtMiddleware,
 	dataValidation(currentUserModificationSchema),
-	userController.modifyCurrentUser
+	userController.updateCurrentUser
 );
 router.patch(
-	'/modifyCurrentUserPassword',
+	'/updateCurrentUserPassword',
 	jwtMiddleware,
 	dataValidation(currentUserPasswordModificationSchema),
-	userController.modifyCurrentUserPassword
+	userController.updateCurrentUserPassword
 );
 
 /* ------------- LINES ROUTES ------------- */
@@ -114,11 +114,11 @@ router.post(
 	adminController.createNewUser
 );
 router.patch(
-	'/modifyUser',
+	'/updateUser',
 	jwtMiddleware,
 	dataValidation(userModificationSchema),
 	adminMiddleware,
-	adminController.modifyUser
+	adminController.updateUser
 );
 router.delete(
 	'/deleteUser',
@@ -134,10 +134,10 @@ router.post(
 	adminController.createNewModel
 );
 router.patch(
-	'/modifyModel',
+	'/updateModel',
 	jwtMiddleware,
 	adminMiddleware,
-	adminController.modifyModel
+	adminController.updateModel
 );
 router.delete(
 	'/deleteModel',
@@ -146,7 +146,7 @@ router.delete(
 	adminMiddleware,
 	adminController.deleteModel
 );
-router.patch('/modifyService', jwtMiddleware, adminController.modifyService);
+router.patch('/updateService', jwtMiddleware, adminController.updateService);
 router.delete('/deleteService', jwtMiddleware, adminController.deleteService);
 
 export default router;
