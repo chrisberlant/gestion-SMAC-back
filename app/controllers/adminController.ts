@@ -58,7 +58,15 @@ const adminController = {
 
 	async updateUser(req: UserRequest, res: Response) {
 		try {
+			const userId = req.user!.id;
 			const { id, ...infosToUpdate } = req.body;
+
+			if (id === userId)
+				return res
+					.status(400)
+					.json(
+						'Vous ne pouvez pas mettre à jour votre propre compte via cette requête'
+					);
 
 			const user = await User.findByPk(id);
 			if (!user)
@@ -85,7 +93,13 @@ const adminController = {
 
 	async deleteUser(req: UserRequest, res: Response) {
 		try {
+			const userId = req.user!.id;
 			const { id } = req.body;
+
+			if (id === userId)
+				return res
+					.status(400)
+					.json('Vous ne pouvez pas supprimer votre propre compte');
 
 			const userToDelete = await User.findByPk(id);
 			if (!userToDelete)
