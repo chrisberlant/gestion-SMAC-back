@@ -10,7 +10,7 @@ export const serviceCreationSchema = z.strictObject({
 		.min(1, 'Le titre ne peut pas être vide'),
 });
 
-export const serviceModificationSchema = selectionSchema
+export const serviceUpdateSchema = selectionSchema
 	.extend({
 		title: z
 			.string({

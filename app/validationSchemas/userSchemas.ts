@@ -20,7 +20,7 @@ export const userLoginSchema = z.strictObject({
 		),
 });
 
-export const currentUserModificationSchema = z
+export const currentUserUpdateSchema = z
 	.strictObject({
 		email: z
 			.string()
@@ -41,7 +41,7 @@ export const currentUserModificationSchema = z
 	})
 	.partial();
 
-export const currentUserPasswordModificationSchema = z
+export const currentUserPasswordUpdateSchema = z
 	.strictObject({
 		oldPassword: z
 			.string({
@@ -101,7 +101,7 @@ export const newUserCreationSchema = z.strictObject({
 	}),
 });
 
-export const userModificationSchema = z
+export const userUpdateSchema = z
 	.strictObject({
 		id: z
 			.number({

@@ -27,7 +27,7 @@ export const deviceCreationSchema = z.strictObject({
 		.optional(),
 });
 
-export const deviceModificationSchema = selectionSchema
+export const deviceUpdateSchema = selectionSchema
 	.extend({
 		imei: z
 			.string({

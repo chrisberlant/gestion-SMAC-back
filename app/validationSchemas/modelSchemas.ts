@@ -22,7 +22,7 @@ export const modelCreationSchema = z.strictObject({
 		.optional(),
 });
 
-export const modelModificationSchema = selectionSchema
+export const modelUpdateSchema = selectionSchema
 	.extend({
 		brand: z.string({
 			invalid_type_error: 'La marque doit être une chaîne de caractères',

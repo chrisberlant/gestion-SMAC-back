@@ -7,9 +7,9 @@ import adminController from './controllers/adminController';
 import dataValidation from './middlewares/dataValidationMiddleware';
 import {
 	userLoginSchema,
-	currentUserModificationSchema,
-	currentUserPasswordModificationSchema,
-	userModificationSchema,
+	currentUserUpdateSchema,
+	currentUserPasswordUpdateSchema,
+	userUpdateSchema,
 	newUserCreationSchema,
 	userDeletionSchema,
 } from './validationSchemas/userSchemas';
@@ -49,13 +49,13 @@ router.get('/getCurrentUser', jwtMiddleware, userController.getCurrentUser);
 router.patch(
 	'/updateCurrentUser',
 	jwtMiddleware,
-	dataValidation(currentUserModificationSchema),
+	dataValidation(currentUserUpdateSchema),
 	userController.updateCurrentUser
 );
 router.patch(
 	'/updateCurrentUserPassword',
 	jwtMiddleware,
-	dataValidation(currentUserPasswordModificationSchema),
+	dataValidation(currentUserPasswordUpdateSchema),
 	userController.updateCurrentUserPassword
 );
 
@@ -118,7 +118,7 @@ router.post(
 router.patch(
 	'/updateUser',
 	jwtMiddleware,
-	dataValidation(userModificationSchema),
+	dataValidation(userUpdateSchema),
 	adminMiddleware,
 	adminController.updateUser
 );
