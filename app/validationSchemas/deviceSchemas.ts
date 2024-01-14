@@ -7,6 +7,7 @@ export const deviceCreationSchema = z.strictObject({
 			required_error: "L'IMEI doit être renseigné",
 			invalid_type_error: "L'IMEI doit être une chaîne de caractères",
 		})
+		.trim()
 		.length(15, "L'IMEI fourni est incorrect"),
 	preparationDate: z.date().optional(),
 	attributionDate: z.date().optional(),
@@ -32,6 +33,7 @@ export const deviceUpdateSchema = selectionSchema.extend({
 		.string({
 			invalid_type_error: "L'IMEI doit être une chaîne de caractères",
 		})
+		.trim()
 		.length(15, "L'IMEI fourni est incorrect")
 		.optional(),
 	preparationDate: z.date().optional(),

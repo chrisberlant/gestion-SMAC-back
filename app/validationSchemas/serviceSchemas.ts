@@ -7,7 +7,8 @@ export const serviceCreationSchema = z.strictObject({
 			required_error: 'Le titre doit être renseigné',
 			invalid_type_error: 'Le titre doit être une chaîne de caractères',
 		})
-		.min(1, 'Le titre ne peut pas être vide'),
+		.trim()
+		.min(1, 'Le titre doit être renseigné'),
 });
 
 export const serviceUpdateSchema = selectionSchema.extend({
@@ -16,5 +17,6 @@ export const serviceUpdateSchema = selectionSchema.extend({
 			required_error: 'Le titre doit être renseigné',
 			invalid_type_error: 'Le titre doit être une chaîne de caractères',
 		})
-		.min(1, 'Le titre ne peut pas être vide'),
+		.trim()
+		.min(1, 'Le titre doit être renseigné'),
 });
