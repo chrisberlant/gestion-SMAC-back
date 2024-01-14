@@ -4,6 +4,7 @@ import { Model, Service, User } from '../models';
 import generateRandomPassword from '../utils/passwordGeneration';
 import bcrypt from 'bcrypt';
 import { UserType } from '../@types/models';
+import { Op } from 'sequelize';
 
 const adminController = {
 	async getAllUsers(_: UserRequest, res: Response) {
@@ -36,7 +37,9 @@ const adminController = {
 
 			const existingUserCheck = await User.findOne({
 				where: {
-					email: infos.email,
+					email: {
+						[Op.iLike]: infos.email,
+					},
 				},
 			});
 			if (existingUserCheck)
@@ -121,9 +124,15 @@ const adminController = {
 
 			const existingModel = await Model.findOne({
 				where: {
-					reference,
-					brand,
-					storage,
+					brand: {
+						[Op.iLike]: brand,
+					},
+					reference: {
+						[Op.iLike]: reference,
+					},
+					storage: {
+						[Op.iLike]: storage,
+					},
 				},
 			});
 			if (existingModel)
@@ -178,7 +187,9 @@ const adminController = {
 
 			const existingService = await Service.findOne({
 				where: {
-					title,
+					title: {
+						[Op.iLike]: title,
+					},
 				},
 			});
 			if (existingService)

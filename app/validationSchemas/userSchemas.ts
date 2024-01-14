@@ -26,7 +26,7 @@ export const currentUserUpdateSchema = z
 		email: z
 			.string()
 			.trim()
-			.min(1, "L'adresse mail ne peut pas être vide")
+			.min(1, "L'adresse mail doit être renseignée")
 			.email("Le format de l'adresse mail est incorrect"),
 		lastName: z
 			.string({
@@ -34,14 +34,14 @@ export const currentUserUpdateSchema = z
 					'Le nom de famille doit être une chaîne de caractères',
 			})
 			.trim()
-			.min(1, 'Le nom de famille ne peut pas être vide'),
+			.min(1, 'Le nom de famille doit être renseigné'),
 		firstName: z
 			.string({
 				invalid_type_error:
 					'Le prénom doit être une chaîne de caractères',
 			})
 			.trim()
-			.min(1, 'Le prénom ne peut pas être vide'),
+			.min(1, 'Le prénom doit être renseigné'),
 	})
 	.partial();
 

@@ -112,7 +112,7 @@ router.get(
 	adminController.getAllUsers
 );
 router.post(
-	'/createNewUser',
+	'/createUser',
 	jwtMiddleware,
 	dataValidation(newUserCreationSchema),
 	adminMiddleware,
@@ -133,7 +133,7 @@ router.delete(
 	adminController.deleteUser
 );
 router.post(
-	'/createNewModel',
+	'/createModel',
 	jwtMiddleware,
 	dataValidation(modelCreationSchema),
 	adminMiddleware,
@@ -153,7 +153,7 @@ router.delete(
 	adminController.deleteModel
 );
 router.post(
-	'/createNewService',
+	'/createService',
 	jwtMiddleware,
 	dataValidation(serviceCreationSchema),
 	adminController.createNewService
