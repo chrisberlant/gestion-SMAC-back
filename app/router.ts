@@ -22,7 +22,10 @@ import modelController from './controllers/modelController';
 import lineStatusSchema from './validationSchemas/lineSchemas';
 import statsController from './controllers/statsController';
 import { modelCreationSchema } from './validationSchemas/modelSchemas';
-import { serviceCreationSchema } from './validationSchemas/serviceSchemas';
+import {
+	serviceCreationSchema,
+	serviceUpdateSchema,
+} from './validationSchemas/serviceSchemas';
 
 const router = Router();
 
@@ -155,7 +158,17 @@ router.post(
 	dataValidation(serviceCreationSchema),
 	adminController.createNewService
 );
-router.patch('/updateService', jwtMiddleware, adminController.updateService);
-router.delete('/deleteService', jwtMiddleware, adminController.deleteService);
+router.patch(
+	'/updateService',
+	jwtMiddleware,
+	dataValidation(serviceUpdateSchema),
+	adminController.updateService
+);
+router.delete(
+	'/deleteService',
+	jwtMiddleware,
+	dataValidation(selectionSchema),
+	adminController.deleteService
+);
 
 export default router;

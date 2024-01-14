@@ -101,41 +101,42 @@ export const newUserCreationSchema = z.strictObject({
 	}),
 });
 
-export const userUpdateSchema = z
-	.strictObject({
-		id: z
-			.number({
-				required_error: "L'id doit être renseigné",
-				invalid_type_error: "L'id doit être un nombre",
-			})
-			.int("L'id doit être un nombre entier")
-			.positive("L'id fourni est incorrect")
-			.refine(
-				(data) => data !== 1,
-				"Vous n'avez pas les droits pour modifier cet utilisateur"
-			),
-		email: z
-			.string()
-			.min(1, "L'adresse mail ne peut pas être vide")
-			.email("Le format de l'adresse mail est incorrect"),
-		lastName: z
-			.string({
-				invalid_type_error:
-					'Le prénom doit être une chaîne de caractères',
-			})
-			.min(1, 'Le nom de famille ne peut pas être vide'),
-		firstName: z
-			.string({
-				invalid_type_error:
-					'Le prénom doit être une chaîne de caractères',
-			})
-			.min(1, 'Le prénom ne peut pas être vide'),
-		isAdmin: z.boolean({
+export const userUpdateSchema = z.strictObject({
+	id: z
+		.number({
+			required_error: "L'id doit être renseigné",
+			invalid_type_error: "L'id doit être un nombre",
+		})
+		.int("L'id doit être un nombre entier")
+		.positive("L'id fourni est incorrect")
+		.refine(
+			(data) => data !== 1,
+			"Vous n'avez pas les droits pour modifier cet utilisateur"
+		),
+	email: z
+		.string()
+		.min(1, "L'adresse mail ne peut pas être vide")
+		.email("Le format de l'adresse mail est incorrect")
+		.optional(),
+	lastName: z
+		.string({
+			invalid_type_error: 'Le prénom doit être une chaîne de caractères',
+		})
+		.min(1, 'Le nom de famille ne peut pas être vide')
+		.optional(),
+	firstName: z
+		.string({
+			invalid_type_error: 'Le prénom doit être une chaîne de caractères',
+		})
+		.min(1, 'Le prénom ne peut pas être vide')
+		.optional(),
+	isAdmin: z
+		.boolean({
 			invalid_type_error:
 				'La valeur isAdmin doit être un booléen true ou false',
-		}),
-	})
-	.partial();
+		})
+		.optional(),
+});
 
 export const userDeletionSchema = z.strictObject({
 	id: z
@@ -147,6 +148,6 @@ export const userDeletionSchema = z.strictObject({
 		.positive("L'id fourni est incorrect")
 		.refine(
 			(data) => data !== 1,
-			"Vous n'avez pas les droits pour modifier cet utilisateur"
+			"Vous n'avez pas les droits pour supprimer cet utilisateur"
 		),
 });
