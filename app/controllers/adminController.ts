@@ -24,7 +24,7 @@ const adminController = {
 		}
 	},
 
-	async createNewUser(req: UserRequest, res: Response) {
+	async createUser(req: UserRequest, res: Response) {
 		try {
 			const infos: UserType = req.body;
 
@@ -117,7 +117,7 @@ const adminController = {
 		}
 	},
 
-	async createNewModel(req: UserRequest, res: Response) {
+	async createModel(req: UserRequest, res: Response) {
 		try {
 			const infos = req.body;
 			const { brand, reference, storage } = infos;
@@ -181,7 +181,7 @@ const adminController = {
 		}
 	},
 
-	async createNewService(req: UserRequest, res: Response) {
+	async createService(req: UserRequest, res: Response) {
 		try {
 			const { title } = req.body;
 

@@ -14,6 +14,9 @@ sequelize.addHook('beforeValidate', (instance) => {
 	for (const key in instance.dataValues) {
 		if (typeof instance.dataValues[key] === 'string') {
 			instance.dataValues[key] = instance.dataValues[key].trim();
+			// Every empty string will be considered as NULL
+			if (instance.dataValues[key] === '')
+				instance.dataValues[key] = null;
 		}
 	}
 });

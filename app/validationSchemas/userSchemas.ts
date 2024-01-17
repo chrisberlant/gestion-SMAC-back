@@ -84,7 +84,7 @@ export const currentUserPasswordUpdateSchema = z
 		'Le nouveau mot de passe et sa confirmation sont différents'
 	);
 
-export const newUserCreationSchema = z.strictObject({
+export const userCreationSchema = z.strictObject({
 	email: z
 		.string({ required_error: "L'adresse mail doit être renseignée" })
 		.trim()

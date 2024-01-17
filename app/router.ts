@@ -10,7 +10,7 @@ import {
 	currentUserUpdateSchema,
 	currentUserPasswordUpdateSchema,
 	userUpdateSchema,
-	newUserCreationSchema,
+	userCreationSchema,
 	userDeletionSchema,
 } from './validationSchemas/userSchemas';
 import adminMiddleware from './middlewares/adminMiddleware';
@@ -21,7 +21,10 @@ import serviceController from './controllers/serviceController';
 import modelController from './controllers/modelController';
 import lineStatusSchema from './validationSchemas/lineSchemas';
 import statsController from './controllers/statsController';
-import { modelCreationSchema } from './validationSchemas/modelSchemas';
+import {
+	modelCreationSchema,
+	modelUpdateSchema,
+} from './validationSchemas/modelSchemas';
 import {
 	serviceCreationSchema,
 	serviceUpdateSchema,
@@ -114,9 +117,9 @@ router.get(
 router.post(
 	'/createUser',
 	jwtMiddleware,
-	dataValidation(newUserCreationSchema),
+	dataValidation(userCreationSchema),
 	adminMiddleware,
-	adminController.createNewUser
+	adminController.createUser
 );
 router.patch(
 	'/updateUser',
@@ -137,11 +140,12 @@ router.post(
 	jwtMiddleware,
 	dataValidation(modelCreationSchema),
 	adminMiddleware,
-	adminController.createNewModel
+	adminController.createModel
 );
 router.patch(
 	'/updateModel',
 	jwtMiddleware,
+	dataValidation(modelUpdateSchema),
 	adminMiddleware,
 	adminController.updateModel
 );
@@ -156,9 +160,9 @@ router.post(
 	'/createService',
 	jwtMiddleware,
 	dataValidation(serviceCreationSchema),
-	adminController.createNewService
+	adminController.createService
 );
-router.patch(
+router.put(
 	'/updateService',
 	jwtMiddleware,
 	dataValidation(serviceUpdateSchema),
