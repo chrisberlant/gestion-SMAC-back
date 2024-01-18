@@ -20,7 +20,7 @@ const adminController = {
 			res.status(200).json(users);
 		} catch (error) {
 			console.error(error);
-			res.status(500).json(error);
+			res.status(500).json('Erreur serveur');
 		}
 	},
 
@@ -55,7 +55,7 @@ const adminController = {
 			res.status(201).json({ user, generatedPassword });
 		} catch (error) {
 			console.error(error);
-			res.status(500).json(error);
+			res.status(500).json('Erreur serveur');
 		}
 	},
 
@@ -90,7 +90,7 @@ const adminController = {
 			res.status(200).json(newUserInfos);
 		} catch (error) {
 			console.error(error);
-			res.status(500).json(error);
+			res.status(500).json('Erreur serveur');
 		}
 	},
 
@@ -113,7 +113,7 @@ const adminController = {
 			res.status(200).json(id);
 		} catch (error) {
 			console.error(error);
-			res.status(500).json(error);
+			res.status(500).json('Erreur serveur');
 		}
 	},
 
@@ -145,7 +145,7 @@ const adminController = {
 			res.status(201).json(newModel);
 		} catch (error) {
 			console.error(error);
-			res.status(500).json(error);
+			res.status(500).json('Erreur serveur');
 		}
 	},
 
@@ -161,7 +161,7 @@ const adminController = {
 			res.status(200).json(modelIsModified);
 		} catch (error) {
 			console.error(error);
-			res.status(500).json(error);
+			res.status(500).json('Erreur serveur');
 		}
 	},
 
@@ -177,7 +177,7 @@ const adminController = {
 			res.status(200).json(id);
 		} catch (error) {
 			console.error(error);
-			res.status(500).json(error);
+			res.status(500).json('Erreur serveur');
 		}
 	},
 
@@ -202,7 +202,7 @@ const adminController = {
 			res.status(201).json(newService);
 		} catch (error) {
 			console.error(error);
-			res.status(500).json(error);
+			res.status(500).json('Erreur serveur');
 		}
 	},
 
@@ -236,7 +236,7 @@ const adminController = {
 			res.status(200).json(id);
 		} catch (error) {
 			console.error(error);
-			res.status(500).json(error);
+			res.status(500).json('Erreur serveur');
 		}
 	},
 };
