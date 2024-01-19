@@ -3,7 +3,6 @@ import jwtMiddleware from './middlewares/jwtMidleware';
 import requestsLimitMiddleware from './middlewares/requestsLimitMiddleware';
 import userController from './controllers/userController';
 import lineController from './controllers/lineController';
-import adminController from './controllers/adminController';
 import dataValidation from './middlewares/dataValidationMiddleware';
 import {
 	userLoginSchema,
@@ -39,12 +38,6 @@ router.post(
 	authController.login
 );
 router.get('/logout', authController.logout);
-// ! Route used to create a user
-// router.post(
-// 	'/register',
-// 	dataValidation(newUserCreationSchema),
-// 	authController.register
-// );
 
 // Route used to check if server is online
 router.get('/healthCheck', authController.healthCheck);
@@ -111,74 +104,74 @@ router.get(
 	'/getAllUsers',
 	jwtMiddleware,
 	adminMiddleware,
-	adminController.getAllUsers
+	userController.getAllUsers
 );
 router.post(
 	'/createUser',
 	jwtMiddleware,
 	dataValidation(userCreationSchema),
 	adminMiddleware,
-	adminController.createUser
+	userController.createUser
 );
 router.patch(
 	'/updateUser',
 	jwtMiddleware,
 	dataValidation(userUpdateSchema),
 	adminMiddleware,
-	adminController.updateUser
+	userController.updateUser
 );
 router.delete(
 	'/deleteUser',
 	jwtMiddleware,
 	dataValidation(selectionSchema),
 	adminMiddleware,
-	adminController.deleteUser
+	userController.deleteUser
 );
 router.patch(
 	'/resetPassword',
 	jwtMiddleware,
 	dataValidation(selectionSchema),
 	adminMiddleware,
-	adminController.resetPassword
+	userController.resetPassword
 );
 router.post(
 	'/createModel',
 	jwtMiddleware,
 	dataValidation(modelCreationSchema),
 	adminMiddleware,
-	adminController.createModel
+	modelController.createModel
 );
 router.patch(
 	'/updateModel',
 	jwtMiddleware,
 	dataValidation(modelUpdateSchema),
 	adminMiddleware,
-	adminController.updateModel
+	modelController.updateModel
 );
 router.delete(
 	'/deleteModel',
 	jwtMiddleware,
 	dataValidation(selectionSchema),
 	adminMiddleware,
-	adminController.deleteModel
+	modelController.deleteModel
 );
 router.post(
 	'/createService',
 	jwtMiddleware,
 	dataValidation(serviceCreationSchema),
-	adminController.createService
+	serviceController.createService
 );
 router.put(
 	'/updateService',
 	jwtMiddleware,
 	dataValidation(serviceUpdateSchema),
-	adminController.updateService
+	serviceController.updateService
 );
 router.delete(
 	'/deleteService',
 	jwtMiddleware,
 	dataValidation(selectionSchema),
-	adminController.deleteService
+	serviceController.deleteService
 );
 
 export default router;
