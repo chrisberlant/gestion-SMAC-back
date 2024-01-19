@@ -32,6 +32,8 @@ const dataValidation =
 				return res.status(400).json(result.error.issues[0].message);
 
 			for (const key in req.body) {
+				if (key === 'email')
+					req.body[key] = req.body[key].toLowerCase();
 				// Each value besides the password and booleans will be sanitized from malicious inserts
 				if (key !== 'password' && typeof req.body[key] !== 'boolean')
 					req.body[key] = xss(req.body[key]);

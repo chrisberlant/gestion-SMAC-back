@@ -37,20 +37,21 @@ const adminController = {
 
 			const existingUserCheck = await User.findOne({
 				where: {
-					email: {
-						[Op.iLike]: infos.email,
-					},
+					email: infos.email,
 				},
 			});
 			if (existingUserCheck)
 				return res.status(409).json("L'utilisateur existe déjà");
 
-			const user = await User.create({
+			const userToCreate = await User.create({
 				...infos,
 				password: hashedPassword,
 			});
 
-			if (!user) throw new Error("Impossible de créer l'utilisateur");
+			if (!userToCreate)
+				throw new Error("Impossible de créer l'utilisateur");
+
+			const { password, ...user } = userToCreate;
 
 			res.status(201).json({ user, generatedPassword });
 		} catch (error) {
@@ -69,6 +70,12 @@ const adminController = {
 					.status(400)
 					.json(
 						'Vous ne pouvez pas mettre à jour votre propre compte via cette requête'
+					);
+			if (id === 1)
+				return res
+					.status(403)
+					.json(
+						"Vous n'avez pas les droits pour modifier le compte de cet utilisateur"
 					);
 
 			const user = await User.findByPk(id);
@@ -103,6 +110,12 @@ const adminController = {
 				return res
 					.status(400)
 					.json('Vous ne pouvez pas supprimer votre propre compte');
+			if (id === 1)
+				return res
+					.status(403)
+					.json(
+						"Vous n'avez pas les droits pour supprimer le compte de cet utilisateur"
+					);
 
 			const userToDelete = await User.findByPk(id);
 			if (!userToDelete)
@@ -111,6 +124,49 @@ const adminController = {
 			await userToDelete.destroy();
 
 			res.status(200).json(id);
+		} catch (error) {
+			console.error(error);
+			res.status(500).json('Erreur serveur');
+		}
+	},
+
+	async resetPassword(req: UserRequest, res: Response) {
+		try {
+			const userId = req.user!.id;
+			const { id } = req.body;
+
+			if (id === userId)
+				return res
+					.status(403)
+					.json(
+						'Vous ne pouvez pas réinitialiser votre propre mot de passe'
+					);
+
+			if (id === 1)
+				return res
+					.status(403)
+					.json(
+						"Vous n'avez pas les droits pour réinitialiser le mot de passe de cet utilisateur"
+					);
+
+			const generatedPassword = generateRandomPassword();
+			const saltRounds = parseInt(process.env.SALT_ROUNDS!);
+			const hashedPassword = await bcrypt.hash(
+				generatedPassword,
+				saltRounds
+			);
+
+			const user = await User.findByPk(id);
+			if (!user)
+				return res.status(409).json("L'utilisateur n'existe pas");
+
+			await user.update({
+				password: hashedPassword,
+			});
+			const { email } = user;
+			const fullName = user.firstName + ' ' + user.lastName;
+
+			res.status(201).json({ fullName, email, generatedPassword });
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');

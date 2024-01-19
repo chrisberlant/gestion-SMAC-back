@@ -1,5 +1,6 @@
 import { randomInt } from 'crypto';
 
+// Génération d'un mot de passe aléatoire de 10 caractères correspondant aux critères de sécurité
 const generateRandomPassword = () => {
 	const charset =
 		'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+';

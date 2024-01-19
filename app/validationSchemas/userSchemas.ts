@@ -150,17 +150,3 @@ export const userUpdateSchema = z.strictObject({
 		})
 		.optional(),
 });
-
-export const userDeletionSchema = z.strictObject({
-	id: z
-		.number({
-			required_error: "L'id doit être renseigné",
-			invalid_type_error: "L'id doit être un nombre",
-		})
-		.int("L'id doit être un nombre entier")
-		.positive("L'id fourni est incorrect")
-		.refine(
-			(data) => data !== 1,
-			"Vous n'avez pas les droits pour supprimer cet utilisateur"
-		),
-});
