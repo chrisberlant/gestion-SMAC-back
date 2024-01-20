@@ -3,7 +3,7 @@ import { Response } from 'express';
 import { UserRequest } from '../middlewares/jwtMidleware';
 
 const deviceController = {
-	async getAllDevices(req: UserRequest, res: Response) {
+	async getAllDevices(_: UserRequest, res: Response) {
 		try {
 			const devices = await Device.findAll({
 				include: [

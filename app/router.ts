@@ -17,7 +17,10 @@ import authController from './controllers/authController';
 import deviceController from './controllers/deviceController';
 import serviceController from './controllers/serviceController';
 import modelController from './controllers/modelController';
-import lineStatusSchema from './validationSchemas/lineSchemas';
+import lineStatusSchema, {
+	lineCreationSchema,
+	lineUpdateSchema,
+} from './validationSchemas/lineSchemas';
 import statsController from './controllers/statsController';
 import {
 	modelCreationSchema,
@@ -69,6 +72,24 @@ router.get(
 	jwtMiddleware,
 	dataValidation(selectionSchema),
 	lineController.getLineById
+);
+router.post(
+	'/createLine',
+	jwtMiddleware,
+	dataValidation(lineCreationSchema),
+	lineController.createLine
+);
+router.patch(
+	'/updateLine',
+	jwtMiddleware,
+	dataValidation(lineUpdateSchema),
+	lineController.updateLine
+);
+router.delete(
+	'/deleteLine',
+	jwtMiddleware,
+	dataValidation(selectionSchema),
+	lineController.deleteLine
 );
 
 /* ------------- DEVICES ROUTES ------------- */

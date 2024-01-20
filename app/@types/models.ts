@@ -14,6 +14,7 @@ export interface AgentType
 	email: string;
 	firstName: string;
 	lastName: string;
+	serviceId?: number;
 	service?: ServiceType;
 }
 
@@ -24,12 +25,13 @@ export interface DeviceType
 	> {
 	id: CreationOptional<number>;
 	imei: string;
-	preparationDate: Date | null;
-	attributionDate: Date | null;
+	preparationDate?: Date | null;
+	attributionDate?: Date | null;
 	status: string;
 	isNew: boolean;
-	comments: string | null;
-	agent?: AgentType;
+	comments?: string | null;
+	agentId?: number | null;
+	modelId?: number;
 }
 
 export interface LineType
@@ -41,7 +43,9 @@ export interface LineType
 	number: string;
 	profile: string;
 	status: string;
-	comments: string | null;
+	comments?: string | null;
+	agentId?: number | null;
+	deviceId?: number | null;
 }
 
 export interface ModelType
@@ -52,7 +56,7 @@ export interface ModelType
 	id: CreationOptional<number>;
 	brand: string;
 	reference: string;
-	storage: string | null;
+	storage?: string | null;
 }
 
 export interface ServiceType
