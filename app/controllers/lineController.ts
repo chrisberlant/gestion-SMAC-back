@@ -1,27 +1,13 @@
-import { Line } from '../models';
 import { Response } from 'express';
-import { UserRequest } from '../middlewares/jwtMidleware';
-import { LineType } from '../@types/models';
 import { Op } from 'sequelize';
+import { LineType } from '../@types/models';
+import { UserRequest } from '../middlewares/jwtMidleware';
+import { Line } from '../models';
 
 const lineController = {
-	async getAllLines(req: UserRequest, res: Response) {
+	async getAllLines(_: UserRequest, res: Response) {
 		try {
-			let status = '';
-			switch (req.params.status) {
-				case 'attributed':
-					status = 'Attribuée';
-					break;
-				case 'in-progress':
-					status = 'En cours';
-					break;
-				case 'resiliated':
-					status = 'Résiliée';
-					break;
-			}
-
 			const lines = await Line.findAll({
-				where: { status },
 				include: [
 					{
 						association: 'agent',

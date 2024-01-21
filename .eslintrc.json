@@ -6,7 +6,7 @@
 	"settings": {
 		"import/resolver": {
 			"node": {
-				"paths": ["src"],
+				"paths": ["app"],
 				"extensions": [".js", ".ts", ".d.ts"]
 			}
 		}

@@ -19,8 +19,7 @@ export const lineCreationSchema = z.strictObject({
 			required_error: 'Le numéro doit être renseigné',
 			invalid_type_error: 'Le numéro doit être une chaîne de caractères',
 		})
-		.trim()
-		.min(10, 'Le numéro doit être renseigné'),
+		.min(10, 'Le numéro doit faire minimum 10 caractères'),
 	profile: z.enum(['V', 'D', 'VD'], {
 		errorMap: () => {
 			return {
@@ -40,6 +39,7 @@ export const lineCreationSchema = z.strictObject({
 			invalid_type_error:
 				'Le stockage doit être une chaîne de caractères',
 		})
+		.nullable()
 		.optional(),
 	agentId: z
 		.number({
@@ -47,6 +47,7 @@ export const lineCreationSchema = z.strictObject({
 		})
 		.int("L'id de l'agent doit être un nombre entier")
 		.positive("L'id de l'agent fourni est incorrect")
+		.nullable()
 		.optional(),
 	deviceId: z
 		.number({
@@ -54,6 +55,7 @@ export const lineCreationSchema = z.strictObject({
 		})
 		.int("L'id de l'appareil doit être un nombre entier")
 		.positive("L'id de l'appareil fourni est incorrect")
+		.nullable()
 		.optional(),
 });
 
@@ -90,6 +92,7 @@ export const lineUpdateSchema = selectionSchema.extend({
 			invalid_type_error:
 				'Le stockage doit être une chaîne de caractères',
 		})
+		.nullable()
 		.optional(),
 	agentId: z
 		.number({
@@ -97,6 +100,7 @@ export const lineUpdateSchema = selectionSchema.extend({
 		})
 		.int("L'id de l'agent doit être un nombre entier")
 		.positive("L'id de l'agent fourni est incorrect")
+		.nullable()
 		.optional(),
 	deviceId: z
 		.number({
@@ -104,6 +108,7 @@ export const lineUpdateSchema = selectionSchema.extend({
 		})
 		.int("L'id de l'appareil doit être un nombre entier")
 		.positive("L'id de l'appareil fourni est incorrect")
+		.nullable()
 		.optional(),
 });
 

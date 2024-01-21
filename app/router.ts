@@ -1,27 +1,20 @@
 import { Router } from 'express';
-import jwtMiddleware from './middlewares/jwtMidleware';
-import requestsLimitMiddleware from './middlewares/requestsLimitMiddleware';
-import userController from './controllers/userController';
-import lineController from './controllers/lineController';
-import dataValidation from './middlewares/dataValidationMiddleware';
-import {
-	userLoginSchema,
-	currentUserUpdateSchema,
-	currentUserPasswordUpdateSchema,
-	userUpdateSchema,
-	userCreationSchema,
-} from './validationSchemas/userSchemas';
-import adminMiddleware from './middlewares/adminMiddleware';
-import selectionSchema from './validationSchemas';
 import authController from './controllers/authController';
 import deviceController from './controllers/deviceController';
-import serviceController from './controllers/serviceController';
+import lineController from './controllers/lineController';
 import modelController from './controllers/modelController';
-import lineStatusSchema, {
+import serviceController from './controllers/serviceController';
+import statsController from './controllers/statsController';
+import userController from './controllers/userController';
+import adminMiddleware from './middlewares/adminMiddleware';
+import dataValidation from './middlewares/dataValidationMiddleware';
+import jwtMiddleware from './middlewares/jwtMidleware';
+import requestsLimitMiddleware from './middlewares/requestsLimitMiddleware';
+import selectionSchema from './validationSchemas';
+import {
 	lineCreationSchema,
 	lineUpdateSchema,
 } from './validationSchemas/lineSchemas';
-import statsController from './controllers/statsController';
 import {
 	modelCreationSchema,
 	modelUpdateSchema,
@@ -30,6 +23,13 @@ import {
 	serviceCreationSchema,
 	serviceUpdateSchema,
 } from './validationSchemas/serviceSchemas';
+import {
+	currentUserPasswordUpdateSchema,
+	currentUserUpdateSchema,
+	userCreationSchema,
+	userLoginSchema,
+	userUpdateSchema,
+} from './validationSchemas/userSchemas';
 
 const router = Router();
 
@@ -61,18 +61,8 @@ router.patch(
 );
 
 /* ------------- LINES ROUTES ------------- */
-router.get(
-	'/getAllLines/:status',
-	jwtMiddleware,
-	dataValidation(lineStatusSchema),
-	lineController.getAllLines
-);
-router.get(
-	'/getLineById/:id',
-	jwtMiddleware,
-	dataValidation(selectionSchema),
-	lineController.getLineById
-);
+router.get('/getAllLines/', jwtMiddleware, lineController.getAllLines);
+router.get('/getLineById/:id', jwtMiddleware, lineController.getLineById);
 router.post(
 	'/createLine',
 	jwtMiddleware,
@@ -95,12 +85,7 @@ router.delete(
 /* ------------- DEVICES ROUTES ------------- */
 
 router.get('/getAllDevices', jwtMiddleware, deviceController.getAllDevices);
-router.get(
-	'/getDeviceById/:id',
-	jwtMiddleware,
-	dataValidation(selectionSchema),
-	deviceController.getDeviceById
-);
+router.get('/getDeviceById/:id', jwtMiddleware, deviceController.getDeviceById);
 
 /* ------------- MODELS ROUTES ------------- */
 router.get('/getAllModels', jwtMiddleware, modelController.getAllModels);

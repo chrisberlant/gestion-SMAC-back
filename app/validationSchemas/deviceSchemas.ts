@@ -7,7 +7,6 @@ export const deviceCreationSchema = z.strictObject({
 			required_error: "L'IMEI doit être renseigné",
 			invalid_type_error: "L'IMEI doit être une chaîne de caractères",
 		})
-		.trim()
 		.length(15, "L'IMEI fourni est incorrect"),
 	preparationDate: z.date().optional(),
 	attributionDate: z.date().optional(),
@@ -25,6 +24,15 @@ export const deviceCreationSchema = z.strictObject({
 			invalid_type_error:
 				'Les commentaires doivent être une chaîne de caractères',
 		})
+		.nullable()
+		.optional(),
+	agentId: z
+		.number({
+			invalid_type_error: "L'id de l'agent doit être un nombre",
+		})
+		.int("L'id de l'agent doit être un nombre entier")
+		.positive("L'id de l'agent fourni est incorrect")
+		.nullable()
 		.optional(),
 });
 
@@ -33,11 +41,10 @@ export const deviceUpdateSchema = selectionSchema.extend({
 		.string({
 			invalid_type_error: "L'IMEI doit être une chaîne de caractères",
 		})
-		.trim()
 		.length(15, "L'IMEI fourni est incorrect")
 		.optional(),
-	preparationDate: z.date().optional(),
-	attributionDate: z.date().optional(),
+	preparationDate: z.date().nullable().optional(),
+	attributionDate: z.date().nullable().optional(),
 	status: z
 		.enum([
 			'Attribué',
@@ -54,5 +61,6 @@ export const deviceUpdateSchema = selectionSchema.extend({
 			invalid_type_error:
 				'Les commentaires doivent être une chaîne de caractères',
 		})
+		.nullable()
 		.optional(),
 });
