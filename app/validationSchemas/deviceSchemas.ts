@@ -34,6 +34,13 @@ export const deviceCreationSchema = z.strictObject({
 		.positive("L'id de l'agent fourni est incorrect")
 		.nullable()
 		.optional(),
+	modelId: z
+		.number({
+			invalid_type_error: "L'id du modèle doit être un nombre",
+		})
+		.int("L'id du modèle doit être un nombre entier")
+		.positive("L'id du modèle fourni est incorrect")
+		.optional(),
 });
 
 export const deviceUpdateSchema = selectionSchema.extend({
@@ -62,5 +69,20 @@ export const deviceUpdateSchema = selectionSchema.extend({
 				'Les commentaires doivent être une chaîne de caractères',
 		})
 		.nullable()
+		.optional(),
+	agentId: z
+		.number({
+			invalid_type_error: "L'id de l'agent doit être un nombre",
+		})
+		.int("L'id de l'agent doit être un nombre entier")
+		.positive("L'id de l'agent fourni est incorrect")
+		.nullable()
+		.optional(),
+	modelId: z
+		.number({
+			invalid_type_error: "L'id du modèle doit être un nombre",
+		})
+		.int("L'id du modèle doit être un nombre entier")
+		.positive("L'id du modèle fourni est incorrect")
 		.optional(),
 });

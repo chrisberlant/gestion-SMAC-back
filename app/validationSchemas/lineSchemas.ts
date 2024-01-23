@@ -1,17 +1,5 @@
 import { z } from 'zod';
 import selectionSchema from '.';
-// import selectionSchema from '.';
-
-const lineStatusSchema = z.strictObject({
-	status: z.enum(['attributed', 'in-progress', 'resiliated'], {
-		errorMap: () => {
-			return {
-				message:
-					'Le statut doit être attributed, in-progress ou resiliated',
-			};
-		},
-	}),
-});
 
 export const lineCreationSchema = z.strictObject({
 	number: z
@@ -111,5 +99,3 @@ export const lineUpdateSchema = selectionSchema.extend({
 		.nullable()
 		.optional(),
 });
-
-export default lineStatusSchema;
