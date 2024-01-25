@@ -54,7 +54,7 @@ export const lineUpdateSchema = selectionSchema.extend({
 			invalid_type_error: 'Le numéro doit être une chaîne de caractères',
 		})
 		.trim()
-		.length(10, 'Le numéro doit être renseigné')
+		.length(10, 'Le numéro doit faire 10 caractères')
 		.optional(),
 	profile: z
 		.enum(['V', 'D', 'VD'], {

@@ -8,8 +8,26 @@ export const deviceCreationSchema = z.strictObject({
 			invalid_type_error: "L'IMEI doit être une chaîne de caractères",
 		})
 		.length(15, "L'IMEI fourni est incorrect"),
-	preparationDate: z.date().optional(),
-	attributionDate: z.date().optional(),
+	preparationDate: z
+		.string({
+			invalid_type_error:
+				'Le format de la date de préparation est incorrect',
+		})
+		.datetime({
+			message: 'Le format de la date de préparation est incorrect',
+		})
+		.nullable()
+		.optional(),
+	attributionDate: z
+		.string({
+			invalid_type_error:
+				"Le format de la date d'attribution est incorrect",
+		})
+		.datetime({
+			message: "Le format de la date d'attribution est incorrect",
+		})
+		.nullable()
+		.optional(),
 	status: z.enum(
 		[
 			'Attribué',
@@ -63,8 +81,26 @@ export const deviceUpdateSchema = selectionSchema.extend({
 		})
 		.length(15, "L'IMEI fourni est incorrect")
 		.optional(),
-	preparationDate: z.date().nullable().optional(),
-	attributionDate: z.date().nullable().optional(),
+	preparationDate: z
+		.string({
+			invalid_type_error:
+				'Le format de la date de préparation est incorrect',
+		})
+		.datetime({
+			message: 'Le format de la date de préparation est incorrect',
+		})
+		.nullable()
+		.optional(),
+	attributionDate: z
+		.string({
+			invalid_type_error:
+				"Le format de la date d'attribution est incorrect",
+		})
+		.datetime({
+			message: "Le format de la date d'attribution est incorrect",
+		})
+		.nullable()
+		.optional(),
 	status: z
 		.enum(
 			[
@@ -85,7 +121,11 @@ export const deviceUpdateSchema = selectionSchema.extend({
 			}
 		)
 		.optional(),
-	isNew: z.boolean().optional(),
+	isNew: z
+		.boolean({
+			invalid_type_error: 'La valeur isNew doit être un booléen',
+		})
+		.optional(),
 	comments: z
 		.string({
 			invalid_type_error:

@@ -2,7 +2,10 @@ import { z } from 'zod';
 
 export const agentCreationSchema = z.strictObject({
 	email: z
-		.string({ required_error: "L'adresse mail doit être renseignée" })
+		.string({
+			required_error: "L'adresse mail doit être renseignée",
+			invalid_type_error: "Le format de l'adresse mail est incorrect",
+		})
 		.email("Le format de l'adresse mail est incorrect"),
 	lastName: z.string({
 		required_error: 'Le nom de famille doit être renseigné',
@@ -31,7 +34,9 @@ export const agentUpdateSchema = z.strictObject({
 		.int("L'id doit être un nombre entier")
 		.positive("L'id fourni est incorrect"),
 	email: z
-		.string()
+		.string({
+			invalid_type_error: "Le format de l'adresse mail est incorrect",
+		})
 		.email("Le format de l'adresse mail est incorrect")
 		.optional(),
 	lastName: z

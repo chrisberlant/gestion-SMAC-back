@@ -44,6 +44,8 @@ export const currentUserPasswordUpdateSchema = z
 		oldPassword: z
 			.string({
 				required_error: "L'ancien mot de passe doit être renseigné",
+				invalid_type_error:
+					"Le format de l'ancien mot de passe est incorrect",
 			})
 			.min(8, "L'ancien mot de passe doit faire minimum 8 caractères")
 			.regex(
@@ -53,6 +55,8 @@ export const currentUserPasswordUpdateSchema = z
 		newPassword: z
 			.string({
 				required_error: 'Le nouveau mot de passe doit être renseigné',
+				invalid_type_error:
+					'Le format du nouveau mot de passe est incorrect',
 			})
 			.min(8, 'Le nouveau mot de passe doit faire minimum 8 caractères')
 			.regex(
@@ -63,6 +67,8 @@ export const currentUserPasswordUpdateSchema = z
 			.string({
 				required_error:
 					'La confirmation du nouveau mot de passe doit être renseignée',
+				invalid_type_error:
+					'Le format de la confirmation du nouveau mot de passe est incorrect',
 			})
 			.min(
 				8,
