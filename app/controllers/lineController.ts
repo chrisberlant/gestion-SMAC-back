@@ -53,7 +53,7 @@ const lineController = {
 				],
 			});
 			if (!line) {
-				res.status(404).json('Aucune ligne trouvée');
+				res.status(404).json("La ligne n'existe pas");
 			}
 
 			res.status(200).json(line);

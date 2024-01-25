@@ -10,15 +10,28 @@ export const deviceCreationSchema = z.strictObject({
 		.length(15, "L'IMEI fourni est incorrect"),
 	preparationDate: z.date().optional(),
 	attributionDate: z.date().optional(),
-	status: z.enum([
-		'Attribué',
-		'Restitué',
-		'En attente de restitution',
-		'En prêt',
-		'En panne',
-		'Volé',
-	]),
-	isNew: z.boolean(),
+	status: z.enum(
+		[
+			'Attribué',
+			'Restitué',
+			'En attente de restitution',
+			'En prêt',
+			'En panne',
+			'Volé',
+		],
+		{
+			errorMap: () => {
+				return {
+					message:
+						'Le statut doit être Attribué, Restitué, En attente de restitution, En prêt, En panne, ou Volé',
+				};
+			},
+		}
+	),
+	isNew: z.boolean({
+		required_error: 'La valeur isNew doit être renseignée',
+		invalid_type_error: 'La valeur isNew doit être un booléen',
+	}),
 	comments: z
 		.string({
 			invalid_type_error:
@@ -36,11 +49,11 @@ export const deviceCreationSchema = z.strictObject({
 		.optional(),
 	modelId: z
 		.number({
+			required_error: 'Le modèle doit être renseigné',
 			invalid_type_error: "L'id du modèle doit être un nombre",
 		})
 		.int("L'id du modèle doit être un nombre entier")
-		.positive("L'id du modèle fourni est incorrect")
-		.optional(),
+		.positive("L'id du modèle fourni est incorrect"),
 });
 
 export const deviceUpdateSchema = selectionSchema.extend({
@@ -53,14 +66,24 @@ export const deviceUpdateSchema = selectionSchema.extend({
 	preparationDate: z.date().nullable().optional(),
 	attributionDate: z.date().nullable().optional(),
 	status: z
-		.enum([
-			'Attribué',
-			'Restitué',
-			'En attente de restitution',
-			'En prêt',
-			'En panne',
-			'Volé',
-		])
+		.enum(
+			[
+				'Attribué',
+				'Restitué',
+				'En attente de restitution',
+				'En prêt',
+				'En panne',
+				'Volé',
+			],
+			{
+				errorMap: () => {
+					return {
+						message:
+							'Le statut doit être Attribué, Restitué, En attente de restitution, En prêt, En panne, ou Volé',
+					};
+				},
+			}
+		)
 		.optional(),
 	isNew: z.boolean().optional(),
 	comments: z

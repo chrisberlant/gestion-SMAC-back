@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import agentController from './controllers/agentController';
 import authController from './controllers/authController';
 import deviceController from './controllers/deviceController';
 import lineController from './controllers/lineController';
@@ -11,6 +12,14 @@ import dataValidation from './middlewares/dataValidationMiddleware';
 import jwtMiddleware from './middlewares/jwtMidleware';
 import requestsLimitMiddleware from './middlewares/requestsLimitMiddleware';
 import selectionSchema from './validationSchemas';
+import {
+	agentCreationSchema,
+	agentUpdateSchema,
+} from './validationSchemas/agentSchemas';
+import {
+	deviceCreationSchema,
+	deviceUpdateSchema,
+} from './validationSchemas/deviceSchemas';
 import {
 	lineCreationSchema,
 	lineUpdateSchema,
@@ -45,7 +54,7 @@ router.get('/logout', authController.logout);
 // Route used to check if server is online
 router.get('/healthCheck', authController.healthCheck);
 
-/* ------------- USER ROUTES ------------- */
+/* ------------- LOGGED USER ROUTES ------------- */
 router.get('/getCurrentUser', jwtMiddleware, userController.getCurrentUser);
 router.patch(
 	'/updateCurrentUser',
@@ -60,52 +69,7 @@ router.patch(
 	userController.updateCurrentUserPassword
 );
 
-/* ------------- LINES ROUTES ------------- */
-router.get('/getAllLines/', jwtMiddleware, lineController.getAllLines);
-router.get('/getLineById/:id', jwtMiddleware, lineController.getLineById);
-router.post(
-	'/createLine',
-	jwtMiddleware,
-	dataValidation(lineCreationSchema),
-	lineController.createLine
-);
-router.patch(
-	'/updateLine',
-	jwtMiddleware,
-	dataValidation(lineUpdateSchema),
-	lineController.updateLine
-);
-router.delete(
-	'/deleteLine',
-	jwtMiddleware,
-	dataValidation(selectionSchema),
-	lineController.deleteLine
-);
-
-/* ------------- DEVICES ROUTES ------------- */
-
-router.get('/getAllDevices', jwtMiddleware, deviceController.getAllDevices);
-router.get('/getDeviceById/:id', jwtMiddleware, deviceController.getDeviceById);
-
-/* ------------- MODELS ROUTES ------------- */
-router.get('/getAllModels', jwtMiddleware, modelController.getAllModels);
-
-/* ------------- SERVICES ROUTES ------------- */
-router.get('/getAllServices', jwtMiddleware, serviceController.getAllServices);
-
-/* ------------- STATS ROUTES ------------- */
-router.get(
-	'/getAgentsAndDevicesPerService',
-	jwtMiddleware,
-	statsController.getAgentsAndDevicesPerService
-);
-router.get(
-	'/getDevicesAmountPerModel',
-	jwtMiddleware,
-	statsController.getDevicesAmountPerModel
-);
-
-/* ------------- ADMIN ROUTES ------------- */
+/* ------------- APP USERS ROUTES (ADMIN) ------------- */
 router.get(
 	'/getAllUsers',
 	jwtMiddleware,
@@ -140,6 +104,56 @@ router.patch(
 	adminMiddleware,
 	userController.resetPassword
 );
+
+/* ------------- LINES ROUTES ------------- */
+router.get('/getAllLines/', jwtMiddleware, lineController.getAllLines);
+router.get('/getLineById/:id', jwtMiddleware, lineController.getLineById);
+router.post(
+	'/createLine',
+	jwtMiddleware,
+	dataValidation(lineCreationSchema),
+	lineController.createLine
+);
+router.patch(
+	'/updateLine',
+	jwtMiddleware,
+	dataValidation(lineUpdateSchema),
+	lineController.updateLine
+);
+router.delete(
+	'/deleteLine',
+	jwtMiddleware,
+	dataValidation(selectionSchema),
+	lineController.deleteLine
+);
+
+/* ------------- DEVICES ROUTES ------------- */
+
+router.get('/getAllDevices', jwtMiddleware, deviceController.getAllDevices);
+router.get('/getDeviceById/:id', jwtMiddleware, deviceController.getDeviceById);
+router.post(
+	'/createDevice',
+	jwtMiddleware,
+	dataValidation(deviceCreationSchema),
+	deviceController.createDevice
+);
+router.patch(
+	'/updateDevice',
+	jwtMiddleware,
+	dataValidation(deviceUpdateSchema),
+	deviceController.updateDevice
+);
+router.delete(
+	'/deleteDevice',
+	jwtMiddleware,
+	dataValidation(selectionSchema),
+	deviceController.deleteDevice
+);
+
+/* ------------- MODELS ROUTES ------------- */
+router.get('/getAllModels', jwtMiddleware, modelController.getAllModels);
+
+/* ------------- MODELS ROUTES (ADMIN) ------------- */
 router.post(
 	'/createModel',
 	jwtMiddleware,
@@ -161,6 +175,32 @@ router.delete(
 	adminMiddleware,
 	modelController.deleteModel
 );
+
+/* ------------- AGENTS ROUTES ------------- */
+router.get('/getAllAgents', jwtMiddleware, agentController.getAllAgents);
+router.post(
+	'/createAgent',
+	jwtMiddleware,
+	dataValidation(agentCreationSchema),
+	agentController.createAgent
+);
+router.patch(
+	'/updateAgent',
+	jwtMiddleware,
+	dataValidation(agentUpdateSchema),
+	agentController.updateAgent
+);
+router.delete(
+	'/deleteAgent',
+	jwtMiddleware,
+	dataValidation(selectionSchema),
+	agentController.deleteAgent
+);
+
+/* ------------- SERVICES ROUTES ------------- */
+router.get('/getAllServices', jwtMiddleware, serviceController.getAllServices);
+
+/* ------------- SERVICES ROUTES (ADMIN) ------------- */
 router.post(
 	'/createService',
 	jwtMiddleware,
@@ -178,6 +218,18 @@ router.delete(
 	jwtMiddleware,
 	dataValidation(selectionSchema),
 	serviceController.deleteService
+);
+
+/* ------------- STATS ROUTES ------------- */
+router.get(
+	'/getAgentsAndDevicesPerService',
+	jwtMiddleware,
+	statsController.getAgentsAndDevicesPerService
+);
+router.get(
+	'/getDevicesAmountPerModel',
+	jwtMiddleware,
+	statsController.getDevicesAmountPerModel
 );
 
 export default router;

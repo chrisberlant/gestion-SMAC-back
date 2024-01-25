@@ -4,9 +4,8 @@ export const userLoginSchema = z.strictObject({
 	email: z
 		.string({
 			required_error: "L'adresse mail doit être renseignée",
+			invalid_type_error: "Le format de l'adresse mail est incorrect",
 		})
-		.trim()
-		.min(1, "L'adresse mail doit être renseignée")
 		.email("Le format de l'adresse mail est incorrect"),
 	password: z
 		.string({
@@ -24,24 +23,19 @@ export const userLoginSchema = z.strictObject({
 export const currentUserUpdateSchema = z
 	.strictObject({
 		email: z
-			.string()
-			.trim()
-			.min(1, "L'adresse mail doit être renseignée")
+			.string({
+				invalid_type_error: "Le format de l'adresse mail est incorrect",
+			})
 			.email("Le format de l'adresse mail est incorrect"),
 		lastName: z
 			.string({
 				invalid_type_error:
 					'Le nom de famille doit être une chaîne de caractères',
 			})
-			.trim()
-			.min(1, 'Le nom de famille doit être renseigné'),
-		firstName: z
-			.string({
-				invalid_type_error:
-					'Le prénom doit être une chaîne de caractères',
-			})
-			.trim()
-			.min(1, 'Le prénom doit être renseigné'),
+			.optional(),
+		firstName: z.string({
+			invalid_type_error: 'Le prénom doit être une chaîne de caractères',
+		}),
 	})
 	.partial();
 
@@ -86,22 +80,20 @@ export const currentUserPasswordUpdateSchema = z
 
 export const userCreationSchema = z.strictObject({
 	email: z
-		.string({ required_error: "L'adresse mail doit être renseignée" })
-		.min(1, "L'adresse mail doit être renseignée")
+		.string({
+			required_error: "L'adresse mail doit être renseignée",
+			invalid_type_error: "Le format de l'adresse mail est incorrect",
+		})
 		.email("Le format de l'adresse mail est incorrect"),
-	lastName: z
-		.string({
-			required_error: 'Le nom de famille doit être renseigné',
-			invalid_type_error:
-				'Le nom de famille doit être une chaîne de caractères',
-		})
-		.min(1, 'Le nom doit être renseigné'),
-	firstName: z
-		.string({
-			required_error: 'Le prénom doit être renseigné',
-			invalid_type_error: 'Le prénom doit être une chaîne de caractères',
-		})
-		.min(1, 'Le prénom doit être renseigné'),
+	lastName: z.string({
+		required_error: 'Le nom de famille doit être renseigné',
+		invalid_type_error:
+			'Le nom de famille doit être une chaîne de caractères',
+	}),
+	firstName: z.string({
+		required_error: 'Le prénom doit être renseigné',
+		invalid_type_error: 'Le prénom doit être une chaîne de caractères',
+	}),
 	isAdmin: z.boolean({
 		required_error: 'Le rôle doit être renseignée',
 		invalid_type_error: 'La valeur isAdmin doit être un booléen',
@@ -121,8 +113,9 @@ export const userUpdateSchema = z.strictObject({
 			"Vous n'avez pas les droits pour modifier cet utilisateur"
 		),
 	email: z
-		.string()
-		.min(1, "L'adresse mail doit être renseignée")
+		.string({
+			invalid_type_error: "Le format de l'adresse mail est incorrect",
+		})
 		.email("Le format de l'adresse mail est incorrect")
 		.optional(),
 	lastName: z
@@ -130,13 +123,11 @@ export const userUpdateSchema = z.strictObject({
 			invalid_type_error:
 				'Le nom de famille doit être une chaîne de caractères',
 		})
-		.min(1, 'Le nom de famille doit être renseigné')
 		.optional(),
 	firstName: z
 		.string({
 			invalid_type_error: 'Le prénom doit être une chaîne de caractères',
 		})
-		.min(1, 'Le prénom doit être renseigné')
 		.optional(),
 	isAdmin: z
 		.boolean({

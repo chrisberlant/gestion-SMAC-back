@@ -12,8 +12,9 @@ const dataValidation =
 		for (const key in req.body) {
 			if (typeof req.body[key] === 'string') {
 				req.body[key] = req.body[key].trim();
+				// Convert to null any empty string after trimming
 				if (req.body[key] === '') req.body[key] = null;
-				if (key === 'email')
+				if (key === 'email' && req.body[key] !== null)
 					req.body[key] = req.body[key].toLowerCase();
 			}
 		}
