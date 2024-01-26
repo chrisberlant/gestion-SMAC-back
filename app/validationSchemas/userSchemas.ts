@@ -100,9 +100,12 @@ export const userCreationSchema = z.strictObject({
 		required_error: 'Le prénom doit être renseigné',
 		invalid_type_error: 'Le prénom doit être une chaîne de caractères',
 	}),
-	isAdmin: z.boolean({
-		required_error: 'Le rôle doit être renseignée',
-		invalid_type_error: 'La valeur isAdmin doit être un booléen',
+	role: z.enum(['Admin', 'Tech', 'Consultant'], {
+		errorMap: () => {
+			return {
+				message: 'Le rôle doit être Admin, Tech ou Consultant',
+			};
+		},
 	}),
 });
 
@@ -135,9 +138,13 @@ export const userUpdateSchema = z.strictObject({
 			invalid_type_error: 'Le prénom doit être une chaîne de caractères',
 		})
 		.optional(),
-	isAdmin: z
-		.boolean({
-			invalid_type_error: 'La valeur isAdmin doit être un booléen',
+	role: z
+		.enum(['Admin', 'Tech', 'Consultant'], {
+			errorMap: () => {
+				return {
+					message: 'Le rôle doit être Admin, Tech ou Consultant',
+				};
+			},
 		})
 		.optional(),
 });

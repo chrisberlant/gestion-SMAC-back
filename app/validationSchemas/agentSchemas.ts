@@ -16,6 +16,10 @@ export const agentCreationSchema = z.strictObject({
 		required_error: 'Le prénom doit être renseigné',
 		invalid_type_error: 'Le prénom doit être une chaîne de caractères',
 	}),
+	vip: z.boolean({
+		required_error: 'Le statut vip doit être renseigné',
+		invalid_type_error: 'Le statut vip doit être un booléen',
+	}),
 	serviceId: z
 		.number({
 			required_error: 'Le service doit être renseigné',
@@ -50,6 +54,9 @@ export const agentUpdateSchema = z.strictObject({
 			invalid_type_error: 'Le prénom doit être une chaîne de caractères',
 		})
 		.optional(),
+	vip: z.boolean({
+		invalid_type_error: 'Le statut vip doit être un booléen',
+	}),
 	serviceId: z
 		.number({
 			invalid_type_error: "L'id du service doit être un nombre",
