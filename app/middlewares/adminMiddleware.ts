@@ -10,7 +10,7 @@ const adminMiddleware = async (
 	try {
 		const userId = req.user!.id;
 		const user = await User.findByPk(userId, {
-			attributes: ['isAdmin'],
+			attributes: ['role'],
 		});
 
 		if (!user)
@@ -19,7 +19,7 @@ const adminMiddleware = async (
 				.status(404)
 				.json('Utilisateur introuvable');
 
-		if (!user.isAdmin)
+		if (user.role !== 'Admin')
 			return res
 				.status(403)
 				.json("Vous n'avez pas les droits nécessaires");

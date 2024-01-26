@@ -1,10 +1,10 @@
-import { User } from '../models';
 import { Response } from 'express';
 import { UserRequest } from '../middlewares/jwtMidleware';
+import { User } from '../models';
 
 import bcrypt from 'bcrypt';
-import generateRandomPassword from '../utils/passwordGeneration';
 import { UserType } from '../@types/models';
+import generateRandomPassword from '../utils/passwordGeneration';
 
 const userController = {
 	async getCurrentUser(req: UserRequest, res: Response) {
@@ -98,7 +98,7 @@ const userController = {
 			const users = await User.findAll({
 				attributes: { exclude: ['password'] },
 				order: [
-					['isAdmin', 'DESC'],
+					['role', 'ASC'],
 					['lastName', 'ASC'],
 				],
 			});
@@ -129,15 +129,15 @@ const userController = {
 			if (existingUserCheck)
 				return res.status(409).json("L'utilisateur existe déjà");
 
-			const userToCreate = await User.create({
+			const userCreated = await User.create({
 				...infos,
 				password: hashedPassword,
 			});
 
-			if (!userToCreate)
+			if (!userCreated)
 				throw new Error("Impossible de créer l'utilisateur");
 
-			const { password, ...user } = userToCreate;
+			const { password, ...user } = userCreated.get();
 
 			res.status(201).json({ user, generatedPassword });
 		} catch (error) {
@@ -170,14 +170,14 @@ const userController = {
 
 			await user.update(infosToUpdate);
 
-			const { firstName, lastName, email, isAdmin } = user;
+			const { firstName, lastName, email, role } = user;
 
 			const newUserInfos = {
 				id,
 				firstName,
 				lastName,
 				email,
-				isAdmin,
+				role,
 			};
 
 			res.status(200).json(newUserInfos);

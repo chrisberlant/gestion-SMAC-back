@@ -1,17 +1,16 @@
-import { User } from '../models';
-import { Request, Response } from 'express';
-import { UserRequest } from '../middlewares/jwtMidleware';
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
+import { UserRequest } from '../middlewares/jwtMidleware';
+import { User } from '../models';
 
 const authController = {
 	async login(req: Request, res: Response) {
 		try {
 			const { email, password } = req.body;
-			const lowerCaseEmail = email.toLowerCase();
 
 			const user = await User.findOne({
-				where: { email: lowerCaseEmail },
+				where: { email },
 			});
 
 			if (!user)
@@ -28,7 +27,7 @@ const authController = {
 
 			// We set a variable containing the token that will be sent to the browser
 			const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY!, {
-				expiresIn: '10h',
+				expiresIn: '12h',
 			});
 
 			// Send the JWT as cookie
@@ -38,12 +37,12 @@ const authController = {
 				secure: true,
 			});
 
-			const { firstName, lastName, isAdmin } = user;
+			const { firstName, lastName, role } = user;
 			const loggedUser = {
-				email: lowerCaseEmail,
+				email,
 				firstName,
 				lastName,
-				isAdmin,
+				role,
 			};
 
 			res.status(200).json(loggedUser);

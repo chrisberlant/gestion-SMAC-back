@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../sequelize-client';
 import { UserType } from '../@types/models';
+import sequelize from '../sequelize-client';
 
 const User = sequelize.define<UserType>(
 	'User',
@@ -27,8 +27,8 @@ const User = sequelize.define<UserType>(
 			type: DataTypes.TEXT,
 			allowNull: false,
 		},
-		isAdmin: {
-			type: DataTypes.BOOLEAN,
+		role: {
+			type: DataTypes.TEXT,
 			allowNull: false,
 		},
 	},

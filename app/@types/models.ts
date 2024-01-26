@@ -1,8 +1,8 @@
 import {
-	Model as SequelizeModel,
 	CreationOptional,
 	InferAttributes,
 	InferCreationAttributes,
+	Model as SequelizeModel,
 } from 'sequelize';
 
 export interface AgentType
@@ -15,7 +15,6 @@ export interface AgentType
 	firstName: string;
 	lastName: string;
 	serviceId?: number;
-	service?: ServiceType;
 }
 
 export interface DeviceType
@@ -27,7 +26,14 @@ export interface DeviceType
 	imei: string;
 	preparationDate?: Date | null;
 	attributionDate?: Date | null;
-	status: string;
+	status:
+		| 'En stock'
+		| 'Attribué'
+		| 'Restitué'
+		| 'En attente de restitution'
+		| 'En prêt'
+		| 'En panne'
+		| 'Volé';
 	isNew: boolean;
 	comments?: string | null;
 	agentId?: number | null;
@@ -42,7 +48,7 @@ export interface LineType
 	id: CreationOptional<number>;
 	number: string;
 	profile: string;
-	status: string;
+	status: 'Active' | 'En cours' | 'Résiliée';
 	comments?: string | null;
 	agentId?: number | null;
 	deviceId?: number | null;
@@ -78,5 +84,5 @@ export interface UserType
 	firstName: string;
 	lastName: string;
 	password?: string;
-	isAdmin: boolean;
+	role: 'Tech' | 'Admin' | 'Consultant';
 }
