@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../sequelize-client';
 import { AgentType } from '../@types/models';
+import sequelize from '../sequelize-client';
 
 const Agent = sequelize.define<AgentType>(
 	'Agent',
@@ -21,6 +21,10 @@ const Agent = sequelize.define<AgentType>(
 		},
 		lastName: {
 			type: DataTypes.TEXT,
+			allowNull: false,
+		},
+		vip: {
+			type: DataTypes.BOOLEAN,
 			allowNull: false,
 		},
 	},

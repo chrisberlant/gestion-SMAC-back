@@ -14,7 +14,7 @@ CREATE TABLE "user" (
         "last_name" <> '' AND
         "first_name" <> '' AND
         "email" <> '' AND
-        "role" IN ('Tech', 'Admin', 'Consultant') AND
+        "role" IN ('Admin', 'Tech', 'Consultant') AND
         "password" <> ''
     )
 );

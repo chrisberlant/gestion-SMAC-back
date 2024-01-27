@@ -14,6 +14,7 @@ export interface AgentType
 	email: string;
 	firstName: string;
 	lastName: string;
+	vip: boolean;
 	serviceId?: number;
 }
 
@@ -84,5 +85,5 @@ export interface UserType
 	firstName: string;
 	lastName: string;
 	password?: string;
-	role: 'Tech' | 'Admin' | 'Consultant';
+	role: 'Admin' | 'Tech' | 'Consultant';
 }

@@ -8,7 +8,8 @@ const agentController = {
 			const agents = await Agent.findAll({
 				include: [
 					{
-						association: 'service',
+						association: 'devices',
+						attributes: ['id'],
 					},
 				],
 			});
