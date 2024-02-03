@@ -5,17 +5,7 @@ import { Device } from '../models';
 const deviceController = {
 	async getAllDevices(_: UserRequest, res: Response) {
 		try {
-			const devices = await Device.findAll({
-				include: [
-					{
-						association: 'model',
-					},
-					{
-						association: 'agent',
-						include: [{ association: 'service' }],
-					},
-				],
-			});
+			const devices = await Device.findAll();
 			if (!devices) {
 				res.status(404).json('Aucune ligne trouvée');
 			}

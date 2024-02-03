@@ -223,7 +223,7 @@ const userController = {
 			const { email } = user;
 			const fullName = user.firstName + ' ' + user.lastName;
 
-			res.status(201).json({ fullName, email, generatedPassword });
+			res.status(200).json({ fullName, email, generatedPassword });
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');

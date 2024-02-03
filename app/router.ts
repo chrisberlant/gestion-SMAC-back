@@ -7,7 +7,7 @@ import modelController from './controllers/modelController';
 import serviceController from './controllers/serviceController';
 import statsController from './controllers/statsController';
 import userController from './controllers/userController';
-import adminMiddleware from './middlewares/adminMiddleware';
+import rightsMiddleware from './middlewares/rightsMiddleware';
 import dataValidation from './middlewares/dataValidationMiddleware';
 import jwtMiddleware from './middlewares/jwtMidleware';
 import requestsLimitMiddleware from './middlewares/requestsLimitMiddleware';
@@ -73,35 +73,35 @@ router.patch(
 router.get(
 	'/getAllUsers',
 	jwtMiddleware,
-	adminMiddleware,
+	rightsMiddleware('Admin'),
 	userController.getAllUsers
 );
 router.post(
 	'/createUser',
 	jwtMiddleware,
 	dataValidation(userCreationSchema),
-	adminMiddleware,
+	rightsMiddleware('Admin'),
 	userController.createUser
 );
 router.patch(
 	'/updateUser',
 	jwtMiddleware,
 	dataValidation(userUpdateSchema),
-	adminMiddleware,
+	rightsMiddleware('Admin'),
 	userController.updateUser
 );
 router.delete(
 	'/deleteUser',
 	jwtMiddleware,
 	dataValidation(selectionSchema),
-	adminMiddleware,
+	rightsMiddleware('Admin'),
 	userController.deleteUser
 );
 router.patch(
 	'/resetPassword',
 	jwtMiddleware,
 	dataValidation(selectionSchema),
-	adminMiddleware,
+	rightsMiddleware('Admin'),
 	userController.resetPassword
 );
 
@@ -112,18 +112,21 @@ router.post(
 	'/createLine',
 	jwtMiddleware,
 	dataValidation(lineCreationSchema),
+	rightsMiddleware('Tech'),
 	lineController.createLine
 );
 router.patch(
 	'/updateLine',
 	jwtMiddleware,
 	dataValidation(lineUpdateSchema),
+	rightsMiddleware('Tech'),
 	lineController.updateLine
 );
 router.delete(
 	'/deleteLine',
 	jwtMiddleware,
 	dataValidation(selectionSchema),
+	rightsMiddleware('Tech'),
 	lineController.deleteLine
 );
 
@@ -135,18 +138,21 @@ router.post(
 	'/createDevice',
 	jwtMiddleware,
 	dataValidation(deviceCreationSchema),
+	rightsMiddleware('Tech'),
 	deviceController.createDevice
 );
 router.patch(
 	'/updateDevice',
 	jwtMiddleware,
 	dataValidation(deviceUpdateSchema),
+	rightsMiddleware('Tech'),
 	deviceController.updateDevice
 );
 router.delete(
 	'/deleteDevice',
 	jwtMiddleware,
 	dataValidation(selectionSchema),
+	rightsMiddleware('Tech'),
 	deviceController.deleteDevice
 );
 
@@ -158,21 +164,21 @@ router.post(
 	'/createModel',
 	jwtMiddleware,
 	dataValidation(modelCreationSchema),
-	adminMiddleware,
+	rightsMiddleware('Admin'),
 	modelController.createModel
 );
 router.patch(
 	'/updateModel',
 	jwtMiddleware,
 	dataValidation(modelUpdateSchema),
-	adminMiddleware,
+	rightsMiddleware('Admin'),
 	modelController.updateModel
 );
 router.delete(
 	'/deleteModel',
 	jwtMiddleware,
 	dataValidation(selectionSchema),
-	adminMiddleware,
+	rightsMiddleware('Admin'),
 	modelController.deleteModel
 );
 
@@ -182,18 +188,21 @@ router.post(
 	'/createAgent',
 	jwtMiddleware,
 	dataValidation(agentCreationSchema),
+	rightsMiddleware('Tech'),
 	agentController.createAgent
 );
 router.patch(
 	'/updateAgent',
 	jwtMiddleware,
 	dataValidation(agentUpdateSchema),
+	rightsMiddleware('Tech'),
 	agentController.updateAgent
 );
 router.delete(
 	'/deleteAgent',
 	jwtMiddleware,
 	dataValidation(selectionSchema),
+	rightsMiddleware('Tech'),
 	agentController.deleteAgent
 );
 
@@ -205,18 +214,21 @@ router.post(
 	'/createService',
 	jwtMiddleware,
 	dataValidation(serviceCreationSchema),
+	rightsMiddleware('Admin'),
 	serviceController.createService
 );
 router.put(
 	'/updateService',
 	jwtMiddleware,
 	dataValidation(serviceUpdateSchema),
+	rightsMiddleware('Admin'),
 	serviceController.updateService
 );
 router.delete(
 	'/deleteService',
 	jwtMiddleware,
 	dataValidation(selectionSchema),
+	rightsMiddleware('Admin'),
 	serviceController.deleteService
 );
 
