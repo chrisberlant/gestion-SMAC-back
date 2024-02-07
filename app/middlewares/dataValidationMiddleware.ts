@@ -5,7 +5,6 @@ import { UserRequest } from './jwtMidleware';
 const dataValidation =
 	(schema: ZodSchema) =>
 	(req: UserRequest, res: Response, next: NextFunction) => {
-		console.log(req.body);
 		if (Object.keys(req.body).length === 0)
 			// If no data were provided by the user
 			return res.status(400).json('Aucune information fournie');
