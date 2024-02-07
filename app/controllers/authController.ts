@@ -32,7 +32,9 @@ const authController = {
 
 			// Send the JWT as cookie
 			res.cookie('smac_token', token, {
+				maxAge: 12 * 60 * 60 * 1000,
 				httpOnly: true,
+				domain: process.env.CLIENT_URL,
 				sameSite: 'none',
 				secure: true,
 			});
