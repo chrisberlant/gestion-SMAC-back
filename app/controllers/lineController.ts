@@ -8,6 +8,7 @@ const lineController = {
 	async getAllLines(_: UserRequest, res: Response) {
 		try {
 			const lines = await Line.findAll({
+				order: [['id', 'DESC']],
 				include: [
 					{
 						association: 'agent',

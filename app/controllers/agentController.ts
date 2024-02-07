@@ -6,6 +6,7 @@ const agentController = {
 	async getAllAgents(_: UserRequest, res: Response) {
 		try {
 			const agents = await Agent.findAll({
+				order: [['id', 'DESC']],
 				include: [
 					{
 						association: 'devices',

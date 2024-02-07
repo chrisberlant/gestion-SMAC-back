@@ -7,7 +7,7 @@ const serviceController = {
 	async getAllServices(_: UserRequest, res: Response) {
 		try {
 			const services = await Service.findAll({
-				order: [['title', 'ASC']],
+				order: ['title'],
 			});
 
 			res.status(200).json(services);
