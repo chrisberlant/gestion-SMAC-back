@@ -30,14 +30,6 @@ const authController = {
 				expiresIn: '12h',
 			});
 
-			// Send the JWT as cookie
-			res.cookie('smac_token', token, {
-				maxAge: 12 * 60 * 60 * 1000,
-				httpOnly: true,
-				sameSite: 'none',
-				secure: true,
-			});
-
 			const { firstName, lastName, role } = user;
 			const loggedUser = {
 				email,
@@ -46,7 +38,7 @@ const authController = {
 				role,
 			};
 
-			res.status(200).json(loggedUser);
+			res.status(200).json({ loggedUser, smac_token: token });
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');

@@ -6,7 +6,8 @@ export interface UserRequest extends Request {
 }
 
 const jwtMiddleware = (req: UserRequest, res: Response, next: NextFunction) => {
-	const token = req.cookies.smac_token;
+	const token = req.headers.authorization?.split(' ')[1];
+	console.log(token);
 
 	if (!token)
 		// Check for the cookie presence
