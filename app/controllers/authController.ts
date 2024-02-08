@@ -72,11 +72,6 @@ const authController = {
 		}
 	},
 
-	async logout(_: UserRequest, res: Response) {
-		res.clearCookie('smac_token');
-		res.status(200).json('Déconnexion effectuée');
-	},
-
 	async healthCheck(_: Request | UserRequest, res: Response) {
 		res.status(200).json('Serveur en ligne');
 	},

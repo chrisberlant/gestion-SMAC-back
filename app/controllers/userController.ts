@@ -43,8 +43,9 @@ const userController = {
 
 			await user.update(infosToUpdate);
 
-			const { firstName, lastName, email } = user;
+			const { id, firstName, lastName, email } = user;
 			const newUserInfos = {
+				id,
 				firstName,
 				lastName,
 				email,

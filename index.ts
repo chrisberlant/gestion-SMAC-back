@@ -14,7 +14,7 @@ const clientUrl = process.env.CLIENT_URL;
 
 const corsOptions = {
 	origin: clientUrl,
-	credentials: true, // Authorize credentials (used for cookies)
+	credentials: true, // Authorize credentials
 };
 
 app.use(cors(corsOptions));

@@ -49,7 +49,6 @@ router.post(
 	dataValidation(userLoginSchema),
 	authController.login
 );
-router.get('/logout', authController.logout);
 
 // Route used to check if server is online
 router.get('/healthCheck', authController.healthCheck);
