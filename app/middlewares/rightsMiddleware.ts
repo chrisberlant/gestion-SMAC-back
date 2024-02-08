@@ -12,11 +12,7 @@ const rightsMiddleware =
 				attributes: ['role'],
 			});
 
-			if (!user)
-				return res
-					.clearCookie('smac_token')
-					.status(404)
-					.json('Utilisateur introuvable');
+			if (!user) return res.status(404).json('Utilisateur introuvable');
 
 			// Admin can access routes authorized to Tech
 			if (

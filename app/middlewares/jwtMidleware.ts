@@ -9,7 +9,7 @@ const jwtMiddleware = (req: UserRequest, res: Response, next: NextFunction) => {
 	const token = req.headers.authorization?.split(' ')[1];
 
 	if (!token)
-		// Check for the cookie presence
+		// Check for the JWT presence
 		return res.status(401).json('Aucun token trouvé');
 
 	try {
@@ -21,7 +21,7 @@ const jwtMiddleware = (req: UserRequest, res: Response, next: NextFunction) => {
 		req.user = verifiedToken;
 		next();
 	} catch (error) {
-		return res.clearCookie('smac_token').status(403).json('Token invalide');
+		return res.status(403).json('Token invalide');
 	}
 };
 

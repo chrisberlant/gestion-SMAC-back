@@ -16,11 +16,7 @@ const userController = {
 					exclude: ['id', 'password'],
 				},
 			});
-			if (!user)
-				return res
-					.clearCookie('smac_token')
-					.status(404)
-					.json('Utilisateur introuvable');
+			if (!user) return res.status(404).json('Utilisateur introuvable');
 
 			res.status(200).json(user);
 		} catch (error) {
@@ -36,10 +32,7 @@ const userController = {
 
 			const user = await User.findByPk(userId);
 			if (!user)
-				return res
-					.clearCookie('smac_token')
-					.status(404)
-					.json("L'utilisateur n'existe pas");
+				return res.status(404).json("L'utilisateur n'existe pas");
 
 			await user.update(infosToUpdate);
 
@@ -67,7 +60,6 @@ const userController = {
 			if (!user)
 				return res
 					.status(404)
-					.clearCookie('smac_token')
 					.json("Impossible de trouver l'utilisateur dans la base");
 
 			const passwordsMatch = await bcrypt.compare(
