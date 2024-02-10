@@ -9,19 +9,6 @@ const lineController = {
 		try {
 			const lines = await Line.findAll({
 				order: [['id', 'DESC']],
-				include: [
-					{
-						association: 'agent',
-						include: [{ association: 'service' }],
-					},
-					{
-						association: 'device',
-						attributes: {
-							exclude: ['agentId'],
-						},
-						include: [{ association: 'model' }],
-					},
-				],
 			});
 			if (!lines) {
 				res.status(404).json('Aucune ligne trouvée');
