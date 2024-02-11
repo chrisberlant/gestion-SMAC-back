@@ -15,7 +15,7 @@ export const lineCreationSchema = z.strictObject({
 			};
 		},
 	}),
-	status: z.enum(['Attribuée', 'En cours', 'Résiliée'], {
+	status: z.enum(['Active', 'En cours', 'Résiliée'], {
 		errorMap: () => {
 			return {
 				message: 'Le statut doit être Attribuée, En cours ou Résiliée',
@@ -66,7 +66,7 @@ export const lineUpdateSchema = selectionSchema.extend({
 		})
 		.optional(),
 	status: z
-		.enum(['Attribuée', 'En cours', 'Résiliée'], {
+		.enum(['Active', 'En cours', 'Résiliée'], {
 			errorMap: () => {
 				return {
 					message:
