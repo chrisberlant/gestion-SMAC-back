@@ -2,7 +2,7 @@ import { Response } from 'express';
 import { Op } from 'sequelize';
 import { LineType } from '../@types/models';
 import { UserRequest } from '../middlewares/jwtMidleware';
-import { Line } from '../models';
+import { Device, Line } from '../models';
 
 const lineController = {
 	async getAllLines(_: UserRequest, res: Response) {
@@ -80,9 +80,21 @@ const lineController = {
 	async updateLine(req: UserRequest, res: Response) {
 		try {
 			const { id, ...newInfos } = req.body;
+			const { deviceId, agentId } = newInfos;
 
 			const line = await Line.findByPk(id);
 			if (!line) return res.status(404).json("La ligne n'existe pas");
+
+			// Si l'appareil a été modifié, vérification de son utilisateur actuel
+			if (deviceId !== line.deviceId) {
+				const device = await Device.findByPk(deviceId);
+				if (!device)
+					return res.status(404).json("L'appareil n'existe pas");
+
+				// Si le propriétaire a été modifié
+				if (device.agentId !== agentId)
+					await device.update({ agentId });
+			}
 
 			const lineIsModified = await line.update(newInfos);
 
