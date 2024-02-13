@@ -54,7 +54,7 @@ const lineController = {
 	async createLine(req: UserRequest, res: Response) {
 		try {
 			const infos: LineType = req.body;
-			const { number } = infos;
+			const { number, deviceId, agentId } = infos;
 
 			const existingLine = await Line.findOne({
 				where: {
@@ -66,8 +66,27 @@ const lineController = {
 			if (existingLine)
 				return res.status(401).json('La ligne existe déjà');
 
-			const newLine = await Line.create(infos);
+			if (deviceId) {
+				const device = await Device.findByPk(deviceId);
+				if (!device)
+					return res.status(404).json("L'appareil n'existe pas");
 
+				// Si le propriétaire a été modifié
+				if (device.agentId !== agentId) {
+					// Mise à jour du propriétaire de l'appareil
+					await device.update({ agentId });
+				}
+
+				// Mise à jour de la ligne déjà associée à cet appareil pour l'y désaffecter
+				const line = await Line.findOne({
+					where: {
+						deviceId,
+					},
+				});
+				line?.update({ deviceId: null });
+			}
+
+			const newLine = await Line.create(infos);
 			if (!newLine) throw new Error('Impossible de créer la ligne');
 
 			res.status(201).json(newLine);
