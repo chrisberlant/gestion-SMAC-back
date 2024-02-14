@@ -3,6 +3,7 @@ import { Op } from 'sequelize';
 import { LineType } from '../@types/models';
 import { UserRequest } from '../middlewares/jwtMidleware';
 import { Device, Line } from '../models';
+import sequelize from '../sequelize-client';
 
 const lineController = {
 	async getAllLines(_: UserRequest, res: Response) {
@@ -55,41 +56,56 @@ const lineController = {
 		try {
 			const infos: LineType = req.body;
 			const { number, deviceId, agentId } = infos;
+			const lineCreationTransaction = await sequelize.transaction();
 
 			const existingLine = await Line.findOne({
 				where: {
-					number: {
-						[Op.iLike]: number,
-					},
+					number,
 				},
 			});
 			if (existingLine)
 				return res.status(401).json('La ligne existe déjà');
 
-			if (deviceId) {
-				const device = await Device.findByPk(deviceId);
-				if (!device)
-					return res.status(404).json("L'appareil n'existe pas");
+			try {
+				// Si un appareil est fourni, étapes supplémentaires à effectuer avant de créer la ligne
+				if (deviceId) {
+					const device = await Device.findByPk(deviceId, {
+						transaction: lineCreationTransaction,
+					});
+					if (!device) throw new Error("L'appareil n'existe pas");
 
-				// Si le propriétaire a été modifié
-				if (device.agentId !== agentId) {
-					// Mise à jour du propriétaire de l'appareil
-					await device.update({ agentId });
+					// Si le propriétaire fourni est différent de l'actuel
+					if (device.agentId !== agentId) {
+						// Mise à jour du propriétaire de l'appareil
+						await device.update(
+							{ agentId },
+							{ transaction: lineCreationTransaction }
+						);
+					}
+
+					// Mise à jour de la ligne déjà associée à cet appareil (si existante) pour l'y désaffecter
+					const line = await Line.findOne({
+						where: {
+							deviceId,
+						},
+						transaction: lineCreationTransaction,
+					});
+					line?.update(
+						{ deviceId: null },
+						{ transaction: lineCreationTransaction }
+					);
 				}
 
-				// Mise à jour de la ligne déjà associée à cet appareil pour l'y désaffecter
-				const line = await Line.findOne({
-					where: {
-						deviceId,
-					},
+				const newLine = await Line.create(infos, {
+					transaction: lineCreationTransaction,
 				});
-				line?.update({ deviceId: null });
+
+				await lineCreationTransaction.commit();
+				res.status(201).json(newLine);
+			} catch (error) {
+				await lineCreationTransaction.rollback(); // Annuler la transaction
+				throw new Error('Impossible de créer la ligne');
 			}
-
-			const newLine = await Line.create(infos);
-			if (!newLine) throw new Error('Impossible de créer la ligne');
-
-			res.status(201).json(newLine);
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');

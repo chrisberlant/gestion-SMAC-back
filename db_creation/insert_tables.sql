@@ -7,7 +7,7 @@ CREATE TABLE "user" (
     "id" SERIAL PRIMARY KEY,
     "last_name" TEXT NOT NULL,
     "first_name" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
+    "email" TEXT NOT NULL UNIQUE,
     "role" VARCHAR(10) NOT NULL,
     "password" VARCHAR(72) NOT NULL,
     CHECK (
@@ -21,7 +21,7 @@ CREATE TABLE "user" (
 
 CREATE TABLE "service" (
     "id" SERIAL PRIMARY KEY,
-    "title" TEXT NOT NULL,
+    "title" TEXT NOT NULL UNIQUE,
     CHECK ("title" <> '')
 );
 
@@ -54,7 +54,7 @@ CREATE TABLE "model" (
 
 CREATE TABLE "device" (
     "id" SERIAL PRIMARY KEY,
-    "imei" VARCHAR(15) NOT NULL,
+    "imei" VARCHAR(15) NOT NULL UNIQUE,
     "status" VARCHAR(25) NOT NULL,
     "is_new" BOOLEAN NOT NULL,
     "preparation_date" DATE,
@@ -73,12 +73,12 @@ CREATE TABLE "device" (
 
 CREATE TABLE "line" (
     "id" SERIAL PRIMARY KEY,
-    "number" TEXT NOT NULL,
+    "number" TEXT NOT NULL UNIQUE,
     "profile" VARCHAR(2) NOT NULL,
     "status" VARCHAR(9) NOT NULL,
     "comments" TEXT,
     "agent_id" INT,
-    "device_id" INT,
+    "device_id" INT UNIQUE,
     FOREIGN KEY ("agent_id") REFERENCES "agent"("id"),
     FOREIGN KEY ("device_id") REFERENCES "device"("id"),
     CHECK (
