@@ -1,6 +1,6 @@
 BEGIN;
 
--- Deleting the tables if already existing
+-- Suppression des tables si existantes
 DROP TABLE IF EXISTS "user","service","agent","model","device","line" CASCADE;
 
 CREATE TABLE "user" (
@@ -80,7 +80,7 @@ CREATE TABLE "line" (
     "agent_id" INT,
     "device_id" INT UNIQUE,
     FOREIGN KEY ("agent_id") REFERENCES "agent"("id"),
-    FOREIGN KEY ("device_id") REFERENCES "device"("id"),
+    FOREIGN KEY ("device_id") REFERENCES "device"("id") ON DELETE SET NULL,
     CHECK (
         "number" <> '' AND
         "profile" IN ('V', 'D', 'VD') AND
@@ -89,13 +89,11 @@ CREATE TABLE "line" (
     )
 );
 
+
 -- Création de la fonction de déclencheur pour modifier la table device
 CREATE OR REPLACE FUNCTION update_device_owner()
 RETURNS TRIGGER AS $$
 BEGIN
-
-    -- Désactiver temporairement l'autre trigger pour éviter la récursion
-    ALTER TABLE device DISABLE TRIGGER update_line_owner_trigger;
 
     -- Vérification si le propriétaire de l'appareil est différent de celui de la ligne
     IF NEW.agent_id IS DISTINCT FROM (SELECT agent_id FROM device WHERE id = NEW.device_id) THEN
@@ -103,9 +101,6 @@ BEGIN
         SET agent_id = NEW.agent_id
         WHERE id = NEW.device_id;
     END IF;
-
-    -- Réactiver l'autre trigger
-    ALTER TABLE device ENABLE TRIGGER update_line_owner_trigger;
 
     RETURN NEW;
 
@@ -116,6 +111,7 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER update_device_owner_trigger
 BEFORE INSERT OR UPDATE OF device_id, agent_id ON line
 FOR EACH ROW
+WHEN (pg_trigger_depth() < 1)   -- Uniquement si la mise à jour n'est pas effectuée par un autre trigger
 EXECUTE FUNCTION update_device_owner();
 
 
@@ -124,18 +120,12 @@ CREATE OR REPLACE FUNCTION update_line_owner()
 RETURNS TRIGGER AS $$
 BEGIN
 
-    -- Désactiver temporairement l'autre trigger pour éviter la récursion
-    ALTER TABLE line DISABLE TRIGGER update_device_owner_trigger;
-
     -- Vérification si le propriétaire de la ligne est différent de celui de l'appareil
     IF NEW.agent_id IS DISTINCT FROM (SELECT agent_id FROM line WHERE device_id = NEW.id) THEN
         UPDATE line
         SET agent_id = NEW.agent_id
         WHERE device_id = NEW.id;
     END IF;
-
-    -- Réactiver l'autre trigger
-    ALTER TABLE line ENABLE TRIGGER update_device_owner_trigger;
 
     RETURN NEW;
     
@@ -146,13 +136,8 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER update_line_owner_trigger
 BEFORE UPDATE OF agent_id ON device
 FOR EACH ROW
+WHEN (pg_trigger_depth() < 1)   -- Uniquement si la mise à jour n'est pas effectuée par un autre trigger
 EXECUTE FUNCTION update_line_owner();
-
-
-
-
-
-
 
 
 COMMIT;

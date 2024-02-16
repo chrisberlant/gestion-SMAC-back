@@ -64,16 +64,6 @@ const lineController = {
 			if (existingLine)
 				return res.status(401).json('La ligne existe déjà');
 
-			const alreadyAffectedDevice = await Line.findOne({
-				where: {
-					deviceId: infos.deviceId,
-				},
-			});
-			if (alreadyAffectedDevice)
-				return res
-					.status(409)
-					.json("L'appareil est déjà affecté à une autre ligne");
-
 			const newLine = await Line.create(infos);
 			if (!newLine) throw new Error('Impossible de créer la ligne');
 
@@ -90,16 +80,6 @@ const lineController = {
 
 			const line = await Line.findByPk(id);
 			if (!line) return res.status(404).json("La ligne n'existe pas");
-
-			const alreadyAffectedDevice = await Line.findOne({
-				where: {
-					deviceId: newInfos.deviceId,
-				},
-			});
-			if (alreadyAffectedDevice)
-				return res
-					.status(409)
-					.json("L'appareil est déjà affecté à une autre ligne");
 
 			const lineIsModified = await line.update(newInfos);
 
