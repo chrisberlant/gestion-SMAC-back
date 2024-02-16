@@ -55,57 +55,19 @@ const lineController = {
 	async createLine(req: UserRequest, res: Response) {
 		try {
 			const infos: LineType = req.body;
-			const { number, deviceId, agentId } = infos;
-			const lineCreationTransaction = await sequelize.transaction();
 
 			const existingLine = await Line.findOne({
 				where: {
-					number,
+					number: infos.number,
 				},
 			});
 			if (existingLine)
 				return res.status(401).json('La ligne existe déjà');
 
-			try {
-				// Si un appareil est fourni, étapes supplémentaires à effectuer avant de créer la ligne
-				if (deviceId) {
-					const device = await Device.findByPk(deviceId, {
-						transaction: lineCreationTransaction,
-					});
-					if (!device) throw new Error("L'appareil n'existe pas");
+			const newLine = await Line.create(infos);
+			if (!newLine) throw new Error('Impossible de créer la ligne');
 
-					// Si le propriétaire fourni est différent de l'actuel
-					if (device.agentId !== agentId) {
-						// Mise à jour du propriétaire de l'appareil
-						await device.update(
-							{ agentId },
-							{ transaction: lineCreationTransaction }
-						);
-					}
-
-					// Mise à jour de la ligne déjà associée à cet appareil (si existante) pour l'y désaffecter
-					const line = await Line.findOne({
-						where: {
-							deviceId,
-						},
-						transaction: lineCreationTransaction,
-					});
-					line?.update(
-						{ deviceId: null },
-						{ transaction: lineCreationTransaction }
-					);
-				}
-
-				const newLine = await Line.create(infos, {
-					transaction: lineCreationTransaction,
-				});
-
-				await lineCreationTransaction.commit();
-				res.status(201).json(newLine);
-			} catch (error) {
-				await lineCreationTransaction.rollback(); // Annuler la transaction
-				throw new Error('Impossible de créer la ligne');
-			}
+			res.status(201).json(newLine);
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');
@@ -115,21 +77,9 @@ const lineController = {
 	async updateLine(req: UserRequest, res: Response) {
 		try {
 			const { id, ...newInfos } = req.body;
-			const { deviceId, agentId } = newInfos;
 
 			const line = await Line.findByPk(id);
 			if (!line) return res.status(404).json("La ligne n'existe pas");
-
-			// Si l'appareil a été modifié, vérification de son utilisateur actuel
-			if (deviceId !== line.deviceId) {
-				const device = await Device.findByPk(deviceId);
-				if (!device)
-					return res.status(404).json("L'appareil n'existe pas");
-
-				// Si le propriétaire a été modifié
-				if (device.agentId !== agentId)
-					await device.update({ agentId });
-			}
 
 			const lineIsModified = await line.update(newInfos);
 

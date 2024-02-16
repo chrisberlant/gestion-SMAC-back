@@ -26,14 +26,14 @@ INSERT INTO "public"."model" ("brand", "reference", "storage") VALUES
 
 INSERT INTO "public"."device" ("imei", "status", "is_new", "preparation_date", "attribution_date", "comments", "agent_id", "model_id") VALUES
 ('123456789012345', 'En stock', 't', '2023-01-01', '2023-01-15', 'Comment 1', 1, 1),
-('987654321098765', 'Restitué', 't', '2023-01-02', '2023-01-16', 'Comment 2', 2, 2),
-('666777888999000', 'En prêt', 't', '2023-01-04', '2023-01-18', 'Comment 4', 4, 4),
-('987654321012345', 'Volé', 't', '2023-01-06', '2023-01-20', 'Comment 6', 6, 2),
-('555444333222111', 'Attribué', 'f', '2023-01-07', '2023-01-21', 'Comment 7', 7, 3),
-('111000222333444', 'En attente de restitution', 'f', '2023-01-09', '2023-01-23', 'Comment 9', 9, 1),
-('555666777888999', 'En prêt', 't', '2023-01-10', '2023-01-24', 'Comment 10', 10, 2),
-('111222333444555', 'En attente de restitution', 'f', '2023-01-03', '2023-01-17', NULL, 3, 3),
-('123321456654789', 'En panne', 'f', '2023-01-05', '2023-01-19', NULL, 5, 1),
+('987654321098765', 'Restitué', 't', '2023-01-02', '2023-01-16', 'Comment 2', 5, 2),
+('666777888999000', 'En prêt', 't', '2023-01-04', '2023-01-18', 'Comment 4', 9, 4),
+('987654321012345', 'Volé', 't', '2023-01-06', '2023-01-20', 'Comment 6', 2, 2),
+('555444333222111', 'Attribué', 'f', '2023-01-07', '2023-01-21', 'Comment 7', 4, 3),
+('111000222333444', 'En attente de restitution', 'f', '2023-01-09', '2023-01-23', 'Comment 9', 6, 1),
+('555666777888999', 'En prêt', 't', '2023-01-10', '2023-01-24', 'Comment 10', 3, 2),
+('111222333444555', 'En attente de restitution', 'f', '2023-01-03', '2023-01-17', NULL, 7, 3),
+('123321456654789', 'En panne', 'f', '2023-01-05', '2023-01-19', NULL, 10, 1),
 ('123987456321654', 'Restitué', 't', '2023-01-08', '2023-01-22', NULL, 8, 4);
 
 INSERT INTO "public"."line" ("number", "profile", "status", "comments", "agent_id", "device_id") VALUES
