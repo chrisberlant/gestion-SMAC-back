@@ -62,7 +62,7 @@ CREATE TABLE "device" (
     "comments" TEXT,
     "agent_id" INT,
     "model_id" INT NOT NULL,
-    FOREIGN KEY ("agent_id") REFERENCES "agent"("id"),
+    FOREIGN KEY ("agent_id") REFERENCES "agent"("id") ON DELETE SET NULL,
     FOREIGN KEY ("model_id") REFERENCES "model"("id"),
     CHECK (
         "imei" <> '' AND
@@ -79,7 +79,7 @@ CREATE TABLE "line" (
     "comments" TEXT,
     "agent_id" INT,
     "device_id" INT UNIQUE,
-    FOREIGN KEY ("agent_id") REFERENCES "agent"("id"),
+    FOREIGN KEY ("agent_id") REFERENCES "agent"("id") ON DELETE SET NULL,
     FOREIGN KEY ("device_id") REFERENCES "device"("id") ON DELETE SET NULL,
     CHECK (
         "number" <> '' AND
