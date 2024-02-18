@@ -102,6 +102,12 @@ BEGIN
         WHERE id = NEW.device_id;
     END IF;
 
+    IF NEW.device_id IS DISTINCT FROM OLD.device_id THEN
+        UPDATE line
+        SET device_id = NULL
+        WHERE device_id = NEW.device_id;
+    END IF;
+
     RETURN NEW;
 
 END;
