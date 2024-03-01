@@ -102,6 +102,7 @@ BEGIN
         WHERE id = NEW.device_id;
     END IF;
 
+    -- Si l'appareil a été modifié, le désaffecter de l'ancienne ligne
     IF NEW.device_id IS DISTINCT FROM OLD.device_id THEN
         UPDATE line
         SET device_id = NULL
