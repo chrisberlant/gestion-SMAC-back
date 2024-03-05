@@ -204,6 +204,11 @@ router.delete(
 	rightsMiddleware('Tech'),
 	agentController.deleteAgent
 );
+router.get(
+	'/generateAgentsCsvFile',
+	jwtMiddleware,
+	agentController.generateAgentsCsvFile
+);
 
 /* ------------- SERVICES ROUTES ------------- */
 router.get('/getAllServices', jwtMiddleware, serviceController.getAllServices);

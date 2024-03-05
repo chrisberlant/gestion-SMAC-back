@@ -18,6 +18,13 @@ export interface AgentType
 	serviceId?: number;
 }
 
+export interface AgentWithServiceType extends AgentType {
+	service: {
+		title: string;
+		id: number;
+	};
+}
+
 export interface DeviceType
 	extends SequelizeModel<
 		InferAttributes<DeviceType>,

@@ -1,6 +1,9 @@
 import { Response } from 'express';
 import { UserRequest } from '../middlewares/jwtMidleware';
 import { Agent } from '../models';
+import { AgentWithServiceType } from '../@types/models';
+import { generate, stringify } from 'csv';
+import fs from 'fs/promises';
 
 const agentController = {
 	async getAllAgents(_: UserRequest, res: Response) {
@@ -97,6 +100,40 @@ const agentController = {
 			await agent.destroy();
 
 			res.status(200).json(id);
+		} catch (error) {
+			console.error(error);
+			res.status(500).json('Erreur serveur');
+		}
+	},
+
+	async generateAgentsCsvFile(req: UserRequest, res: Response) {
+		try {
+			const agents = (await Agent.findAll({
+				include: [
+					{
+						association: 'service',
+					},
+				],
+			})) as AgentWithServiceType[];
+
+			const formattedAgents = agents.map((agent) => {
+				const { id, serviceId, ...infos } = agent.dataValues;
+				return {
+					...infos,
+					vip: infos.vip ? 'Oui' : 'Non',
+					service: agent.service.title,
+				};
+			});
+
+			const csvData = stringify(formattedAgents, {
+				header: true, // Include headers based on object keys
+			});
+			res.setHeader(
+				'Content-Disposition',
+				'attachment; filename=formattedAgents.csv'
+			);
+			res.setHeader('Content-Type', 'text/csv');
+			res.send(csvData);
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');
