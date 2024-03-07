@@ -2,6 +2,8 @@ import { Response } from 'express';
 import { UserRequest } from '../middlewares/jwtMidleware';
 import { Agent } from '../models';
 import { AgentWithServiceType } from '../@types/models';
+import { AsyncParser, Parser } from 'json2csv';
+import fs from 'fs';
 
 const agentController = {
 	async getAllAgents(_: UserRequest, res: Response) {
@@ -123,7 +125,29 @@ const agentController = {
 				};
 			});
 
-			const csvFields = ['Nom', 'Prénom', 'Email', 'Service'];
+			const dateNow = Date.now();
+
+			// const formattedAgentsJson = JSON.stringify(formattedAgents);
+
+			const fields = ['Nom', 'Prénom', 'Email', 'Service', 'VIP'];
+			const json2csvParser = new Parser({ fields });
+
+			const csv = json2csvParser.parse(formattedAgents);
+			const fileName = `Agents_export_${dateNow}.csv`;
+
+			fs.writeFile(fileName, csv, (err) => {
+				if (err) throw err;
+				console.log('Fichier créé');
+				res.setHeader(
+					'Access-Control-Expose-Headers',
+					'Content-Disposition'
+				);
+				res.setHeader(
+					'Content-Disposition',
+					`attachment; filename=${fileName}`
+				);
+				res.status(200).download(fileName);
+			});
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');
