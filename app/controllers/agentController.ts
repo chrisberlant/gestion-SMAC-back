@@ -116,28 +116,26 @@ const agentController = {
 				],
 			})) as AgentWithServiceType[];
 
+			// Formater les données pour que le fichier soit lisible
 			const formattedAgents = agents.map((agent) => {
 				const { id, serviceId, ...infos } = agent.dataValues;
 				return {
-					...infos,
-					vip: infos.vip ? 'Oui' : 'Non',
-					service: agent.service.title,
+					Email: infos.email,
+					Nom: infos.lastName,
+					Prénom: infos.firstName,
+					VIP: infos.vip ? 'Oui' : 'Non',
+					Service: agent.service.title,
 				};
 			});
 
-			const dateNow = Date.now();
-
-			// const formattedAgentsJson = JSON.stringify(formattedAgents);
-
-			const fields = ['Nom', 'Prénom', 'Email', 'Service', 'VIP'];
-			const json2csvParser = new Parser({ fields });
-
+			const json2csvParser = new Parser();
 			const csv = json2csvParser.parse(formattedAgents);
-			const fileName = `Agents_export_${dateNow}.csv`;
 
-			fs.writeFile(fileName, csv, (err) => {
+			const fileName = `Agents_export_${Date.now()}`;
+			const filePath = `./exports/${fileName}.csv`;
+			// Enregistrer le fichier dans le dossier exports
+			fs.writeFile(filePath, csv, (err) => {
 				if (err) throw err;
-				console.log('Fichier créé');
 				res.setHeader(
 					'Access-Control-Expose-Headers',
 					'Content-Disposition'
@@ -146,7 +144,8 @@ const agentController = {
 					'Content-Disposition',
 					`attachment; filename=${fileName}`
 				);
-				res.status(200).download(fileName);
+
+				res.status(200).download(filePath);
 			});
 		} catch (error) {
 			console.error(error);
