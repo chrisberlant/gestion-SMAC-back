@@ -128,7 +128,7 @@ const agentController = {
 				};
 			});
 
-			const json2csvParser = new Parser();
+			const json2csvParser = new Parser({ delimiter: ';' });
 			const csv = json2csvParser.parse(formattedAgents);
 
 			const fileName = `Agents_export_${Date.now()}`;
