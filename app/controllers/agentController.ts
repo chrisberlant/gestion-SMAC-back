@@ -2,7 +2,7 @@ import { Response } from 'express';
 import { UserRequest } from '../middlewares/jwtMidleware';
 import { Agent } from '../models';
 import { AgentWithServiceType } from '../@types/models';
-import { AsyncParser, Parser } from 'json2csv';
+import { AsyncParser } from '@json2csv/node';
 import fs from 'fs';
 
 const agentController = {
@@ -122,17 +122,20 @@ const agentController = {
 				return {
 					Email: infos.email,
 					Nom: infos.lastName,
-					Prénom: infos.firstName,
+					Prenom: infos.firstName,
 					VIP: infos.vip ? 'Oui' : 'Non',
 					Service: agent.service.title,
 				};
 			});
 
-			const json2csvParser = new Parser({ delimiter: ';' });
-			const csv = json2csvParser.parse(formattedAgents);
+			// Création du contenu CSV à partir des données
+			const parser = new AsyncParser({ delimiter: ';' });
+			const csv = await parser.parse(formattedAgents).promise();
 
+			// Détails du fichier
 			const fileName = `Agents_export_${Date.now()}`;
 			const filePath = `./exports/${fileName}.csv`;
+
 			// Enregistrer le fichier dans le dossier exports
 			fs.writeFile(filePath, csv, (err) => {
 				if (err) throw err;
