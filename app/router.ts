@@ -154,6 +154,11 @@ router.delete(
 	rightsMiddleware('Tech'),
 	deviceController.deleteDevice
 );
+router.get(
+	'/generateDevicesCsvFile',
+	jwtMiddleware,
+	deviceController.generateDevicesCsvFile
+);
 
 /* ------------- MODELS ROUTES ------------- */
 router.get('/getAllModels', jwtMiddleware, modelController.getAllModels);

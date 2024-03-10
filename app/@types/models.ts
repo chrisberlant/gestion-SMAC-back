@@ -19,10 +19,7 @@ export interface AgentType
 }
 
 export interface AgentWithServiceType extends AgentType {
-	service: {
-		title: string;
-		id: number;
-	};
+	service: ServiceType;
 }
 
 export interface DeviceType
@@ -46,6 +43,11 @@ export interface DeviceType
 	comments?: string | null;
 	agentId?: number | null;
 	modelId?: number;
+}
+
+export interface DeviceWithModelAndAgentType extends DeviceType {
+	model: ModelType;
+	agent: AgentWithServiceType;
 }
 
 export interface LineType

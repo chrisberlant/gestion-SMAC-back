@@ -106,7 +106,7 @@ const agentController = {
 		}
 	},
 
-	async generateAgentsCsvFile(req: UserRequest, res: Response) {
+	async generateAgentsCsvFile(_: UserRequest, res: Response) {
 		try {
 			const agents = (await Agent.findAll({
 				include: [
@@ -118,12 +118,11 @@ const agentController = {
 
 			// Formater les données pour que le fichier soit lisible
 			const formattedAgents = agents.map((agent) => {
-				const { id, serviceId, ...infos } = agent.dataValues;
 				return {
-					Email: infos.email,
-					Nom: infos.lastName,
-					Prenom: infos.firstName,
-					VIP: infos.vip ? 'Oui' : 'Non',
+					Email: agent.email,
+					Nom: agent.lastName,
+					Prenom: agent.firstName,
+					VIP: agent.vip ? 'Oui' : 'Non',
 					Service: agent.service.title,
 				};
 			});
