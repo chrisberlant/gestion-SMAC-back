@@ -119,10 +119,16 @@ const deviceController = {
 				include: [
 					{
 						association: 'agent',
-						include: [{ association: 'service' }],
+						attributes: ['email'],
+						include: [
+							{ association: 'service', attributes: ['title'] },
+						],
 					},
 					{
 						association: 'model',
+						attributes: {
+							exclude: ['id'],
+						},
 					},
 				],
 			})) as DeviceWithModelAndAgentType[];

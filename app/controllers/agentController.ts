@@ -112,6 +112,7 @@ const agentController = {
 				include: [
 					{
 						association: 'service',
+						attributes: ['title'],
 					},
 				],
 			})) as AgentWithServiceType[];

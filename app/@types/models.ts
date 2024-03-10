@@ -18,10 +18,6 @@ export interface AgentType
 	serviceId?: number;
 }
 
-export interface AgentWithServiceType extends AgentType {
-	service: ServiceType;
-}
-
 export interface DeviceType
 	extends SequelizeModel<
 		InferAttributes<DeviceType>,
@@ -43,11 +39,6 @@ export interface DeviceType
 	comments?: string | null;
 	agentId?: number | null;
 	modelId?: number;
-}
-
-export interface DeviceWithModelAndAgentType extends DeviceType {
-	model: ModelType;
-	agent: AgentWithServiceType;
 }
 
 export interface LineType
@@ -95,4 +86,35 @@ export interface UserType
 	lastName: string;
 	password?: string;
 	role: 'Admin' | 'Tech' | 'Consultant';
+}
+
+// Interfaces utilisées pour les exports en CSV
+
+export interface AgentWithServiceType extends AgentType {
+	service: {
+		title: string;
+	};
+}
+
+export interface DeviceWithModelAndAgentType extends DeviceType {
+	model: Omit<ModelType, 'id'>;
+	agent: {
+		email: string;
+		service: {
+			title: string;
+		};
+	};
+}
+
+export interface LineWithAgentAndDeviceType extends LineType {
+	agent: {
+		email: string;
+		service: {
+			title: string;
+		};
+	};
+	device: {
+		imei: string;
+		model: Omit<ModelType, 'id'>;
+	};
 }

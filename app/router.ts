@@ -128,9 +128,13 @@ router.delete(
 	rightsMiddleware('Tech'),
 	lineController.deleteLine
 );
+router.get(
+	'/generateLinesCsvFile',
+	jwtMiddleware,
+	lineController.generateLinesCsvFile
+);
 
 /* ------------- DEVICES ROUTES ------------- */
-
 router.get('/getAllDevices', jwtMiddleware, deviceController.getAllDevices);
 router.get('/getDeviceById/:id', jwtMiddleware, deviceController.getDeviceById);
 router.post(

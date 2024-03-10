@@ -1,9 +1,10 @@
 import { Response } from 'express';
 import { Op } from 'sequelize';
-import { LineType } from '../@types/models';
+import { LineType, LineWithAgentAndDeviceType } from '../@types/models';
 import { UserRequest } from '../middlewares/jwtMidleware';
-import { Device, Line } from '../models';
-import sequelize from '../sequelize-client';
+import { Line } from '../models';
+import { AsyncParser } from '@json2csv/node';
+import fs from 'fs';
 
 const lineController = {
 	async getAllLines(_: UserRequest, res: Response) {
@@ -100,6 +101,87 @@ const lineController = {
 			await line.destroy();
 
 			res.status(200).json(id);
+		} catch (error) {
+			console.error(error);
+			res.status(500).json('Erreur serveur');
+		}
+	},
+
+	async generateLinesCsvFile(_: UserRequest, res: Response) {
+		try {
+			const lines = (await Line.findAll({
+				include: [
+					{
+						association: 'agent',
+						attributes: ['email'],
+						include: [
+							{ association: 'service', attributes: ['title'] },
+						],
+					},
+					{
+						association: 'device',
+						attributes: {
+							exclude: ['id'],
+						},
+						include: [
+							{
+								association: 'model',
+								attributes: {
+									exclude: ['id'],
+								},
+							},
+						],
+					},
+				],
+				attributes: {
+					exclude: ['id'],
+				},
+			})) as LineWithAgentAndDeviceType[];
+
+			// Formater les données pour que le fichier soit lisible
+			const formattedLines = lines.map((line) => {
+				return {
+					Numero: `"${line.number}"`,
+					Profil: line.profile,
+					Statut: line.status,
+					Proprietaire: line.agent?.email,
+					Service: line.agent?.service.title,
+					'IMEI Appareil': line.device?.imei,
+					Modèle: line.device
+						? `${line.device.model.brand} ${
+								line.device.model.reference
+						  }${
+								line.device.model.storage
+									? ` ${line.device.model.storage}`
+									: ''
+						  }`
+						: null,
+					Commentaires: line?.comments,
+				};
+			});
+
+			// Création du contenu CSV à partir des données
+			const parser = new AsyncParser({ delimiter: ';' });
+			const csv = await parser.parse(formattedLines).promise();
+
+			// Détails du fichier
+			const fileName = `Lignes_export_${Date.now()}`;
+			const filePath = `./exports/${fileName}.csv`;
+
+			// Enregistrer le fichier dans le dossier exports
+			fs.writeFile(filePath, csv, (err) => {
+				if (err) throw err;
+				res.setHeader(
+					'Access-Control-Expose-Headers',
+					'Content-Disposition'
+				);
+				res.setHeader(
+					'Content-Disposition',
+					`attachment; filename=${fileName}`
+				);
+
+				res.status(200).download(filePath);
+			});
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');
