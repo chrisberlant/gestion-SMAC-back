@@ -83,6 +83,16 @@ const lineController = {
 			const line = await Line.findByPk(id);
 			if (!line) return res.status(404).json("La ligne n'existe pas");
 
+			const existingNumber = await Line.findOne({
+				where: {
+					number: newInfos.number,
+				},
+			});
+			if (existingNumber)
+				return res
+					.status(401)
+					.json('Une ligne avec ce numéro existe déjà');
+
 			const lineIsModified = await line.update(newInfos);
 
 			res.status(200).json(lineIsModified);

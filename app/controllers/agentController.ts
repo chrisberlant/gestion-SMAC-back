@@ -4,6 +4,7 @@ import { Agent } from '../models';
 import { AgentWithServiceType } from '../@types/models';
 import { AsyncParser } from '@json2csv/node';
 import generateCsvFile from '../utils/csvGeneration';
+import { Op } from 'sequelize';
 
 const agentController = {
 	async getAllAgents(_: UserRequest, res: Response) {
@@ -53,11 +54,12 @@ const agentController = {
 	async createAgent(req: UserRequest, res: Response) {
 		try {
 			const infos = req.body;
-			const { email } = infos;
 
 			const existingAgent = await Agent.findOne({
 				where: {
-					email,
+					email: {
+						[Op.iLike]: infos.email,
+					},
 				},
 			});
 			if (existingAgent)
@@ -80,6 +82,18 @@ const agentController = {
 
 			const agent = await Agent.findByPk(id);
 			if (!agent) return res.status(404).json("L'agent n'existe pas");
+
+			const existingAgent = await Agent.findOne({
+				where: {
+					email: {
+						[Op.iLike]: newInfos.email,
+					},
+				},
+			});
+			if (existingAgent)
+				return res
+					.status(401)
+					.json('Un agent avec cette adresse mail existe déjà');
 
 			const agentIsModified = await agent.update(newInfos);
 

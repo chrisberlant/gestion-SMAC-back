@@ -60,6 +60,22 @@ const modelController = {
 			const model = await Model.findByPk(id);
 			if (!model) return res.status(404).json("Le modèle n'existe pas");
 
+			const existingModel = await Model.findOne({
+				where: {
+					brand: {
+						[Op.iLike]: newInfos.brand,
+					},
+					reference: {
+						[Op.iLike]: newInfos.reference,
+					},
+					storage: {
+						[Op.iLike]: newInfos.storage,
+					},
+				},
+			});
+			if (existingModel)
+				return res.status(401).json('Le modèle existe déjà');
+
 			const modelIsModified = await model.update(newInfos);
 
 			res.status(200).json(modelIsModified);

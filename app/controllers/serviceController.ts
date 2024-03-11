@@ -51,7 +51,9 @@ const serviceController = {
 
 			const existingService = await Service.findOne({
 				where: {
-					title,
+					title: {
+						[Op.iLike]: title,
+					},
 				},
 			});
 			if (!existingService)

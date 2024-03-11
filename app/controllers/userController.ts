@@ -161,6 +161,16 @@ const userController = {
 			if (!user)
 				return res.status(404).json("L'utilisateur n'existe pas");
 
+			const existingEmailCheck = await User.findOne({
+				where: {
+					email: infosToUpdate.email,
+				},
+			});
+			if (existingEmailCheck)
+				return res
+					.status(409)
+					.json('Un utilisateur avec cette adresse mail existe déjà');
+
 			await user.update(infosToUpdate);
 
 			const { firstName, lastName, email, role } = user;

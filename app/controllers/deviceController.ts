@@ -79,6 +79,16 @@ const deviceController = {
 			const device = await Device.findByPk(id);
 			if (!device) return res.status(404).json("L'appareil n'existe pas");
 
+			const existingDevice = await Device.findOne({
+				where: {
+					imei: newInfos.imei,
+				},
+			});
+			if (existingDevice)
+				return res
+					.status(401)
+					.json('Un appareil avec cet IMEI existe déjà');
+
 			const deviceIsModified = await device.update(newInfos);
 
 			res.status(200).json(deviceIsModified);
