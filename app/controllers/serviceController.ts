@@ -32,8 +32,7 @@ const serviceController = {
 				return res.status(401).json('Le service existe déjà');
 
 			const newService = await Service.create({ title });
-
-			if (!newService) throw new Error('Impossible de créer le modèle');
+			if (!newService) throw new Error('Impossible de créer le service');
 
 			res.status(201).json(newService);
 		} catch (error) {
@@ -49,6 +48,16 @@ const serviceController = {
 			const service = await Service.findByPk(id);
 			if (!service)
 				return res.status(404).json("Le service n'existe pas");
+
+			const existingService = await Service.findOne({
+				where: {
+					title,
+				},
+			});
+			if (!existingService)
+				return res
+					.status(403)
+					.json('Un service possédant ce titre existe déjà');
 
 			const serviceIsModified = await service.update({ title });
 

@@ -141,7 +141,7 @@ const lineController = {
 			// Formater les données pour que le fichier soit lisible
 			const formattedLines = lines.map((line) => {
 				return {
-					Numero: `"${line.number}"`,
+					Numero: line.number,
 					Profil: line.profile,
 					Statut: line.status,
 					Proprietaire: line.agent?.email,
