@@ -1,7 +1,7 @@
 import { randomInt } from 'crypto';
 
 // Génération d'un mot de passe aléatoire entre 8 et 12 caractères
-const generateRandomPassword = () => {
+export default function generateRandomPassword() {
 	// Longueur aléatoire entre 8 et 12 caractères
 	const stringLength = randomInt(8, 13);
 	const charset =
@@ -20,6 +20,4 @@ const generateRandomPassword = () => {
 	randomPassword += specialChar.charAt(randomIndex);
 
 	return randomPassword;
-};
-
-export default generateRandomPassword;
+}

@@ -3,7 +3,7 @@ import { UserRequest } from '../middlewares/jwtMidleware';
 import { Agent } from '../models';
 import { AgentWithServiceType } from '../@types/models';
 import { AsyncParser } from '@json2csv/node';
-import fs from 'fs';
+import generateCsvFile from '../utils/csvGeneration';
 
 const agentController = {
 	async getAllAgents(_: UserRequest, res: Response) {
@@ -128,28 +128,14 @@ const agentController = {
 				};
 			});
 
-			// Création du contenu CSV à partir des données
-			const parser = new AsyncParser({ delimiter: ';' });
-			const csv = await parser.parse(formattedAgents).promise();
-
-			// Détails du fichier
-			const fileName = `Agents_export_${Date.now()}`;
-			const filePath = `./exports/${fileName}.csv`;
-
-			// Enregistrer le fichier dans le dossier exports
-			fs.writeFile(filePath, csv, (err) => {
-				if (err) throw err;
-				res.setHeader(
-					'Access-Control-Expose-Headers',
-					'Content-Disposition'
-				);
-				res.setHeader(
-					'Content-Disposition',
-					`attachment; filename=${fileName}`
-				);
-
-				res.status(200).download(filePath);
+			// Création du fichier CSV
+			const csv = await generateCsvFile({
+				data: formattedAgents,
+				fileName: 'Agents_export',
+				res,
 			});
+
+			res.status(200).send(csv);
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');

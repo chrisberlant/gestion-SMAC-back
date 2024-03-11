@@ -5,6 +5,7 @@ import { UserRequest } from '../middlewares/jwtMidleware';
 import { Line } from '../models';
 import { AsyncParser } from '@json2csv/node';
 import fs from 'fs';
+import generateCsvFile from '../utils/csvGeneration';
 
 const lineController = {
 	async getAllLines(_: UserRequest, res: Response) {
@@ -160,28 +161,14 @@ const lineController = {
 				};
 			});
 
-			// Création du contenu CSV à partir des données
-			const parser = new AsyncParser({ delimiter: ';' });
-			const csv = await parser.parse(formattedLines).promise();
-
-			// Détails du fichier
-			const fileName = `Lignes_export_${Date.now()}`;
-			const filePath = `./exports/${fileName}.csv`;
-
-			// Enregistrer le fichier dans le dossier exports
-			fs.writeFile(filePath, csv, (err) => {
-				if (err) throw err;
-				res.setHeader(
-					'Access-Control-Expose-Headers',
-					'Content-Disposition'
-				);
-				res.setHeader(
-					'Content-Disposition',
-					`attachment; filename=${fileName}`
-				);
-
-				res.status(200).download(filePath);
+			// Création du fichier CSV
+			const csv = await generateCsvFile({
+				data: formattedLines,
+				fileName: 'Lignes_export',
+				res,
 			});
+
+			res.status(200).send(csv);
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');
