@@ -1,10 +1,8 @@
 import { Response } from 'express';
 import { Op } from 'sequelize';
+import { UserRequest } from '../@types';
 import { LineType, LineWithAgentAndDeviceType } from '../@types/models';
-import { UserRequest } from '../middlewares/jwtMidleware';
 import { Line } from '../models';
-import { AsyncParser } from '@json2csv/node';
-import fs from 'fs';
 import generateCsvFile from '../utils/csvGeneration';
 
 const lineController = {

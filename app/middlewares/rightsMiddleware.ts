@@ -1,7 +1,6 @@
 import { NextFunction, Response } from 'express';
 import { User } from '../models';
-import { UserRequest } from './jwtMidleware';
-import { RoleType } from '../@types';
+import { RoleType, UserRequest } from '../@types';
 
 const rightsMiddleware =
 	(requiredRole: RoleType) =>

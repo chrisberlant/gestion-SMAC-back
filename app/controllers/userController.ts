@@ -1,9 +1,8 @@
 import { Response } from 'express';
-import { UserRequest } from '../middlewares/jwtMidleware';
 import { User } from '../models';
-
-import bcrypt from 'bcrypt';
+import { UserRequest } from '../@types';
 import { UserType } from '../@types/models';
+import bcrypt from 'bcrypt';
 import generateRandomPassword from '../utils/passwordGeneration';
 import { Op } from 'sequelize';
 
@@ -130,6 +129,7 @@ const userController = {
 				saltRounds
 			);
 
+			// Vérification si un utilisateur avec cette adresse mail existe
 			const existingUserCheck = await User.findOne({
 				where: {
 					email: infos.email,

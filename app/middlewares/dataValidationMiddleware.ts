@@ -1,6 +1,6 @@
 import { NextFunction, Response } from 'express';
 import { ZodSchema } from 'zod';
-import { UserRequest } from './jwtMidleware';
+import { UserRequest } from '../@types';
 
 const dataValidation =
 	(schema: ZodSchema) =>

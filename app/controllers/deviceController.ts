@@ -1,9 +1,7 @@
 import { Response } from 'express';
-import { UserRequest } from '../middlewares/jwtMidleware';
+import { UserRequest } from '../@types';
 import { Device, Line } from '../models';
 import { DeviceWithModelAndAgentType } from '../@types/models';
-import { AsyncParser } from '@json2csv/node';
-import fs from 'fs';
 import generateCsvFile from '../utils/csvGeneration';
 import { Op } from 'sequelize';
 

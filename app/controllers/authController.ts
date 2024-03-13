@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { UserRequest } from '../middlewares/jwtMidleware';
+import { UserRequest } from '../@types';
 import { User } from '../models';
 
 const authController = {

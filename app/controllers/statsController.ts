@@ -1,4 +1,4 @@
-import { UserRequest } from '../middlewares/jwtMidleware';
+import { UserRequest } from '../@types';
 import { Response } from 'express';
 import { Service, Model } from '../models';
 import sequelize from '../sequelize-client';

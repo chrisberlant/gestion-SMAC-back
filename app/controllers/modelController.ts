@@ -1,5 +1,5 @@
 import { Op } from 'sequelize';
-import { UserRequest } from '../middlewares/jwtMidleware';
+import { UserRequest } from '../@types';
 import { Model } from '../models';
 import { Response } from 'express';
 
