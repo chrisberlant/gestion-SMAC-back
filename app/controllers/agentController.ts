@@ -87,6 +87,9 @@ const agentController = {
 					email: {
 						[Op.iLike]: newInfos.email,
 					},
+					id: {
+						[Op.not]: id,
+					},
 				},
 			});
 			if (existingAgent)
