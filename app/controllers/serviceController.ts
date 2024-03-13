@@ -49,17 +49,24 @@ const serviceController = {
 			if (!service)
 				return res.status(404).json("Le service n'existe pas");
 
+			// Vérification si un service avec ce titre existe
 			const existingService = await Service.findOne({
 				where: {
 					title: {
 						[Op.iLike]: title,
 					},
+					id: {
+						[Op.not]: id,
+					},
 				},
 			});
-			if (!existingService)
+			if (existingService)
 				return res
 					.status(403)
 					.json('Un service possédant ce titre existe déjà');
+
+			// Si le titre fourni est identique au titre déjà renseigné
+			if (title === service.title) return res.status(200).json(service);
 
 			const serviceIsModified = await service.update({ title });
 

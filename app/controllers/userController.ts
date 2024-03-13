@@ -5,6 +5,7 @@ import { User } from '../models';
 import bcrypt from 'bcrypt';
 import { UserType } from '../@types/models';
 import generateRandomPassword from '../utils/passwordGeneration';
+import { Op } from 'sequelize';
 
 const userController = {
 	async getCurrentUser(req: UserRequest, res: Response) {
@@ -33,6 +34,21 @@ const userController = {
 			const user = await User.findByPk(userId);
 			if (!user)
 				return res.status(404).json("L'utilisateur n'existe pas");
+
+			const existingEmailCheck = await User.findOne({
+				where: {
+					email: infosToUpdate.email,
+					id: {
+						[Op.not]: userId,
+					},
+				},
+			});
+			if (existingEmailCheck)
+				return res
+					.status(409)
+					.json(
+						'Un autre utilisateur possède déjà cette adresse mail'
+					);
 
 			await user.update(infosToUpdate);
 
@@ -161,15 +177,21 @@ const userController = {
 			if (!user)
 				return res.status(404).json("L'utilisateur n'existe pas");
 
+			// Vérification si un utilisateur avec cette adresse mail existe
 			const existingEmailCheck = await User.findOne({
 				where: {
 					email: infosToUpdate.email,
+					id: {
+						[Op.not]: id,
+					},
 				},
 			});
 			if (existingEmailCheck)
 				return res
 					.status(409)
-					.json('Un utilisateur avec cette adresse mail existe déjà');
+					.json(
+						'Un autre utilisateur possède déjà cette adresse mail'
+					);
 
 			await user.update(infosToUpdate);
 

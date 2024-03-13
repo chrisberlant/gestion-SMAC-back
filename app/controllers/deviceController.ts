@@ -5,6 +5,7 @@ import { DeviceWithModelAndAgentType } from '../@types/models';
 import { AsyncParser } from '@json2csv/node';
 import fs from 'fs';
 import generateCsvFile from '../utils/csvGeneration';
+import { Op } from 'sequelize';
 
 const deviceController = {
 	async getAllDevices(_: UserRequest, res: Response) {
@@ -82,6 +83,9 @@ const deviceController = {
 			const existingDevice = await Device.findOne({
 				where: {
 					imei: newInfos.imei,
+					id: {
+						[Op.not]: id,
+					},
 				},
 			});
 			if (existingDevice)

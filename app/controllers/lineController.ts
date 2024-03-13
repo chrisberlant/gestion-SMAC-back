@@ -86,6 +86,9 @@ const lineController = {
 			const existingNumber = await Line.findOne({
 				where: {
 					number: newInfos.number,
+					id: {
+						[Op.not]: id,
+					},
 				},
 			});
 			if (existingNumber)

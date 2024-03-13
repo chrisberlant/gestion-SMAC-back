@@ -71,6 +71,9 @@ const modelController = {
 					storage: {
 						[Op.iLike]: newInfos.storage,
 					},
+					id: {
+						[Op.not]: id,
+					},
 				},
 			});
 			if (existingModel)
