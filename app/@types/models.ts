@@ -90,10 +90,13 @@ export interface UserType
 
 // Interfaces utilisées pour les exports en CSV
 
-export interface AgentWithServiceType extends AgentType {
+export interface AgentWithServiceAndDevicesType extends AgentType {
 	service: {
 		title: string;
 	};
+	devices: {
+		id: number;
+	}[];
 }
 
 export interface DeviceWithModelAndAgentType extends DeviceType {

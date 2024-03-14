@@ -1,9 +1,10 @@
 import { Response } from 'express';
 import { UserRequest } from '../@types';
 import { Agent } from '../models';
-import { AgentWithServiceType } from '../@types/models';
+import { AgentWithServiceAndDevicesType } from '../@types/models';
 import generateCsvFile from '../utils/csvGeneration';
 import { Op } from 'sequelize';
+import sequelize from 'sequelize';
 
 const agentController = {
 	async getAllAgents(_: UserRequest, res: Response) {
@@ -130,8 +131,12 @@ const agentController = {
 						association: 'service',
 						attributes: ['title'],
 					},
+					{
+						association: 'devices',
+						attributes: ['id'],
+					},
 				],
-			})) as AgentWithServiceType[];
+			})) as AgentWithServiceAndDevicesType[];
 
 			// Formater les données pour que le fichier soit lisible
 			const formattedAgents = agents.map((agent) => {
@@ -141,6 +146,7 @@ const agentController = {
 					Prenom: agent.firstName,
 					VIP: agent.vip ? 'Oui' : 'Non',
 					Service: agent.service.title,
+					Appareils: agent.devices?.length,
 				};
 			});
 

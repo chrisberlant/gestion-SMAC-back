@@ -4,8 +4,9 @@ import { Service, Model } from '../models';
 import sequelize from '../sequelize-client';
 
 const statsController = {
-	async getAgentsAndDevicesPerService(req: UserRequest, res: Response) {
+	async getAgentsAndDevicesPerService(_: UserRequest, res: Response) {
 		try {
+			//TODO fix nombre d'agents
 			const agentsAndDevicesPerService = await Service.findAll({
 				include: [
 					{
