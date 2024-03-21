@@ -29,7 +29,7 @@ CREATE TABLE "agent" (
     "id" SERIAL PRIMARY KEY,
     "last_name" TEXT NOT NULL,
     "first_name" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
+    "email" TEXT NOT NULL UNIQUE,
     "vip" BOOLEAN NOT NULL,
     "service_id" INT NOT NULL,
     FOREIGN KEY ("service_id") REFERENCES "service"("id"),
@@ -145,6 +145,9 @@ BEFORE UPDATE OF agent_id ON device
 FOR EACH ROW
 WHEN (pg_trigger_depth() < 1)   -- Uniquement si la mise à jour n'est pas effectuée par un autre trigger
 EXECUTE FUNCTION update_line_owner();
+
+INSERT INTO "public"."user" ("last_name", "first_name", "email", "password", "role") VALUES
+('Admin', 'Super', 'super.admin@gmail.com', '$2a$10$Fk6Nl6in0E9cO6XrmTDeseOJ3mbLuULupvOp10lPmBhtnu.93alwS', 'Admin');
 
 
 COMMIT;

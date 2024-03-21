@@ -1,7 +1,7 @@
 BEGIN;
 
-INSERT INTO "public"."user" ("last_name", "first_name", "email", "password", "role") VALUES
-('Admin', 'Super', 'super.admin@gmail.com', '$2a$10$Fk6Nl6in0E9cO6XrmTDeseOJ3mbLuULupvOp10lPmBhtnu.93alwS', 'Admin');
+-- INSERT INTO "public"."user" ("last_name", "first_name", "email", "password", "role") VALUES
+-- ('Admin', 'Super', 'super.admin@gmail.com', '$2a$10$Fk6Nl6in0E9cO6XrmTDeseOJ3mbLuULupvOp10lPmBhtnu.93alwS', 'Admin');
 
 INSERT INTO "public"."service" ("title") VALUES
 ('SG'), ('OH'), ('DAF'), ('DNUM');

@@ -1,10 +1,16 @@
 import { Response } from 'express';
 import { UserRequest } from '../@types';
-import { Agent } from '../models';
-import { AgentWithServiceAndDevicesType } from '../@types/models';
+import { Agent, Service } from '../models';
+import {
+	AgentType,
+	AgentWithServiceAndDevicesType,
+	AgentsImportType,
+} from '../@types/models';
 import generateCsvFile from '../utils/csvGeneration';
 import { Op } from 'sequelize';
 import sequelize from 'sequelize';
+import agent from '../models/agent';
+import service from '../models/service';
 
 const agentController = {
 	async getAllAgents(_: UserRequest, res: Response) {
@@ -158,6 +164,33 @@ const agentController = {
 			});
 
 			res.status(200).send(csv);
+		} catch (error) {
+			console.error(error);
+			res.status(500).json('Erreur serveur');
+		}
+	},
+
+	async importMultipleAgents(req: UserRequest, res: Response) {
+		try {
+			const importedAgents: AgentsImportType[] = req.body;
+
+			const services = await Service.findAll();
+
+			// Formatage des données des agents pour insertion en BDD
+			const formattedAgents = importedAgents.map((agent) => ({
+				email: agent.Email,
+				lastName: agent.Nom,
+				firstName: agent.Prenom,
+				vip: agent.VIP === 'Oui' ? true : false,
+				serviceId: services.find(
+					(service) => service.title === agent.Service
+				)?.id,
+			}));
+
+			const agentsCreation = await Agent.bulkCreate(formattedAgents);
+			// TODO gestion d'erreurs
+
+			res.status(200).json('ok');
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');

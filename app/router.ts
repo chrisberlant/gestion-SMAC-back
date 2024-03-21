@@ -15,6 +15,7 @@ import selectionSchema from './validationSchemas';
 import {
 	agentCreationSchema,
 	agentUpdateSchema,
+	agentsImportSchema,
 } from './validationSchemas/agentSchemas';
 import {
 	deviceCreationSchema,
@@ -217,6 +218,13 @@ router.get(
 	'/generateAgentsCsvFile',
 	jwtMiddleware,
 	agentController.generateAgentsCsvFile
+);
+router.post(
+	'/importMultipleAgents',
+	jwtMiddleware,
+	// dataValidation(agentsImportSchema),
+	rightsMiddleware('Tech'),
+	agentController.importMultipleAgents
 );
 
 /* ------------- SERVICES ROUTES ------------- */

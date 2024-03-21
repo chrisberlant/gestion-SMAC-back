@@ -4,6 +4,8 @@ import {
 	InferCreationAttributes,
 	Model as SequelizeModel,
 } from 'sequelize';
+import { agentsImportSchema } from '../validationSchemas/agentSchemas';
+import z from 'zod';
 
 export interface AgentType
 	extends SequelizeModel<
@@ -121,3 +123,7 @@ export interface LineWithAgentAndDeviceType extends LineType {
 		model: Omit<ModelType, 'id'>;
 	};
 }
+
+// Interfaces utilisées pour les imports en CSV
+
+export type AgentsImportType = z.infer<typeof agentsImportSchema>;
