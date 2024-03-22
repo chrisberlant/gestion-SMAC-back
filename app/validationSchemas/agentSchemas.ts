@@ -68,28 +68,30 @@ export const agentUpdateSchema = z.strictObject({
 		.optional(),
 });
 
-export const agentsImportSchema = z.strictObject({
-	Email: z
-		.string({
-			required_error: "L'adresse mail doit être renseignée",
-			invalid_type_error: "Le format de l'adresse mail est incorrect",
-		})
-		.email("Le format de l'adresse mail est incorrect"),
-	Nom: z.string({
-		required_error: 'Le nom de famille doit être renseigné',
-		invalid_type_error:
-			'Le nom de famille doit être une chaîne de caractères',
-	}),
-	Prenom: z.string({
-		required_error: 'Le prénom doit être renseigné',
-		invalid_type_error: 'Le prénom doit être une chaîne de caractères',
-	}),
-	VIP: z.enum(['Oui', 'Non'], {
-		errorMap: () => {
-			return {
-				message: 'Le statut VIP doit être Oui ou Non',
-			};
-		},
-	}),
-	Service: z.string(),
-});
+export const agentsImportSchema = z.array(
+	z.strictObject({
+		Email: z
+			.string({
+				required_error: "L'adresse mail doit être renseignée",
+				invalid_type_error: "Le format de l'adresse mail est incorrect",
+			})
+			.email("Le format de l'adresse mail est incorrect"),
+		Nom: z.string({
+			required_error: 'Le nom de famille doit être renseigné',
+			invalid_type_error:
+				'Le nom de famille doit être une chaîne de caractères',
+		}),
+		Prenom: z.string({
+			required_error: 'Le prénom doit être renseigné',
+			invalid_type_error: 'Le prénom doit être une chaîne de caractères',
+		}),
+		VIP: z.enum(['Oui', 'Non'], {
+			errorMap: () => {
+				return {
+					message: 'Le statut VIP doit être Oui ou Non',
+				};
+			},
+		}),
+		Service: z.string(),
+	})
+);

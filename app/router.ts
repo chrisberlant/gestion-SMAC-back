@@ -222,7 +222,7 @@ router.get(
 router.post(
 	'/importMultipleAgents',
 	jwtMiddleware,
-	// dataValidation(agentsImportSchema),
+	dataValidation(agentsImportSchema),
 	rightsMiddleware('Tech'),
 	agentController.importMultipleAgents
 );

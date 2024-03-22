@@ -173,7 +173,7 @@ const agentController = {
 	async importMultipleAgents(req: UserRequest, res: Response) {
 		try {
 			// Agents importés depuis le CSV
-			const importedAgents: AgentsImportType[] = req.body;
+			const importedAgents: AgentsImportType = req.body;
 
 			const services = await Service.findAll();
 
@@ -201,6 +201,7 @@ const agentController = {
 				)
 					alreadyExistingEmails.push(importedAgent.email);
 			});
+			console.log(alreadyExistingEmails);
 
 			// Renvoi au client des adresses mail déjà présentes en BDD
 			if (alreadyExistingEmails)
