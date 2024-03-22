@@ -172,13 +172,14 @@ const agentController = {
 
 	async importMultipleAgents(req: UserRequest, res: Response) {
 		try {
+			// Agents importés depuis le CSV
 			const importedAgents: AgentsImportType[] = req.body;
 
 			const services = await Service.findAll();
 
 			// Formatage des données des agents pour insertion en BDD
-			const formattedAgents = importedAgents.map((agent) => ({
-				email: agent.Email,
+			const formattedImportedAgents = importedAgents.map((agent) => ({
+				email: agent.Email.toLowerCase(),
 				lastName: agent.Nom,
 				firstName: agent.Prenom,
 				vip: agent.VIP === 'Oui' ? true : false,
@@ -187,8 +188,26 @@ const agentController = {
 				)?.id,
 			}));
 
-			const agentsCreation = await Agent.bulkCreate(formattedAgents);
-			// TODO gestion d'erreurs
+			const currentAgents = await Agent.findAll({ raw: true });
+			const alreadyExistingEmails: string[] = [];
+
+			// Vérification pour chaque agent importé qu'un agent avec son adresse mail n'est pas existant
+			formattedImportedAgents.forEach((importedAgent) => {
+				if (
+					currentAgents.find(
+						(currentAgent) =>
+							currentAgent.email === importedAgent.email
+					)
+				)
+					alreadyExistingEmails.push(importedAgent.email);
+			});
+
+			// Renvoi au client des adresses mail déjà présentes en BDD
+			if (alreadyExistingEmails)
+				return res.status(400).json(alreadyExistingEmails);
+
+			// Ajout des agents
+			await Agent.bulkCreate(formattedImportedAgents);
 
 			res.status(200).json('ok');
 		} catch (error) {
