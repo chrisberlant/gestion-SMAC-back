@@ -203,7 +203,7 @@ const agentController = {
 			});
 
 			// Renvoi au client des adresses mail déjà présentes en BDD
-			if (alreadyExistingEmails)
+			if (alreadyExistingEmails.length > 0)
 				return res.status(409).json(alreadyExistingEmails);
 
 			// Ajout des agents

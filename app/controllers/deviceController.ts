@@ -184,6 +184,7 @@ const deviceController = {
 		try {
 			// Appareils importés depuis le CSV
 			const importedDevices: DevicesImportType = req.body;
+			console.log(importedDevices);
 
 			const models = await Model.findAll({ raw: true });
 			const agents = await Agent.findAll({ raw: true });
@@ -195,11 +196,19 @@ const deviceController = {
 				isNew: device.Etat.toLowerCase() === 'neuf' ? true : false,
 				modelId: models.find(
 					(model) =>
-						model.brand + ' ' + model.reference === device.Modele
+						model.brand.toLowerCase() +
+							' ' +
+							model.reference.toLowerCase() +
+							(model.storage
+								? ' ' + model.storage.toLowerCase()
+								: '') ===
+						device.Modele.trim().toLowerCase()
 				)?.id,
 				agentId: device.Proprietaire
 					? agents.find(
-							(agent) => agent.email === device.Proprietaire
+							(agent) =>
+								agent.email ===
+								device.Proprietaire?.trim().toLowerCase()
 					  )?.id
 					: null,
 				preparationDate: device.Preparation
@@ -208,8 +217,12 @@ const deviceController = {
 				attributionDate: device.Attribution
 					? new Date(device.Attribution)
 					: null,
-				comments: device.Commentaires ?? null,
+				comments:
+					device.Commentaires?.trim() !== ''
+						? device.Commentaires
+						: null,
 			}));
+			console.log(formattedImportedDevices);
 
 			const currentDevices = await Device.findAll({ raw: true });
 			const alreadyExistingImei: string[] = [];
@@ -225,11 +238,11 @@ const deviceController = {
 					alreadyExistingImei.push(importedDevice.imei);
 			});
 
-			// Renvoi au client des adresses mail déjà présentes en BDD
-			if (alreadyExistingImei)
+			// Renvoi au client des IMEI déjà présents en BDD
+			if (alreadyExistingImei.length > 0)
 				return res.status(409).json(alreadyExistingImei);
 
-			// Ajout des devices
+			// Ajout des appareils
 			await Device.bulkCreate(formattedImportedDevices);
 
 			res.status(200).json('ok');

@@ -168,7 +168,7 @@ router.get(
 router.post(
 	'/importMultipleDevices',
 	jwtMiddleware,
-	dataValidation(devicesImportSchema),
+	// dataValidation(devicesImportSchema),
 	rightsMiddleware('Tech'),
 	deviceController.importMultipleDevices
 );
