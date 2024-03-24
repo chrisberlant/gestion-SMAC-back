@@ -154,13 +154,13 @@ const deviceController = {
 				return {
 					IMEI: device.imei,
 					Statut: device.status,
-					Etat: device.isNew ? 'Neuf' : 'Occasion',
-					Modele: `${device.model.brand} ${device.model.reference}${
+					État: device.isNew ? 'Neuf' : 'Occasion',
+					Modèle: `${device.model.brand} ${device.model.reference}${
 						device.model.storage ? ` ${device.model.storage}` : ''
 					}`,
-					Proprietaire: device.agent?.email,
+					Propriétaire: device.agent?.email,
 					Service: device?.agent?.service.title,
-					Preparation: device?.preparationDate,
+					Préparation: device?.preparationDate,
 					Attribution: device?.attributionDate,
 					Commentaires: device?.comments,
 				};
@@ -193,7 +193,8 @@ const deviceController = {
 			const formattedImportedDevices = importedDevices.map((device) => ({
 				imei: device.IMEI,
 				status: device.Statut,
-				isNew: device.Etat.toLowerCase() === 'neuf' ? true : false,
+				isNew:
+					device.État.trim().toLowerCase() === 'neuf' ? true : false,
 				modelId: models.find(
 					(model) =>
 						model.brand.toLowerCase() +
@@ -202,24 +203,24 @@ const deviceController = {
 							(model.storage
 								? ' ' + model.storage.toLowerCase()
 								: '') ===
-						device.Modele.trim().toLowerCase()
+						device.Modèle.trim().toLowerCase()
 				)?.id,
-				agentId: device.Proprietaire
+				agentId: device.Propriétaire
 					? agents.find(
 							(agent) =>
 								agent.email ===
-								device.Proprietaire?.trim().toLowerCase()
+								device.Propriétaire?.trim().toLowerCase()
 					  )?.id
 					: null,
-				preparationDate: device.Preparation
-					? new Date(device.Preparation)
+				preparationDate: device.Préparation
+					? new Date(device.Préparation)
 					: null,
 				attributionDate: device.Attribution
 					? new Date(device.Attribution)
 					: null,
 				comments:
 					device.Commentaires?.trim() !== ''
-						? device.Commentaires
+						? device.Commentaires?.trim()
 						: null,
 			}));
 			console.log(formattedImportedDevices);
@@ -237,6 +238,7 @@ const deviceController = {
 				)
 					alreadyExistingImei.push(importedDevice.imei);
 			});
+			console.log(alreadyExistingImei);
 
 			// Renvoi au client des IMEI déjà présents en BDD
 			if (alreadyExistingImei.length > 0)

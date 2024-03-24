@@ -160,7 +160,7 @@ export const devicesImportSchema = z.array(
 				invalid_type_error: "L'IMEI doit être une chaîne de caractères",
 			})
 			.length(15, "L'IMEI fourni est incorrect"),
-		Etat: z.enum(['Neuf', 'Occasion'], {
+		État: z.enum(['Neuf', 'Occasion'], {
 			errorMap: () => {
 				return {
 					message: "L'état doit être Neuf ou Occasion",
@@ -186,11 +186,11 @@ export const devicesImportSchema = z.array(
 				},
 			}
 		),
-		Modele: z.string({
+		Modèle: z.string({
 			required_error: 'Le modèle doit être renseigné',
 			invalid_type_error: 'Le modèle doit être une chaîne de caractères',
 		}),
-		Proprietaire: z
+		Propriétaire: z
 			.string({
 				required_error: 'Le propriétaire doit être renseigné ou nul',
 				invalid_type_error:
@@ -198,7 +198,7 @@ export const devicesImportSchema = z.array(
 			})
 			.nullable()
 			.optional(),
-		Preparation: z
+		Préparation: z
 			.string({
 				invalid_type_error:
 					'Le format de la date de préparation est incorrect',

@@ -81,7 +81,7 @@ export const agentsImportSchema = z.array(
 			invalid_type_error:
 				'Le nom de famille doit être une chaîne de caractères',
 		}),
-		Prenom: z.string({
+		Prénom: z.string({
 			required_error: 'Le prénom doit être renseigné',
 			invalid_type_error: 'Le prénom doit être une chaîne de caractères',
 		}),

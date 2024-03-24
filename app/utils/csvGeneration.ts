@@ -15,7 +15,7 @@ export default async function generateCsvFile({
 	const datedFileName = `${fileName}_${Date.now()}.csv`;
 
 	// Création du contenu CSV à partir des données
-	const parser = new AsyncParser({ delimiter: ';' });
+	const parser = new AsyncParser({ delimiter: ';', withBOM: true });
 	const csv = await parser.parse(data).promise();
 
 	// Ajout des en-têtes de la réponse

@@ -149,7 +149,7 @@ const agentController = {
 				return {
 					Email: agent.email,
 					Nom: agent.lastName,
-					Prenom: agent.firstName,
+					Prénom: agent.firstName,
 					VIP: agent.vip ? 'Oui' : 'Non',
 					Service: agent.service.title,
 					Appareils: agent.devices?.length,
@@ -180,11 +180,13 @@ const agentController = {
 			// Formatage des données des agents pour insertion en BDD
 			const formattedImportedAgents = importedAgents.map((agent) => ({
 				email: agent.Email.toLowerCase(),
-				lastName: agent.Nom,
-				firstName: agent.Prenom,
+				lastName: agent.Nom.trim(),
+				firstName: agent.Prénom.trim(),
 				vip: agent.VIP.toLowerCase() === 'oui' ? true : false,
 				serviceId: services.find(
-					(service) => service.title === agent.Service
+					(service) =>
+						service.title.toLowerCase() ===
+						agent.Service.toLowerCase()
 				)?.id,
 			}));
 
@@ -196,7 +198,8 @@ const agentController = {
 				if (
 					currentAgents.find(
 						(currentAgent) =>
-							currentAgent.email === importedAgent.email
+							currentAgent.email.toLowerCase() ===
+							importedAgent.email
 					)
 				)
 					alreadyExistingEmails.push(importedAgent.email);
