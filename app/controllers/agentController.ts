@@ -129,7 +129,7 @@ const agentController = {
 		}
 	},
 
-	async generateAgentsCsvFile(_: UserRequest, res: Response) {
+	async exportAgentsCsvFile(_: UserRequest, res: Response) {
 		try {
 			const agents = (await Agent.findAll({
 				include: [

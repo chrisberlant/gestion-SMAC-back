@@ -162,10 +162,10 @@ router.delete(
 	deviceController.deleteDevice
 );
 router.get(
-	'/generateDevicesCsvFile',
+	'/exportDevicesCsvFile',
 	jwtMiddleware,
 	rightsMiddleware('Tech'),
-	deviceController.generateDevicesCsvFile
+	deviceController.exportDevicesCsvFile
 );
 router.get(
 	'/generateEmptyDevicesCsvFile',
@@ -230,10 +230,10 @@ router.delete(
 	agentController.deleteAgent
 );
 router.get(
-	'/generateAgentsCsvFile',
+	'/exportAgentsCsvFile',
 	jwtMiddleware,
 	rightsMiddleware('Tech'),
-	agentController.generateAgentsCsvFile
+	agentController.exportAgentsCsvFile
 );
 router.get(
 	'/generateEmptyAgentsCsvFile',

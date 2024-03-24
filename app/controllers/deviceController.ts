@@ -130,7 +130,7 @@ const deviceController = {
 		}
 	},
 
-	async generateDevicesCsvFile(_: UserRequest, res: Response) {
+	async exportDevicesCsvFile(_: UserRequest, res: Response) {
 		try {
 			const devices = (await Device.findAll({
 				include: [
