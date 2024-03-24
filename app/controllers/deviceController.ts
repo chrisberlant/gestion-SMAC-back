@@ -213,7 +213,6 @@ const deviceController = {
 		try {
 			// Appareils importés depuis le CSV
 			const importedDevices: DevicesImportType = req.body;
-			console.log(importedDevices);
 
 			const models = await Model.findAll({ raw: true });
 			const agents = await Agent.findAll({ raw: true });
@@ -256,7 +255,6 @@ const deviceController = {
 				)
 					alreadyExistingImei.push(importedDevice.imei);
 			});
-			console.log(alreadyExistingImei);
 
 			// Renvoi au client des IMEI déjà présents en BDD
 			if (alreadyExistingImei.length > 0)

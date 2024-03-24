@@ -9,22 +9,16 @@ export const deviceCreationSchema = z.strictObject({
 		})
 		.length(15, "L'IMEI fourni est incorrect"),
 	preparationDate: z
-		.string({
+		.date({
 			invalid_type_error:
 				'Le format de la date de préparation est incorrect',
-		})
-		.refine((dateString) => /^\d{4}-\d{2}-\d{2}$/.test(dateString), {
-			message: 'Le format de la date de préparation est incorrect',
 		})
 		.nullable()
 		.optional(),
 	attributionDate: z
-		.string({
+		.date({
 			invalid_type_error:
 				"Le format de la date d'attribution est incorrect",
-		})
-		.refine((dateString) => /^\d{4}-\d{2}-\d{2}$/.test(dateString), {
-			message: "Le format de la date d'attribution est incorrect",
 		})
 		.nullable()
 		.optional(),
@@ -83,22 +77,16 @@ export const deviceUpdateSchema = selectionSchema.extend({
 		.length(15, "L'IMEI fourni est incorrect")
 		.optional(),
 	preparationDate: z
-		.string({
+		.date({
 			invalid_type_error:
 				'Le format de la date de préparation est incorrect',
-		})
-		.refine((dateString) => /^\d{4}-\d{2}-\d{2}$/.test(dateString), {
-			message: 'Le format de la date de préparation est incorrect',
 		})
 		.nullable()
 		.optional(),
 	attributionDate: z
-		.string({
+		.date({
 			invalid_type_error:
 				"Le format de la date d'attribution est incorrect",
-		})
-		.refine((dateString) => /^\d{4}-\d{2}-\d{2}$/.test(dateString), {
-			message: "Le format de la date d'attribution est incorrect",
 		})
 		.nullable()
 		.optional(),

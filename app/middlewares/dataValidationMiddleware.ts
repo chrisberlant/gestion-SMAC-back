@@ -8,7 +8,6 @@ const dataValidation =
 	(schema: ZodSchema) =>
 	(req: UserRequest, res: Response, next: NextFunction) => {
 		const clientData = req.body;
-		console.log('body : ' + JSON.stringify(clientData));
 
 		// Si aucune information dans le corps de la requête
 		if (Object.keys(clientData).length === 0)
@@ -48,8 +47,6 @@ const dataValidation =
 				}
 			}
 		}
-
-		console.log('body after parsing : ' + JSON.stringify(clientData));
 
 		// Validation via un schéma
 		const result = schema.safeParse(clientData);
