@@ -170,6 +170,32 @@ const agentController = {
 		}
 	},
 
+	async generateEmptyAgentsCsvFile(_: UserRequest, res: Response) {
+		try {
+			// Formater les données pour que le fichier soit lisible
+			const headers = {
+				Email: '',
+				Nom: '',
+				Prénom: '',
+				VIP: '',
+				Service: '',
+				Appareils: '',
+			};
+
+			// Création du fichier CSV
+			const csv = await generateCsvFile({
+				data: headers,
+				fileName: 'Agents_import',
+				res,
+			});
+
+			res.status(200).send(csv);
+		} catch (error) {
+			console.error(error);
+			res.status(500).json('Erreur serveur');
+		}
+	},
+
 	async importMultipleAgents(req: UserRequest, res: Response) {
 		try {
 			// Agents importés depuis le CSV
@@ -179,9 +205,9 @@ const agentController = {
 
 			// Formatage des données des agents pour insertion en BDD
 			const formattedImportedAgents = importedAgents.map((agent) => ({
-				email: agent.Email.toLowerCase(),
-				lastName: agent.Nom.trim(),
-				firstName: agent.Prénom.trim(),
+				email: agent.Email,
+				lastName: agent.Nom,
+				firstName: agent.Prénom,
 				vip: agent.VIP.toLowerCase() === 'oui' ? true : false,
 				serviceId: services.find(
 					(service) =>
@@ -198,8 +224,7 @@ const agentController = {
 				if (
 					currentAgents.find(
 						(currentAgent) =>
-							currentAgent.email.toLowerCase() ===
-							importedAgent.email
+							currentAgent.email === importedAgent.email
 					)
 				)
 					alreadyExistingEmails.push(importedAgent.email);

@@ -7,6 +7,7 @@ import {
 } from '../@types/models';
 import generateCsvFile from '../utils/csvGeneration';
 import { Op } from 'sequelize';
+import { convertToDate } from '../utils';
 
 const deviceController = {
 	async getAllDevices(_: UserRequest, res: Response) {
@@ -180,6 +181,34 @@ const deviceController = {
 		}
 	},
 
+	async generateEmptyDevicesCsvFile(_: UserRequest, res: Response) {
+		try {
+			// Formater les données pour que le fichier soit lisible
+			const headers = {
+				IMEI: '',
+				Statut: '',
+				État: '',
+				Modèle: '',
+				Propriétaire: '',
+				Préparation: '',
+				Attribution: '',
+				Commentaires: '',
+			};
+
+			// Création du fichier CSV
+			const csv = await generateCsvFile({
+				data: headers,
+				fileName: 'Appareils_import',
+				res,
+			});
+
+			res.status(200).send(csv);
+		} catch (error) {
+			console.error(error);
+			res.status(500).json('Erreur serveur');
+		}
+	},
+
 	async importMultipleDevices(req: UserRequest, res: Response) {
 		try {
 			// Appareils importés depuis le CSV
@@ -193,8 +222,7 @@ const deviceController = {
 			const formattedImportedDevices = importedDevices.map((device) => ({
 				imei: device.IMEI,
 				status: device.Statut,
-				isNew:
-					device.État.trim().toLowerCase() === 'neuf' ? true : false,
+				isNew: device.État.toLowerCase() === 'neuf' ? true : false,
 				modelId: models.find(
 					(model) =>
 						model.brand.toLowerCase() +
@@ -207,23 +235,13 @@ const deviceController = {
 				)?.id,
 				agentId: device.Propriétaire
 					? agents.find(
-							(agent) =>
-								agent.email ===
-								device.Propriétaire?.trim().toLowerCase()
+							(agent) => agent.email === device.Propriétaire
 					  )?.id
 					: null,
-				preparationDate: device.Préparation
-					? new Date(device.Préparation)
-					: null,
-				attributionDate: device.Attribution
-					? new Date(device.Attribution)
-					: null,
-				comments:
-					device.Commentaires?.trim() !== ''
-						? device.Commentaires?.trim()
-						: null,
+				preparationDate: device.Préparation ?? null,
+				attributionDate: device.Attribution ?? null,
+				comments: device.Commentaires,
 			}));
-			console.log(formattedImportedDevices);
 
 			const currentDevices = await Device.findAll({ raw: true });
 			const alreadyExistingImei: string[] = [];

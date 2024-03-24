@@ -133,6 +133,7 @@ router.delete(
 router.get(
 	'/generateLinesCsvFile',
 	jwtMiddleware,
+	rightsMiddleware('Tech'),
 	lineController.generateLinesCsvFile
 );
 
@@ -163,12 +164,18 @@ router.delete(
 router.get(
 	'/generateDevicesCsvFile',
 	jwtMiddleware,
+	rightsMiddleware('Tech'),
 	deviceController.generateDevicesCsvFile
+);
+router.get(
+	'/generateEmptyDevicesCsvFile',
+	jwtMiddleware,
+	deviceController.generateEmptyDevicesCsvFile
 );
 router.post(
 	'/importMultipleDevices',
 	jwtMiddleware,
-	// dataValidation(devicesImportSchema),
+	dataValidation(devicesImportSchema),
 	rightsMiddleware('Tech'),
 	deviceController.importMultipleDevices
 );
@@ -225,7 +232,13 @@ router.delete(
 router.get(
 	'/generateAgentsCsvFile',
 	jwtMiddleware,
+	rightsMiddleware('Tech'),
 	agentController.generateAgentsCsvFile
+);
+router.get(
+	'/generateEmptyAgentsCsvFile',
+	jwtMiddleware,
+	agentController.generateEmptyAgentsCsvFile
 );
 router.post(
 	'/importMultipleAgents',

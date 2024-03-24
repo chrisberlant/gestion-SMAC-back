@@ -160,13 +160,6 @@ export const devicesImportSchema = z.array(
 				invalid_type_error: "L'IMEI doit être une chaîne de caractères",
 			})
 			.length(15, "L'IMEI fourni est incorrect"),
-		État: z.enum(['Neuf', 'Occasion'], {
-			errorMap: () => {
-				return {
-					message: "L'état doit être Neuf ou Occasion",
-				};
-			},
-		}),
 		Statut: z.enum(
 			[
 				'En stock',
@@ -186,6 +179,13 @@ export const devicesImportSchema = z.array(
 				},
 			}
 		),
+		État: z.enum(['Neuf', 'Occasion'], {
+			errorMap: () => {
+				return {
+					message: "L'état doit être Neuf ou Occasion",
+				};
+			},
+		}),
 		Modèle: z.string({
 			required_error: 'Le modèle doit être renseigné',
 			invalid_type_error: 'Le modèle doit être une chaîne de caractères',
@@ -199,22 +199,16 @@ export const devicesImportSchema = z.array(
 			.nullable()
 			.optional(),
 		Préparation: z
-			.string({
+			.date({
 				invalid_type_error:
 					'Le format de la date de préparation est incorrect',
-			})
-			.refine((dateString) => /^\d{4}-\d{2}-\d{2}$/.test(dateString), {
-				message: 'Le format de la date de préparation est incorrect',
 			})
 			.nullable()
 			.optional(),
 		Attribution: z
-			.string({
+			.date({
 				invalid_type_error:
 					"Le format de la date d'attribution est incorrect",
-			})
-			.refine((dateString) => /^\d{4}-\d{2}-\d{2}$/.test(dateString), {
-				message: "Le format de la date d'attribution est incorrect",
 			})
 			.nullable()
 			.optional(),
