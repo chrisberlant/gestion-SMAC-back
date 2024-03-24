@@ -151,3 +151,79 @@ export const deviceUpdateSchema = selectionSchema.extend({
 		.positive("L'id du modèle fourni est incorrect")
 		.optional(),
 });
+
+export const devicesImportSchema = z.array(
+	z.strictObject({
+		IMEI: z
+			.string({
+				required_error: "L'IMEI doit être renseigné",
+				invalid_type_error: "L'IMEI doit être une chaîne de caractères",
+			})
+			.length(15, "L'IMEI fourni est incorrect"),
+		Etat: z.enum(['Neuf', 'Occasion'], {
+			errorMap: () => {
+				return {
+					message: "L'état doit être Neuf ou Occasion",
+				};
+			},
+		}),
+		Statut: z.enum(
+			[
+				'En stock',
+				'Attribué',
+				'Restitué',
+				'En attente de restitution',
+				'En prêt',
+				'En panne',
+				'Volé',
+			],
+			{
+				errorMap: () => {
+					return {
+						message:
+							'Le statut doit être Attribué, Restitué, En attente de restitution, En prêt, En panne, ou Volé',
+					};
+				},
+			}
+		),
+		Modele: z.string({
+			required_error: 'Le modèle doit être renseigné',
+			invalid_type_error: 'Le modèle doit être une chaîne de caractères',
+		}),
+		Proprietaire: z
+			.string({
+				required_error: 'Le propriétaire doit être renseigné ou nul',
+				invalid_type_error:
+					'Le propriétaire doit être une chaîne de caractères',
+			})
+			.nullable()
+			.optional(),
+		Preparation: z
+			.string({
+				invalid_type_error:
+					'Le format de la date de préparation est incorrect',
+			})
+			.refine((dateString) => /^\d{4}-\d{2}-\d{2}$/.test(dateString), {
+				message: 'Le format de la date de préparation est incorrect',
+			})
+			.nullable()
+			.optional(),
+		Attribution: z
+			.string({
+				invalid_type_error:
+					"Le format de la date d'attribution est incorrect",
+			})
+			.refine((dateString) => /^\d{4}-\d{2}-\d{2}$/.test(dateString), {
+				message: "Le format de la date d'attribution est incorrect",
+			})
+			.nullable()
+			.optional(),
+		Commentaires: z
+			.string({
+				invalid_type_error:
+					'Les commentaires doivent être une chaîne de caractères',
+			})
+			.nullable()
+			.optional(),
+	})
+);

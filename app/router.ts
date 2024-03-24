@@ -20,6 +20,7 @@ import {
 import {
 	deviceCreationSchema,
 	deviceUpdateSchema,
+	devicesImportSchema,
 } from './validationSchemas/deviceSchemas';
 import {
 	lineCreationSchema,
@@ -163,6 +164,13 @@ router.get(
 	'/generateDevicesCsvFile',
 	jwtMiddleware,
 	deviceController.generateDevicesCsvFile
+);
+router.post(
+	'/importMultipleDevices',
+	jwtMiddleware,
+	dataValidation(devicesImportSchema),
+	rightsMiddleware('Tech'),
+	deviceController.importMultipleDevices
 );
 
 /* ------------- MODELS ROUTES ------------- */

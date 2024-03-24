@@ -175,14 +175,14 @@ const agentController = {
 			// Agents importés depuis le CSV
 			const importedAgents: AgentsImportType = req.body;
 
-			const services = await Service.findAll();
+			const services = await Service.findAll({ raw: true });
 
 			// Formatage des données des agents pour insertion en BDD
 			const formattedImportedAgents = importedAgents.map((agent) => ({
 				email: agent.Email.toLowerCase(),
 				lastName: agent.Nom,
 				firstName: agent.Prenom,
-				vip: agent.VIP === 'Oui' ? true : false,
+				vip: agent.VIP.toLowerCase() === 'oui' ? true : false,
 				serviceId: services.find(
 					(service) => service.title === agent.Service
 				)?.id,

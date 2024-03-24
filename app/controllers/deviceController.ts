@@ -1,7 +1,10 @@
 import { Response } from 'express';
 import { UserRequest } from '../@types';
-import { Device, Line } from '../models';
-import { DeviceWithModelAndAgentType } from '../@types/models';
+import { Agent, Device, Line, Model } from '../models';
+import {
+	DeviceWithModelAndAgentType,
+	DevicesImportType,
+} from '../@types/models';
 import generateCsvFile from '../utils/csvGeneration';
 import { Op } from 'sequelize';
 
@@ -171,6 +174,65 @@ const deviceController = {
 			});
 
 			res.status(200).send(csv);
+		} catch (error) {
+			console.error(error);
+			res.status(500).json('Erreur serveur');
+		}
+	},
+
+	async importMultipleDevices(req: UserRequest, res: Response) {
+		try {
+			// Appareils importés depuis le CSV
+			const importedDevices: DevicesImportType = req.body;
+
+			const models = await Model.findAll({ raw: true });
+			const agents = await Agent.findAll({ raw: true });
+
+			// Formatage des données des appareils pour insertion en BDD
+			const formattedImportedDevices = importedDevices.map((device) => ({
+				imei: device.IMEI,
+				status: device.Statut,
+				isNew: device.Etat.toLowerCase() === 'neuf' ? true : false,
+				modelId: models.find(
+					(model) =>
+						model.brand + ' ' + model.reference === device.Modele
+				)?.id,
+				agentId: device.Proprietaire
+					? agents.find(
+							(agent) => agent.email === device.Proprietaire
+					  )?.id
+					: null,
+				preparationDate: device.Preparation
+					? new Date(device.Preparation)
+					: null,
+				attributionDate: device.Attribution
+					? new Date(device.Attribution)
+					: null,
+				comments: device.Commentaires ?? null,
+			}));
+
+			const currentDevices = await Device.findAll({ raw: true });
+			const alreadyExistingImei: string[] = [];
+
+			// Vérification pour chaque appareil importé qu'un appareil avec son IMEI n'est pas existant
+			formattedImportedDevices.forEach((importedDevice) => {
+				if (
+					currentDevices.find(
+						(currentDevice) =>
+							currentDevice.imei === importedDevice.imei
+					)
+				)
+					alreadyExistingImei.push(importedDevice.imei);
+			});
+
+			// Renvoi au client des adresses mail déjà présentes en BDD
+			if (alreadyExistingImei)
+				return res.status(409).json(alreadyExistingImei);
+
+			// Ajout des devices
+			await Device.bulkCreate(formattedImportedDevices);
+
+			res.status(200).json('ok');
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');
