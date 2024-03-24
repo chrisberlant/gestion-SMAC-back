@@ -201,11 +201,10 @@ const agentController = {
 				)
 					alreadyExistingEmails.push(importedAgent.email);
 			});
-			console.log(alreadyExistingEmails);
 
 			// Renvoi au client des adresses mail déjà présentes en BDD
 			if (alreadyExistingEmails)
-				return res.status(400).json(alreadyExistingEmails);
+				return res.status(409).json(alreadyExistingEmails);
 
 			// Ajout des agents
 			await Agent.bulkCreate(formattedImportedAgents);

@@ -92,6 +92,9 @@ export const agentsImportSchema = z.array(
 				};
 			},
 		}),
-		Service: z.string(),
+		Service: z.string({
+			required_error: 'Le service doit être renseigné',
+			invalid_type_error: 'Le service doit être une chaîne de caractères',
+		}),
 	})
 );
