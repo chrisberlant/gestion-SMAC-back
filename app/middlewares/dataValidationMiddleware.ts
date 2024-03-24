@@ -20,7 +20,7 @@ const dataValidation =
 				for (const key in item) {
 					if (typeof item[key] === 'string') {
 						item[key] = item[key].trim();
-						// Conversion en nul de chaque string après le trimming
+						// Conversion en nul de chaque string vide après le trimming
 						if (item[key] === '') item[key] = null;
 						// Passage en minuscule des emails pour cohérence dans la BDD
 						if (
@@ -28,12 +28,8 @@ const dataValidation =
 							item[key] !== null
 						)
 							item[key] = item[key].toLowerCase();
-						// S'il s'agit d'une string représentant une date
-						if (
-							/^\d{4}-\d{2}-\d{2}$/.test(item[key]) ||
-							/^\d{2}\/\d{2}\/\d{4}$/.test(item[key])
-						)
-							item[key] = convertToDate(item[key]);
+						// Vérification s'il s'agit d'une string représentant une date et modification si besoin
+						item[key] = convertToDate(item[key]);
 					}
 				}
 			});
@@ -42,11 +38,13 @@ const dataValidation =
 			for (const key in clientData) {
 				if (typeof clientData[key] === 'string') {
 					clientData[key] = clientData[key].trim();
-					// Conversion en nul de chaque string après le trimming
+					// Conversion en nul de chaque string vide après le trimming
 					if (clientData[key] === '') clientData[key] = null;
 					// Passage en minuscule des emails pour cohérence dans la BDD
 					if (key === 'email' && clientData[key] !== null)
 						clientData[key] = clientData[key].toLowerCase();
+					// Vérification s'il s'agit d'une string représentant une date et modification si besoin
+					clientData[key] = convertToDate(clientData[key]);
 				}
 			}
 		}
