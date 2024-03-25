@@ -7,7 +7,6 @@ import {
 } from '../@types/models';
 import generateCsvFile from '../utils/csvGeneration';
 import { Op } from 'sequelize';
-import { convertToDate } from '../utils';
 
 const deviceController = {
 	async getAllDevices(_: UserRequest, res: Response) {

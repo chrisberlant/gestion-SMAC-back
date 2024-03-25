@@ -2,15 +2,11 @@ import { Response } from 'express';
 import { UserRequest } from '../@types';
 import { Agent, Service } from '../models';
 import {
-	AgentType,
 	AgentWithServiceAndDevicesType,
 	AgentsImportType,
 } from '../@types/models';
 import generateCsvFile from '../utils/csvGeneration';
 import { Op } from 'sequelize';
-import sequelize from 'sequelize';
-import agent from '../models/agent';
-import service from '../models/service';
 
 const agentController = {
 	async getAllAgents(_: UserRequest, res: Response) {
@@ -20,7 +16,7 @@ const agentController = {
 				include: [
 					{
 						association: 'devices',
-						attributes: ['id'],
+						attributes: ['id', 'imei'],
 					},
 				],
 			});
