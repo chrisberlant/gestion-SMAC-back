@@ -7,6 +7,7 @@ import {
 import { agentsImportSchema } from '../validationSchemas/agentSchemas';
 import { devicesImportSchema } from '../validationSchemas/deviceSchemas';
 import z from 'zod';
+import { linesImportSchema } from '../validationSchemas/lineSchemas';
 
 export interface AgentType
 	extends SequelizeModel<
@@ -128,3 +129,4 @@ export interface LineWithAgentAndDeviceType extends LineType {
 // Interfaces utilisées pour les imports en CSV
 export type AgentsImportType = z.infer<typeof agentsImportSchema>;
 export type DevicesImportType = z.infer<typeof devicesImportSchema>;
+export type LinesImportType = z.infer<typeof linesImportSchema>;

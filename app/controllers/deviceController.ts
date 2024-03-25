@@ -229,35 +229,35 @@ const deviceController = {
 							(model.storage
 								? ' ' + model.storage.toLowerCase()
 								: '') ===
-						device.Modèle.trim().toLowerCase()
+						device.Modèle.toLowerCase()
 				)?.id,
 				agentId: device.Propriétaire
 					? agents.find(
 							(agent) => agent.email === device.Propriétaire
 					  )?.id
 					: null,
-				preparationDate: device.Préparation ?? null,
-				attributionDate: device.Attribution ?? null,
+				preparationDate: device.Préparation,
+				attributionDate: device.Attribution,
 				comments: device.Commentaires,
 			}));
 
-			const currentDevices = await Device.findAll({ raw: true });
-			const alreadyExistingImei: string[] = [];
+			const existingDevices = await Device.findAll({ raw: true });
+			const alreadyExistingImeis: string[] = [];
 
 			// Vérification pour chaque appareil importé qu'un appareil avec son IMEI n'est pas existant
 			formattedImportedDevices.forEach((importedDevice) => {
 				if (
-					currentDevices.find(
-						(currentDevice) =>
-							currentDevice.imei === importedDevice.imei
+					existingDevices.find(
+						(existingDevice) =>
+							existingDevice.imei === importedDevice.imei
 					)
 				)
-					alreadyExistingImei.push(importedDevice.imei);
+					alreadyExistingImeis.push(importedDevice.imei);
 			});
 
 			// Renvoi au client des IMEI déjà présents en BDD
-			if (alreadyExistingImei.length > 0)
-				return res.status(409).json(alreadyExistingImei);
+			if (alreadyExistingImeis.length > 0)
+				return res.status(409).json(alreadyExistingImeis);
 
 			// Ajout des appareils
 			await Device.bulkCreate(formattedImportedDevices);

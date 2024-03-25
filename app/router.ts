@@ -25,6 +25,7 @@ import {
 import {
 	lineCreationSchema,
 	lineUpdateSchema,
+	linesImportSchema,
 } from './validationSchemas/lineSchemas';
 import {
 	modelCreationSchema,
@@ -131,10 +132,22 @@ router.delete(
 	lineController.deleteLine
 );
 router.get(
-	'/generateLinesCsvFile',
+	'/exportLinesCsvFile',
 	jwtMiddleware,
 	rightsMiddleware('Tech'),
 	lineController.generateLinesCsvFile
+);
+router.get(
+	'/generateEmptyLinesCsvFile',
+	jwtMiddleware,
+	lineController.generateEmptyLinesCsvFile
+);
+router.post(
+	'/importMultipleLines',
+	jwtMiddleware,
+	dataValidation(linesImportSchema),
+	rightsMiddleware('Tech'),
+	lineController.importMultipleLines
 );
 
 /* ------------- DEVICES ROUTES ------------- */

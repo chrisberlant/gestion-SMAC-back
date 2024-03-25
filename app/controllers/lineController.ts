@@ -1,8 +1,12 @@
 import { Response } from 'express';
-import { Op } from 'sequelize';
+import { Model, Op } from 'sequelize';
 import { UserRequest } from '../@types';
-import { LineType, LineWithAgentAndDeviceType } from '../@types/models';
-import { Line } from '../models';
+import {
+	LineType,
+	LineWithAgentAndDeviceType,
+	LinesImportType,
+} from '../@types/models';
+import { Agent, Device, Line } from '../models';
 import generateCsvFile from '../utils/csvGeneration';
 
 const lineController = {
@@ -180,6 +184,103 @@ const lineController = {
 			});
 
 			res.status(200).send(csv);
+		} catch (error) {
+			console.error(error);
+			res.status(500).json('Erreur serveur');
+		}
+	},
+
+	async generateEmptyLinesCsvFile(_: UserRequest, res: Response) {
+		try {
+			// Formater les données pour que le fichier soit lisible
+			const headers = {
+				Numéro: '',
+				Profil: '',
+				Statut: '',
+				Propriétaire: '',
+				Appareil: '',
+				Commentaires: '',
+			};
+
+			// Création du fichier CSV
+			const csv = await generateCsvFile({
+				data: headers,
+				fileName: 'Lignes_import',
+				res,
+			});
+
+			res.status(200).send(csv);
+		} catch (error) {
+			console.error(error);
+			res.status(500).json('Erreur serveur');
+		}
+	},
+
+	async importMultipleLines(req: UserRequest, res: Response) {
+		try {
+			// Lignes importées depuis le CSV
+			const importedLines: LinesImportType = req.body;
+
+			const devices = await Device.findAll({ raw: true });
+			const agents = await Agent.findAll({ raw: true });
+
+			// Formatage des données des appareils pour insertion en BDD
+			const formattedImportedLines = importedLines.map((line) => ({
+				number: line.Numéro,
+				profile: line.Profil,
+				status: line.Statut,
+				agentId: line.Propriétaire
+					? agents.find((agent) => agent.email === line.Propriétaire)
+							?.id
+					: null,
+				deviceId: line.Appareil
+					? devices.find((device) => device.imei === line.Appareil)
+							?.id
+					: null,
+				comments: line.Commentaires,
+			}));
+
+			const existingLines = await Line.findAll({ raw: true });
+			const alreadyExistingNumbers: string[] = [];
+			const alreadyAffectedDevices: string[] = [];
+
+			// Vérification pour chaque ligne importée qu'une ligne avec son numéro n'est pas existante ou que l'appareil n'est pas déjà affecté
+			formattedImportedLines.forEach((importedLine) => {
+				if (
+					existingLines.find(
+						(existingLine) =>
+							existingLine.number === importedLine.number
+					)
+				)
+					alreadyExistingNumbers.push(importedLine.number);
+
+				if (
+					existingLines.find(
+						(existingLine) =>
+							existingLine.deviceId === importedLine.deviceId
+					)
+				) {
+					// Recherche de l'IMEI de l'appareil déjà existant
+					const alreadyExistingImei = devices.find(
+						(device) => device.id === importedLine.deviceId
+					)!.imei;
+					alreadyAffectedDevices.push(alreadyExistingImei);
+				}
+			});
+
+			// Renvoi au client des numéros déjà présents en BDD
+			if (
+				alreadyExistingNumbers.length > 0 ||
+				alreadyAffectedDevices.length > 0
+			)
+				return res
+					.status(409)
+					.json({ alreadyExistingNumbers, alreadyAffectedDevices });
+
+			// Ajout des appareils
+			await Line.bulkCreate(formattedImportedLines);
+
+			res.status(200).json(formattedImportedLines);
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');
