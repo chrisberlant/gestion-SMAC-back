@@ -241,8 +241,7 @@ const lineController = {
 			}));
 
 			const existingLines = await Line.findAll({ raw: true });
-			const alreadyExistingNumbers: string[] = [];
-			const alreadyAffectedDevices: string[] = [];
+			const alreadyExistingItems: string[] = [];
 
 			// Vérification pour chaque ligne importée qu'une ligne avec son numéro n'est pas existante ou que l'appareil n'est pas déjà affecté
 			formattedImportedLines.forEach((importedLine) => {
@@ -252,7 +251,7 @@ const lineController = {
 							existingLine.number === importedLine.number
 					)
 				)
-					alreadyExistingNumbers.push(importedLine.number);
+					alreadyExistingItems.push(importedLine.number);
 
 				if (
 					existingLines.find(
@@ -264,18 +263,13 @@ const lineController = {
 					const alreadyExistingImei = devices.find(
 						(device) => device.id === importedLine.deviceId
 					)!.imei;
-					alreadyAffectedDevices.push(alreadyExistingImei);
+					alreadyExistingItems.push(alreadyExistingImei);
 				}
 			});
 
 			// Renvoi au client des numéros déjà présents en BDD
-			if (
-				alreadyExistingNumbers.length > 0 ||
-				alreadyAffectedDevices.length > 0
-			)
-				return res
-					.status(409)
-					.json({ alreadyExistingNumbers, alreadyAffectedDevices });
+			if (alreadyExistingItems.length > 0)
+				return res.status(409).json(alreadyExistingItems);
 
 			// Ajout des appareils
 			await Line.bulkCreate(formattedImportedLines);
