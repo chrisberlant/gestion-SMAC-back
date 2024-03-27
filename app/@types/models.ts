@@ -98,12 +98,13 @@ export interface HistoryType
 		InferCreationAttributes<HistoryType>
 	> {
 	id?: CreationOptional<number>;
-	type: string;
+	operation: 'Create' | 'Update' | 'Delete';
+	table: 'user' | 'service' | 'agent' | 'model' | 'device' | 'line';
 	content: string;
+	userId?: number;
 }
 
 // Interfaces utilisées pour les exports en CSV
-
 export interface AgentWithServiceAndDevicesType extends AgentType {
 	service: {
 		title: string;

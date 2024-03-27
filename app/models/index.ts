@@ -72,4 +72,4 @@ History.belongsTo(User, {
 	foreignKey: 'userId',
 });
 
-export { User, Agent, Line, Model, Device, Service };
+export { User, Agent, Line, Model, Device, Service, History };

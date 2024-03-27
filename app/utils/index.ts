@@ -1,3 +1,6 @@
+import { Model } from 'sequelize';
+import util from 'util';
+
 // Convertit une string contenant une date en format date utilisable en BDD
 export const convertToDate = (dateString: string) => {
 	// Si date au format US
@@ -18,3 +21,9 @@ export const convertToDate = (dateString: string) => {
 	// Sinon renvoyer la string telle quelle
 	return dateString;
 };
+
+// Comparer les valeurs stockées en BDD avec celles envoyées par le client
+export const compareStoredAndReceivedValues = (
+	storedValue: Model<any, any>,
+	receivedValue: object
+) => util.isDeepStrictEqual(storedValue.dataValues, receivedValue);

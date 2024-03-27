@@ -91,11 +91,15 @@ CREATE TABLE "line" (
 
 CREATE TABLE "history" (
     "id" SERIAL PRIMARY KEY,
-    "type" VARCHAR(12) NOT NULL,
+    "operation" VARCHAR(12) NOT NULL,
+    "table" VARCHAR(7) NOT NULL,
     "content" TEXT NOT NULL,
-    "user_id" INT UNIQUE,
+    "user_id" INT,
     FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE SET NULL,
-    CHECK ("type" IN ('Création', 'Modification', 'Suppression'))
+    CHECK (
+        "operation" IN ('Create', 'Update', 'Delete') AND
+        "table" IN ('user', 'service', 'agent', 'model', 'device', 'line')
+    )
 );
 
 

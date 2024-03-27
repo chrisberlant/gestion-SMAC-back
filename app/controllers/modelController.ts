@@ -1,9 +1,9 @@
 import { Op } from 'sequelize';
 import { UserRequest } from '../@types';
-import { Model } from '../models';
+import { Model, History } from '../models';
 import { Response } from 'express';
 import sequelize from '../sequelize-client';
-import History from '../models/history';
+import { compareStoredAndReceivedValues } from '../utils';
 
 const modelController = {
 	async getAllModels(_: UserRequest, res: Response) {
@@ -57,7 +57,8 @@ const modelController = {
 
 	async updateModel(req: UserRequest, res: Response) {
 		try {
-			const { id, ...newInfos } = req.body;
+			const clientData = req.body;
+			const { id, ...newInfos } = clientData;
 			const userId = req.user!.id;
 
 			const model = await Model.findByPk(id);
@@ -82,23 +83,35 @@ const modelController = {
 			if (existingModel)
 				return res.status(401).json('Le modèle existe déjà');
 
-			const transaction = await sequelize.transaction();
+			// Si les valeurs sont identiques, pas de mise à jour en BDD
+			if (compareStoredAndReceivedValues(model, clientData))
+				return res.status(200).json(model);
 
+			// Transaction de mise à jour
+			const transaction = await sequelize.transaction();
 			try {
-				const modelIsModified = await model.update(newInfos, {
+				const oldValue = `${model.brand} ${model.reference}${
+					model.storage ? ` ${model.storage}` : ''
+				}`;
+				const newValue = `${clientData.brand} ${clientData.reference}${
+					clientData.storage ? ` ${clientData.storage}` : ''
+				}`;
+
+				const modifiedModel = await model.update(newInfos, {
 					transaction,
 				});
 				await History.create(
 					{
+						operation: 'Update',
+						table: 'model',
+						content: `Mise à jour de ${oldValue} vers ${newValue}`,
 						userId,
-						type: 'Modification',
-						content: `Mise à jour du modèle ${model.reference}`,
 					},
 					{ transaction }
 				);
-
 				await transaction.commit();
-				res.status(200).json(modelIsModified);
+
+				res.status(200).json(modifiedModel);
 			} catch (error) {
 				await transaction.rollback();
 				throw new Error('Impossible de mettre à jour le modèle');
