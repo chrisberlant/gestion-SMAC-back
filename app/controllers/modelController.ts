@@ -2,9 +2,11 @@ import { Op } from 'sequelize';
 import { UserRequest } from '../@types';
 import { Model } from '../models';
 import { Response } from 'express';
+import sequelize from '../sequelize-client';
+import History from '../models/history';
 
 const modelController = {
-	async getAllModels(req: UserRequest, res: Response) {
+	async getAllModels(_: UserRequest, res: Response) {
 		try {
 			const models = await Model.findAll({
 				order: [
@@ -56,6 +58,7 @@ const modelController = {
 	async updateModel(req: UserRequest, res: Response) {
 		try {
 			const { id, ...newInfos } = req.body;
+			const userId = req.user!.id;
 
 			const model = await Model.findByPk(id);
 			if (!model) return res.status(404).json("Le modèle n'existe pas");
@@ -79,9 +82,27 @@ const modelController = {
 			if (existingModel)
 				return res.status(401).json('Le modèle existe déjà');
 
-			const modelIsModified = await model.update(newInfos);
+			const transaction = await sequelize.transaction();
 
-			res.status(200).json(modelIsModified);
+			try {
+				const modelIsModified = await model.update(newInfos, {
+					transaction,
+				});
+				await History.create(
+					{
+						userId,
+						type: 'Modification',
+						content: `Mise à jour du modèle ${model.reference}`,
+					},
+					{ transaction }
+				);
+
+				await transaction.commit();
+				res.status(200).json(modelIsModified);
+			} catch (error) {
+				await transaction.rollback();
+				throw new Error('Impossible de mettre à jour le modèle');
+			}
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');

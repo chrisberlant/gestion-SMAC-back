@@ -1,7 +1,7 @@
 BEGIN;
 
 -- Suppression des tables si existantes
-DROP TABLE IF EXISTS "user","service","agent","model","device","line" CASCADE;
+DROP TABLE IF EXISTS "user","service","agent","model","device","line","history" CASCADE;
 
 CREATE TABLE "user" (
     "id" SERIAL PRIMARY KEY,
@@ -87,6 +87,15 @@ CREATE TABLE "line" (
         "status" IN ('Active', 'En cours', 'Résiliée') AND
         "comments" <> ''
     )
+);
+
+CREATE TABLE "history" (
+    "id" SERIAL PRIMARY KEY,
+    "type" VARCHAR(12) NOT NULL,
+    "content" TEXT NOT NULL,
+    "user_id" INT UNIQUE,
+    FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE SET NULL,
+    CHECK ("type" IN ('Création', 'Modification', 'Suppression'))
 );
 
 

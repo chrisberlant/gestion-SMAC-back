@@ -92,6 +92,16 @@ export interface UserType
 	role: 'Admin' | 'Tech' | 'Consultant';
 }
 
+export interface HistoryType
+	extends SequelizeModel<
+		InferAttributes<HistoryType>,
+		InferCreationAttributes<HistoryType>
+	> {
+	id?: CreationOptional<number>;
+	type: string;
+	content: string;
+}
+
 // Interfaces utilisées pour les exports en CSV
 
 export interface AgentWithServiceAndDevicesType extends AgentType {

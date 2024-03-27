@@ -1,5 +1,6 @@
 import Agent from './agent';
 import Device from './device';
+import History from './history';
 import Line from './line';
 import Model from './model';
 import Service from './service';
@@ -58,6 +59,17 @@ Device.hasOne(Line, {
 Line.belongsTo(Device, {
 	as: 'device',
 	foreignKey: 'deviceId',
+});
+
+// Relations between a user and its history
+User.hasMany(History, {
+	as: 'history',
+	foreignKey: 'userId',
+});
+
+History.belongsTo(User, {
+	as: 'user',
+	foreignKey: 'userId',
 });
 
 export { User, Agent, Line, Model, Device, Service };
