@@ -26,6 +26,7 @@ const modelController = {
 	async createModel(req: UserRequest, res: Response) {
 		try {
 			const infos = req.body;
+			const userId = req.user!.id;
 			const { brand, reference, storage } = infos;
 
 			const existingModel = await Model.findOne({
@@ -44,11 +45,32 @@ const modelController = {
 			if (existingModel)
 				return res.status(401).json('Le modèle existe déjà');
 
-			const newModel = await Model.create(infos);
+			// Transaction de création
+			const transaction = await sequelize.transaction();
+			try {
+				const value = `${infos.brand} ${infos.reference}${
+					infos.storage ? ` ${infos.storage}` : ''
+				}`;
 
-			if (!newModel) throw new Error('Impossible de créer le modèle');
+				const newModel = await Model.create(infos, {
+					transaction,
+				});
+				await History.create(
+					{
+						operation: 'Create',
+						table: 'model',
+						content: `Création de ${value}`,
+						userId,
+					},
+					{ transaction }
+				);
+				await transaction.commit();
 
-			res.status(201).json(newModel);
+				res.status(201).json(newModel);
+			} catch (error) {
+				await transaction.rollback();
+				throw new Error('Impossible de créer le modèle');
+			}
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');
@@ -125,13 +147,36 @@ const modelController = {
 	async deleteModel(req: UserRequest, res: Response) {
 		try {
 			const { id } = req.body;
+			const userId = req.user!.id;
 
 			const model = await Model.findByPk(id);
 			if (!model) return res.status(404).json("Le modèle n'existe pas");
 
-			await model.destroy();
+			// Transaction de création
+			const transaction = await sequelize.transaction();
+			try {
+				const value = `${model.brand} ${model.reference}${
+					model.storage ? ` ${model.storage}` : ''
+				}`;
+				await model.destroy({
+					transaction,
+				});
+				await History.create(
+					{
+						operation: 'Delete',
+						table: 'model',
+						content: `Suppression de ${value}`,
+						userId,
+					},
+					{ transaction }
+				);
+				await transaction.commit();
 
-			res.status(200).json(id);
+				res.status(200).json(id);
+			} catch (error) {
+				await transaction.rollback();
+				throw new Error('Impossible de supprimer le modèle');
+			}
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');
