@@ -1,10 +1,11 @@
 import { Response } from 'express';
-import { User } from '../models';
+import { History, User } from '../models';
 import { UserRequest } from '../@types';
 import { UserType } from '../@types/models';
 import bcrypt from 'bcrypt';
 import generateRandomPassword from '../utils/passwordGeneration';
 import { Op } from 'sequelize';
+import sequelize from '../sequelize-client';
 
 const userController = {
 	async getCurrentUser(req: UserRequest, res: Response) {
@@ -28,28 +29,26 @@ const userController = {
 	async updateCurrentUser(req: UserRequest, res: Response) {
 		try {
 			const userId = req.user!.id;
-			const infosToUpdate = req.body;
+			const clientData = req.body;
 
 			const user = await User.findByPk(userId);
 			if (!user)
 				return res.status(404).json("L'utilisateur n'existe pas");
 
-			const existingEmailCheck = await User.findOne({
+			const existingEmail = await User.findOne({
 				where: {
-					email: infosToUpdate.email,
+					email: clientData.email,
 					id: {
 						[Op.not]: userId,
 					},
 				},
 			});
-			if (existingEmailCheck)
+			if (existingEmail)
 				return res
 					.status(409)
 					.json(
 						'Un autre utilisateur possède déjà cette adresse mail'
 					);
-
-			await user.update(infosToUpdate);
 
 			const { id, firstName, lastName, email } = user;
 			const newUserInfos = {
@@ -59,7 +58,37 @@ const userController = {
 				email,
 			};
 
-			res.status(200).json(newUserInfos);
+			// Transaction de mise à jour
+			const transaction = await sequelize.transaction();
+			try {
+				const oldEmail = user.email;
+				const newEmail = clientData.email;
+				let emailChanged = null;
+				// Si l'email a été modifié
+				if (oldEmail !== newEmail)
+					emailChanged = `Mise à jour de l'utilisateur ${oldEmail}, incluant un changement d'email vers ${newEmail}`;
+
+				await user.update(clientData, {
+					transaction,
+				});
+				await History.create(
+					{
+						operation: 'Update',
+						table: 'user',
+						content:
+							emailChanged ??
+							`Mise à jour de l'utilisateur ${oldEmail}`,
+						userId,
+					},
+					{ transaction }
+				);
+				await transaction.commit();
+
+				res.status(200).json(newUserInfos);
+			} catch (error) {
+				await transaction.rollback();
+				throw new Error("Impossible de mettre à jour l'utilisateur");
+			}
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');
@@ -120,35 +149,52 @@ const userController = {
 
 	async createUser(req: UserRequest, res: Response) {
 		try {
-			const infos: UserType = req.body;
-
-			const generatedPassword = generateRandomPassword();
-			const saltRounds = parseInt(process.env.SALT_ROUNDS!);
-			const hashedPassword = await bcrypt.hash(
-				generatedPassword,
-				saltRounds
-			);
+			const clientData: UserType = req.body;
+			const { email } = clientData;
+			const userId = req.user!.id;
 
 			// Vérification si un utilisateur avec cette adresse mail existe
-			const existingUserCheck = await User.findOne({
+			const existingEmail = await User.findOne({
 				where: {
-					email: infos.email,
+					email,
 				},
 			});
-			if (existingUserCheck)
+			if (existingEmail)
 				return res.status(409).json("L'utilisateur existe déjà");
+			// Transaction de création
+			const transaction = await sequelize.transaction();
+			try {
+				// Génération d'un mdp aléatoire
+				const generatedPassword = generateRandomPassword();
+				const saltRounds = parseInt(process.env.SALT_ROUNDS!);
+				const hashedPassword = await bcrypt.hash(
+					generatedPassword,
+					saltRounds
+				);
 
-			const userCreated = await User.create({
-				...infos,
-				password: hashedPassword,
-			});
+				const userCreated = await User.create({
+					...clientData,
+					password: hashedPassword,
+				});
+				await History.create(
+					{
+						operation: 'Create',
+						table: 'user',
+						content: `Création de l'utilisateur ${email}`,
+						userId,
+					},
+					{ transaction }
+				);
+				await transaction.commit();
 
-			if (!userCreated)
+				// Retrait du mdp de l'objet à renvoyer au client
+				const { password, ...user } = userCreated.get();
+
+				res.status(201).json({ user, generatedPassword });
+			} catch (error) {
+				await transaction.rollback();
 				throw new Error("Impossible de créer l'utilisateur");
-
-			const { password, ...user } = userCreated.get();
-
-			res.status(201).json({ user, generatedPassword });
+			}
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');
@@ -157,8 +203,9 @@ const userController = {
 
 	async updateUser(req: UserRequest, res: Response) {
 		try {
+			const clientData = req.body;
+			const { id, ...infosToUpdate } = clientData;
 			const userId = req.user!.id;
-			const { id, ...infosToUpdate } = req.body;
 
 			if (id === userId)
 				return res
@@ -178,34 +225,62 @@ const userController = {
 				return res.status(404).json("L'utilisateur n'existe pas");
 
 			// Vérification si un utilisateur avec cette adresse mail existe
-			const existingEmailCheck = await User.findOne({
+			const existingEmail = await User.findOne({
 				where: {
-					email: infosToUpdate.email,
+					email: clientData.email,
 					id: {
 						[Op.not]: id,
 					},
 				},
 			});
-			if (existingEmailCheck)
+			if (existingEmail)
 				return res
 					.status(409)
 					.json(
 						'Un autre utilisateur possède déjà cette adresse mail'
 					);
 
-			await user.update(infosToUpdate);
+			// Transaction de mise à jour
+			const transaction = await sequelize.transaction();
+			try {
+				const oldEmail = user.email;
+				const newEmail = clientData.email;
+				let emailChanged = null;
+				// Si l'email a été modifié
+				if (oldEmail !== newEmail)
+					emailChanged = `Mise à jour de l'utilisateur ${oldEmail}, incluant un changement d'email vers ${newEmail}`;
 
-			const { firstName, lastName, email, role } = user;
+				await user.update(infosToUpdate, {
+					transaction,
+				});
+				await History.create(
+					{
+						operation: 'Update',
+						table: 'user',
+						content:
+							emailChanged ??
+							`Mise à jour de l'utilisateur ${oldEmail}`,
+						userId,
+					},
+					{ transaction }
+				);
+				await transaction.commit();
 
-			const newUserInfos = {
-				id,
-				firstName,
-				lastName,
-				email,
-				role,
-			};
+				// Informations à renvoyer au client
+				const { firstName, lastName, email, role } = user;
+				const newUserInfos = {
+					id,
+					firstName,
+					lastName,
+					email,
+					role,
+				};
 
-			res.status(200).json(newUserInfos);
+				res.status(200).json(newUserInfos);
+			} catch (error) {
+				await transaction.rollback();
+				throw new Error("Impossible de mettre à jour l'utilisateur");
+			}
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');
@@ -242,13 +317,37 @@ const userController = {
 			if (!user)
 				return res.status(409).json("L'utilisateur n'existe pas");
 
-			await user.update({
-				password: hashedPassword,
-			});
-			const { email } = user;
-			const fullName = user.firstName + ' ' + user.lastName;
+			// Transaction réinitialisation de mot de passe
+			const transaction = await sequelize.transaction();
+			try {
+				await user.update(
+					{
+						password: hashedPassword,
+					},
+					{ transaction }
+				);
+				await History.create(
+					{
+						operation: 'Update',
+						table: 'user',
+						content: `Réinitialisation du mot de passe de l'utilisateur ${user.email}`,
+						userId,
+					},
+					{ transaction }
+				);
+				await transaction.commit();
 
-			res.status(200).json({ fullName, email, generatedPassword });
+				// Informations à renvoyer au client
+				const { email } = user;
+				const fullName = user.firstName + ' ' + user.lastName;
+
+				res.status(200).json({ fullName, email, generatedPassword });
+			} catch (error) {
+				await transaction.rollback();
+				throw new Error(
+					"Impossible de réinitialiser le mot de passe de l'utilisateur"
+				);
+			}
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');
@@ -271,13 +370,30 @@ const userController = {
 						"Vous n'avez pas les droits pour supprimer le compte de cet utilisateur"
 					);
 
-			const userToDelete = await User.findByPk(id);
-			if (!userToDelete)
+			const user = await User.findByPk(id);
+			if (!user)
 				return res.status(404).json("L'utilisateur n'existe pas");
 
-			await userToDelete.destroy();
+			// Transaction de suppression
+			const transaction = await sequelize.transaction();
+			try {
+				await user.destroy({ transaction });
+				await History.create(
+					{
+						operation: 'Delete',
+						table: 'user',
+						content: `Suppression de l'utilisateur ${user.email}`,
+						userId,
+					},
+					{ transaction }
+				);
+				await transaction.commit();
 
-			res.status(200).json(id);
+				res.status(200).json(id);
+			} catch (error) {
+				await transaction.rollback();
+				throw new Error("Impossible de supprimer l'utilisateur");
+			}
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');

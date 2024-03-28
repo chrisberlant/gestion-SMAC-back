@@ -1,12 +1,15 @@
 import { Response } from 'express';
 import { UserRequest } from '../@types';
-import { Agent, Device, Line, Model } from '../models';
+import { Agent, Device, History, Line, Model } from '../models';
 import {
 	DeviceWithModelAndAgentType,
 	DevicesImportType,
 } from '../@types/models';
 import generateCsvFile from '../utils/csvGeneration';
 import { Op } from 'sequelize';
+import sequelize from '../sequelize-client';
+import { compareStoredAndReceivedValues } from '../utils';
+import console from 'console';
 
 const deviceController = {
 	async getAllDevices(_: UserRequest, res: Response) {
@@ -54,6 +57,7 @@ const deviceController = {
 	async createDevice(req: UserRequest, res: Response) {
 		try {
 			const { imei } = req.body;
+			const userId = req.user!.id;
 
 			const existingDevice = await Device.findOne({
 				where: {
@@ -63,11 +67,28 @@ const deviceController = {
 			if (existingDevice)
 				return res.status(401).json("L'appareil existe déjà");
 
-			const newDevice = await Device.create(req.body);
+			// Transaction de création
+			const transaction = await sequelize.transaction();
+			try {
+				const newDevice = await Device.create(req.body, {
+					transaction,
+				});
+				await History.create(
+					{
+						operation: 'Create',
+						table: 'device',
+						content: `Création de l'appareil ${imei}`,
+						userId,
+					},
+					{ transaction }
+				);
+				await transaction.commit();
 
-			if (!newDevice) throw new Error("Impossible de créer l'appareil");
-
-			res.status(201).json(newDevice);
+				res.status(201).json(newDevice);
+			} catch (error) {
+				await transaction.rollback();
+				throw new Error("Impossible de créer l'appareil");
+			}
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');
@@ -76,9 +97,12 @@ const deviceController = {
 
 	async updateDevice(req: UserRequest, res: Response) {
 		try {
-			const { id, ...newInfos } = req.body;
+			const clientData = req.body;
+			const { id, ...newInfos } = clientData;
+			const userId = req.user!.id;
 
 			const device = await Device.findByPk(id);
+
 			if (!device) return res.status(404).json("L'appareil n'existe pas");
 
 			const existingDevice = await Device.findOne({
@@ -94,9 +118,41 @@ const deviceController = {
 					.status(401)
 					.json('Un appareil avec cet IMEI existe déjà');
 
-			const deviceIsModified = await device.update(newInfos);
+			// Si les valeurs sont identiques, pas de mise à jour en BDD
+			if (compareStoredAndReceivedValues(device, clientData))
+				return res.status(200).json(device);
 
-			res.status(200).json(deviceIsModified);
+			// Transaction de mise à jour
+			const transaction = await sequelize.transaction();
+			try {
+				const oldImei = device.imei;
+				const newImei = clientData.imei;
+				let imeiChanged = null;
+				// Si l'IMEI a été modifié
+				if (oldImei !== newImei)
+					imeiChanged = `Mise à jour de ${oldImei}, incluant un changement d'IMEI vers ${newImei}`;
+
+				const updatedDevice = await device.update(newInfos, {
+					transaction,
+				});
+				await History.create(
+					{
+						operation: 'Update',
+						table: 'device',
+						content:
+							imeiChanged ??
+							`Mise à jour de l'appareil ${oldImei}`,
+						userId,
+					},
+					{ transaction }
+				);
+				await transaction.commit();
+
+				res.status(200).json(updatedDevice);
+			} catch (error) {
+				await transaction.rollback();
+				throw new Error("Impossible de mettre à jour l'appareil");
+			}
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');
@@ -106,6 +162,7 @@ const deviceController = {
 	async deleteDevice(req: UserRequest, res: Response) {
 		try {
 			const { id } = req.body;
+			const userId = req.user!.id;
 
 			const device = await Device.findByPk(id);
 			if (!device) return res.status(404).json("L'appareil n'existe pas");
@@ -120,9 +177,26 @@ const deviceController = {
 					.status(409)
 					.json("L'appareil est associé à une ligne");
 
-			await device.destroy();
+			// Transaction de suppression
+			const transaction = await sequelize.transaction();
+			try {
+				await device.destroy({ transaction });
+				await History.create(
+					{
+						operation: 'Delete',
+						table: 'device',
+						content: `Suppression de l'appareil avec l'IMEI ${device.imei}`,
+						userId,
+					},
+					{ transaction }
+				);
+				await transaction.commit();
 
-			res.status(200).json(id);
+				res.status(200).json(id);
+			} catch (error) {
+				await transaction.rollback();
+				throw new Error("Impossible de supprimer l'appareil");
+			}
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');
@@ -210,6 +284,7 @@ const deviceController = {
 
 	async importMultipleDevices(req: UserRequest, res: Response) {
 		try {
+			const userId = req.user!.id;
 			// Appareils importés depuis le CSV
 			const importedDevices: DevicesImportType = req.body;
 
@@ -259,10 +334,29 @@ const deviceController = {
 			if (alreadyExistingImeis.length > 0)
 				return res.status(409).json(alreadyExistingImeis);
 
-			// Ajout des appareils
-			await Device.bulkCreate(formattedImportedDevices);
+			// Transaction d'import
+			const transaction = await sequelize.transaction();
+			try {
+				await Device.bulkCreate(formattedImportedDevices, {
+					transaction,
+				});
+				await History.create(
+					{
+						operation: 'Create',
+						table: 'device',
+						content: `Import d'appareils via un CSV`,
+						userId,
+					},
+					{ transaction }
+				);
+				await transaction.commit();
 
-			res.status(200).json('ok');
+				res.status(200).json('ok');
+			} catch (error) {
+				await transaction.rollback();
+				throw new Error("Impossible de créer l'agent");
+			}
+			// Ajout des appareils
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');

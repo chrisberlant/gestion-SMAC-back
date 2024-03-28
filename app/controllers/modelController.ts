@@ -25,9 +25,9 @@ const modelController = {
 
 	async createModel(req: UserRequest, res: Response) {
 		try {
-			const infos = req.body;
+			const clientData = req.body;
 			const userId = req.user!.id;
-			const { brand, reference, storage } = infos;
+			const { brand, reference, storage } = clientData;
 
 			const existingModel = await Model.findOne({
 				where: {
@@ -48,11 +48,11 @@ const modelController = {
 			// Transaction de création
 			const transaction = await sequelize.transaction();
 			try {
-				const value = `${infos.brand} ${infos.reference}${
-					infos.storage ? ` ${infos.storage}` : ''
+				const value = `${brand} ${reference}${
+					storage ? ` ${storage}` : ''
 				}`;
 
-				const newModel = await Model.create(infos, {
+				const newModel = await Model.create(clientData, {
 					transaction,
 				});
 				await History.create(
@@ -119,7 +119,7 @@ const modelController = {
 					clientData.storage ? ` ${clientData.storage}` : ''
 				}`;
 
-				const modifiedModel = await model.update(newInfos, {
+				const updatedModel = await model.update(newInfos, {
 					transaction,
 				});
 				await History.create(
@@ -133,7 +133,7 @@ const modelController = {
 				);
 				await transaction.commit();
 
-				res.status(200).json(modifiedModel);
+				res.status(200).json(updatedModel);
 			} catch (error) {
 				await transaction.rollback();
 				throw new Error('Impossible de mettre à jour le modèle');
@@ -152,7 +152,7 @@ const modelController = {
 			const model = await Model.findByPk(id);
 			if (!model) return res.status(404).json("Le modèle n'existe pas");
 
-			// Transaction de création
+			// Transaction de suppression
 			const transaction = await sequelize.transaction();
 			try {
 				const value = `${model.brand} ${model.reference}${
@@ -165,7 +165,7 @@ const modelController = {
 					{
 						operation: 'Delete',
 						table: 'model',
-						content: `Suppression de ${value}`,
+						content: `Suppression du modèle ${value}`,
 						userId,
 					},
 					{ transaction }

@@ -6,8 +6,10 @@ import {
 	LineWithAgentAndDeviceType,
 	LinesImportType,
 } from '../@types/models';
-import { Agent, Device, Line } from '../models';
+import { Agent, Device, History, Line } from '../models';
 import generateCsvFile from '../utils/csvGeneration';
+import sequelize from '../sequelize-client';
+import { compareStoredAndReceivedValues } from '../utils';
 
 const lineController = {
 	async getAllLines(_: UserRequest, res: Response) {
@@ -58,20 +60,38 @@ const lineController = {
 
 	async createLine(req: UserRequest, res: Response) {
 		try {
-			const infos: LineType = req.body;
+			const clientData: LineType = req.body;
+			const { number } = clientData;
+			const userId = req.user!.id;
 
 			const existingLine = await Line.findOne({
 				where: {
-					number: infos.number,
+					number,
 				},
 			});
 			if (existingLine)
 				return res.status(401).json('La ligne existe déjà');
 
-			const newLine = await Line.create(infos);
-			if (!newLine) throw new Error('Impossible de créer la ligne');
+			// Transaction de création
+			const transaction = await sequelize.transaction();
+			try {
+				const newLine = await Line.create(clientData, { transaction });
+				await History.create(
+					{
+						operation: 'Create',
+						table: 'line',
+						content: `Création de la ligne ${number}`,
+						userId,
+					},
+					{ transaction }
+				);
+				await transaction.commit();
 
-			res.status(201).json(newLine);
+				res.status(201).json(newLine);
+			} catch (error) {
+				await transaction.rollback();
+				throw new Error('Impossible de créer la ligne');
+			}
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');
@@ -80,7 +100,9 @@ const lineController = {
 
 	async updateLine(req: UserRequest, res: Response) {
 		try {
-			const { id, ...newInfos } = req.body;
+			const clientData = req.body;
+			const { id, ...newInfos } = clientData;
+			const userId = req.user!.id;
 
 			const line = await Line.findByPk(id);
 			if (!line) return res.status(404).json("La ligne n'existe pas");
@@ -98,9 +120,41 @@ const lineController = {
 					.status(401)
 					.json('Une ligne avec ce numéro existe déjà');
 
-			const lineIsModified = await line.update(newInfos);
+			// Si les valeurs sont identiques, pas de mise à jour en BDD
+			if (compareStoredAndReceivedValues(line, clientData))
+				return res.status(200).json(line);
 
-			res.status(200).json(lineIsModified);
+			// Transaction de mise à jour
+			const transaction = await sequelize.transaction();
+			try {
+				const oldNumber = line.number;
+				const newNumber = clientData.number;
+				let numberChanged = null;
+				// Si le numéro a été modifié
+				if (oldNumber !== newNumber)
+					numberChanged = `Mise à jour de la ligne ${oldNumber}, incluant un changement de numéro vers ${newNumber}`;
+
+				const updatedLine = await line.update(newInfos, {
+					transaction,
+				});
+				await History.create(
+					{
+						operation: 'Update',
+						table: 'line',
+						content:
+							numberChanged ??
+							`Mise à jour de la ligne ${oldNumber}`,
+						userId,
+					},
+					{ transaction }
+				);
+				await transaction.commit();
+
+				res.status(200).json(updatedLine);
+			} catch (error) {
+				await transaction.rollback();
+				throw new Error('Impossible de mettre à jour la ligne');
+			}
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');
@@ -110,13 +164,31 @@ const lineController = {
 	async deleteLine(req: UserRequest, res: Response) {
 		try {
 			const { id } = req.body;
+			const userId = req.user!.id;
 
 			const line = await Line.findByPk(id);
 			if (!line) return res.status(404).json("La ligne n'existe pas");
 
-			await line.destroy();
+			// Transaction de suppression
+			const transaction = await sequelize.transaction();
+			try {
+				await line.destroy({ transaction });
+				await History.create(
+					{
+						operation: 'Delete',
+						table: 'line',
+						content: `Suppression de la ligne avec le numéro ${line.number}`,
+						userId,
+					},
+					{ transaction }
+				);
+				await transaction.commit();
 
-			res.status(200).json(id);
+				res.status(200).json(id);
+			} catch (error) {
+				await transaction.rollback();
+				throw new Error("Impossible de supprimer l'agent");
+			}
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');
@@ -218,6 +290,7 @@ const lineController = {
 
 	async importMultipleLines(req: UserRequest, res: Response) {
 		try {
+			const userId = req.user!.id;
 			// Lignes importées depuis le CSV
 			const importedLines: LinesImportType = req.body;
 
@@ -271,10 +344,26 @@ const lineController = {
 			if (alreadyExistingItems.length > 0)
 				return res.status(409).json(alreadyExistingItems);
 
-			// Ajout des appareils
-			await Line.bulkCreate(formattedImportedLines);
+			// Transaction d'import
+			const transaction = await sequelize.transaction();
+			try {
+				await Line.bulkCreate(formattedImportedLines, { transaction });
+				await History.create(
+					{
+						operation: 'Create',
+						table: 'line',
+						content: 'Import de lignes via un CSV',
+						userId,
+					},
+					{ transaction }
+				);
+				await transaction.commit();
 
-			res.status(200).json(formattedImportedLines);
+				res.status(200).json('ok');
+			} catch (error) {
+				await transaction.rollback();
+				throw new Error("Impossible de créer l'agent");
+			}
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');

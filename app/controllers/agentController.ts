@@ -1,12 +1,15 @@
 import { Response } from 'express';
 import { UserRequest } from '../@types';
-import { Agent, Service } from '../models';
+import { Agent, History, Service } from '../models';
 import {
+	AgentType,
 	AgentWithServiceAndDevicesType,
 	AgentsImportType,
 } from '../@types/models';
 import generateCsvFile from '../utils/csvGeneration';
 import { Op } from 'sequelize';
+import sequelize from '../sequelize-client';
+import { compareStoredAndReceivedValues } from '../utils';
 
 const agentController = {
 	async getAllAgents(_: UserRequest, res: Response) {
@@ -55,23 +58,40 @@ const agentController = {
 
 	async createAgent(req: UserRequest, res: Response) {
 		try {
-			const infos = req.body;
+			const clientData: AgentType = req.body;
+			const { email } = clientData;
+			const userId = req.user!.id;
 
 			const existingAgent = await Agent.findOne({
 				where: {
-					email: {
-						[Op.iLike]: infos.email,
-					},
+					email,
 				},
 			});
 			if (existingAgent)
 				return res.status(401).json("L'agent existe déjà");
 
-			const newAgent = await Agent.create(infos);
+			// Transaction de création
+			const transaction = await sequelize.transaction();
+			try {
+				const newAgent = await Agent.create(clientData, {
+					transaction,
+				});
+				await History.create(
+					{
+						operation: 'Create',
+						table: 'agent',
+						content: `Création de l'agent ${email}`,
+						userId,
+					},
+					{ transaction }
+				);
+				await transaction.commit();
 
-			if (!newAgent) throw new Error("Impossible de créer l'agent");
-
-			res.status(201).json(newAgent);
+				res.status(201).json(newAgent);
+			} catch (error) {
+				await transaction.rollback();
+				throw new Error("Impossible de créer l'agent");
+			}
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');
@@ -80,29 +100,61 @@ const agentController = {
 
 	async updateAgent(req: UserRequest, res: Response) {
 		try {
-			const { id, ...newInfos } = req.body;
+			const clientData = req.body;
+			const { id, ...newInfos } = clientData;
+			const userId = req.user!.id;
 
 			const agent = await Agent.findByPk(id);
 			if (!agent) return res.status(404).json("L'agent n'existe pas");
 
-			const existingAgent = await Agent.findOne({
+			const existingEmail = await Agent.findOne({
 				where: {
-					email: {
-						[Op.iLike]: newInfos.email,
-					},
+					email: clientData.email,
 					id: {
 						[Op.not]: id,
 					},
 				},
 			});
-			if (existingAgent)
+			if (existingEmail)
 				return res
 					.status(401)
 					.json('Un agent avec cette adresse mail existe déjà');
 
-			const agentIsModified = await agent.update(newInfos);
+			// Si les valeurs sont identiques, pas de mise à jour en BDD
+			if (compareStoredAndReceivedValues(agent, clientData))
+				return res.status(200).json(agent);
 
-			res.status(200).json(agentIsModified);
+			// Transaction de mise à jour
+			const transaction = await sequelize.transaction();
+			try {
+				const oldEmail = agent.email;
+				const newEmail = clientData.email;
+				let emailChanged = null;
+				// Si l'email a été modifié
+				if (oldEmail !== newEmail)
+					emailChanged = `Mise à jour de l'agent ${oldEmail}, incluant un changement d'email vers ${newEmail}`;
+
+				const updatedAgent = await agent.update(newInfos, {
+					transaction,
+				});
+				await History.create(
+					{
+						operation: 'Update',
+						table: 'agent',
+						content:
+							emailChanged ??
+							`Mise à jour de l'agent ${oldEmail}`,
+						userId,
+					},
+					{ transaction }
+				);
+				await transaction.commit();
+
+				res.status(200).json(updatedAgent);
+			} catch (error) {
+				await transaction.rollback();
+				throw new Error("Impossible de mettre à jour l'agent");
+			}
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');
@@ -112,13 +164,31 @@ const agentController = {
 	async deleteAgent(req: UserRequest, res: Response) {
 		try {
 			const { id } = req.body;
+			const userId = req.user!.id;
 
 			const agent = await Agent.findByPk(id);
 			if (!agent) return res.status(404).json("L'agent n'existe pas");
 
-			await agent.destroy();
+			// Transaction de suppression
+			const transaction = await sequelize.transaction();
+			try {
+				await agent.destroy({ transaction });
+				await History.create(
+					{
+						operation: 'Delete',
+						table: 'agent',
+						content: `Suppression de l'appareil avec l'email ${agent.email}`,
+						userId,
+					},
+					{ transaction }
+				);
+				await transaction.commit();
 
-			res.status(200).json(id);
+				res.status(200).json(id);
+			} catch (error) {
+				await transaction.rollback();
+				throw new Error("Impossible de supprimer l'agent");
+			}
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');
@@ -194,6 +264,7 @@ const agentController = {
 
 	async importMultipleAgents(req: UserRequest, res: Response) {
 		try {
+			const userId = req.user!.id;
 			// Agents importés depuis le CSV
 			const importedAgents: AgentsImportType = req.body;
 
@@ -230,10 +301,28 @@ const agentController = {
 			if (alreadyExistingEmails.length > 0)
 				return res.status(409).json(alreadyExistingEmails);
 
-			// Ajout des agents
-			await Agent.bulkCreate(formattedImportedAgents);
+			// Transaction d'import
+			const transaction = await sequelize.transaction();
+			try {
+				await Agent.bulkCreate(formattedImportedAgents, {
+					transaction,
+				});
+				await History.create(
+					{
+						operation: 'Create',
+						table: 'agent',
+						content: `Import d'agents via un CSV`,
+						userId,
+					},
+					{ transaction }
+				);
+				await transaction.commit();
 
-			res.status(200).json('ok');
+				res.status(200).json('ok');
+			} catch (error) {
+				await transaction.rollback();
+				throw new Error("Impossible de créer l'agent");
+			}
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');
