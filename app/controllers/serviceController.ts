@@ -5,6 +5,7 @@ import { Response } from 'express';
 import { ServiceType } from '../@types/models';
 import sequelize from '../sequelize-client';
 import service from '../models/service';
+import { title } from 'process';
 
 const serviceController = {
 	async getAllServices(_: UserRequest, res: Response) {
@@ -67,7 +68,7 @@ const serviceController = {
 	async updateService(req: UserRequest, res: Response) {
 		try {
 			const clientData: ServiceType = req.body;
-			const { id, title } = clientData;
+			const { id } = req.params;
 			const userId = req.user!.id;
 
 			const service = await Service.findByPk(id);
@@ -78,10 +79,10 @@ const serviceController = {
 			const existingService = await Service.findOne({
 				where: {
 					title: {
-						[Op.iLike]: title,
+						[Op.iLike]: clientData.title,
 					},
 					id: {
-						[Op.not]: id,
+						[Op.not]: Number(id),
 					},
 				},
 			});
@@ -91,7 +92,8 @@ const serviceController = {
 					.json('Un service possédant ce titre existe déjà');
 
 			// Si le titre fourni est identique au titre déjà renseigné
-			if (title === service.title) return res.status(200).json(service);
+			if (clientData.title === service.title)
+				return res.status(200).json(service);
 
 			// Transaction de mise à jour
 			const transaction = await sequelize.transaction();
@@ -123,7 +125,7 @@ const serviceController = {
 
 	async deleteService(req: UserRequest, res: Response) {
 		try {
-			const { id } = req.body;
+			const { id } = req.params;
 			const userId = req.user!.id;
 
 			const service = await Service.findByPk(id);

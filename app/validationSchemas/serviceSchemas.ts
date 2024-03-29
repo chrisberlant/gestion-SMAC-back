@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import selectionSchema from '.';
 
 export const serviceCreationSchema = z.strictObject({
 	title: z.string({
@@ -8,7 +7,7 @@ export const serviceCreationSchema = z.strictObject({
 	}),
 });
 
-export const serviceUpdateSchema = selectionSchema.extend({
+export const serviceUpdateSchema = z.strictObject({
 	title: z.string({
 		required_error: 'Le titre doit être renseigné',
 		invalid_type_error: 'Le titre doit être une chaîne de caractères',

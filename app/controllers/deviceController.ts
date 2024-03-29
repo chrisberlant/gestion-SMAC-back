@@ -98,7 +98,7 @@ const deviceController = {
 	async updateDevice(req: UserRequest, res: Response) {
 		try {
 			const clientData = req.body;
-			const { id, ...newInfos } = clientData;
+			const { id } = req.params;
 			const userId = req.user!.id;
 
 			const device = await Device.findByPk(id);
@@ -107,9 +107,9 @@ const deviceController = {
 
 			const existingDevice = await Device.findOne({
 				where: {
-					imei: newInfos.imei,
+					imei: clientData.imei,
 					id: {
-						[Op.not]: id,
+						[Op.not]: Number(id),
 					},
 				},
 			});
@@ -132,7 +132,7 @@ const deviceController = {
 				if (oldImei !== newImei)
 					imeiChanged = `Mise à jour de ${oldImei}, incluant un changement d'IMEI vers ${newImei}`;
 
-				const updatedDevice = await device.update(newInfos, {
+				const updatedDevice = await device.update(clientData, {
 					transaction,
 				});
 				await History.create(
@@ -161,7 +161,7 @@ const deviceController = {
 
 	async deleteDevice(req: UserRequest, res: Response) {
 		try {
-			const { id } = req.body;
+			const { id } = req.params;
 			const userId = req.user!.id;
 
 			const device = await Device.findByPk(id);

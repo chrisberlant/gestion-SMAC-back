@@ -30,13 +30,6 @@ export const agentCreationSchema = z.strictObject({
 });
 
 export const agentUpdateSchema = z.strictObject({
-	id: z
-		.number({
-			required_error: "L'id doit être renseigné",
-			invalid_type_error: "L'id doit être un nombre",
-		})
-		.int("L'id doit être un nombre entier")
-		.positive("L'id fourni est incorrect"),
 	email: z
 		.string({
 			invalid_type_error: "Le format de l'adresse mail est incorrect",

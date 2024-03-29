@@ -39,7 +39,7 @@ const userController = {
 				where: {
 					email: clientData.email,
 					id: {
-						[Op.not]: userId,
+						[Op.not]: Number(userId),
 					},
 				},
 			});
@@ -204,7 +204,7 @@ const userController = {
 	async updateUser(req: UserRequest, res: Response) {
 		try {
 			const clientData = req.body;
-			const { id, ...infosToUpdate } = clientData;
+			const { id } = req.params;
 			const userId = req.user!.id;
 
 			if (id === userId)
@@ -213,7 +213,7 @@ const userController = {
 					.json(
 						'Vous ne pouvez pas mettre à jour votre propre compte via cette requête'
 					);
-			if (id === 1)
+			if (id === '1')
 				return res
 					.status(403)
 					.json(
@@ -224,21 +224,23 @@ const userController = {
 			if (!user)
 				return res.status(404).json("L'utilisateur n'existe pas");
 
-			// Vérification si un utilisateur avec cette adresse mail existe
-			const existingEmail = await User.findOne({
-				where: {
-					email: clientData.email,
-					id: {
-						[Op.not]: id,
+			// Si un email est fourni, vérification si un utilisateur avec celui-ci existe
+			if (clientData.email) {
+				const existingEmail = await User.findOne({
+					where: {
+						email: clientData.email,
+						id: {
+							[Op.not]: Number(id),
+						},
 					},
-				},
-			});
-			if (existingEmail)
-				return res
-					.status(409)
-					.json(
-						'Un autre utilisateur possède déjà cette adresse mail'
-					);
+				});
+				if (existingEmail)
+					return res
+						.status(409)
+						.json(
+							'Un autre utilisateur possède déjà cette adresse mail'
+						);
+			}
 
 			// Transaction de mise à jour
 			const transaction = await sequelize.transaction();
@@ -250,7 +252,7 @@ const userController = {
 				if (oldEmail !== newEmail)
 					emailChanged = `Mise à jour de l'utilisateur ${oldEmail}, incluant un changement d'email vers ${newEmail}`;
 
-				await user.update(infosToUpdate, {
+				await user.update(clientData, {
 					transaction,
 				});
 				await History.create(
@@ -290,7 +292,7 @@ const userController = {
 	async resetPassword(req: UserRequest, res: Response) {
 		try {
 			const userId = req.user!.id;
-			const { id } = req.body;
+			const { id } = req.params;
 
 			if (id === userId)
 				return res
@@ -299,7 +301,7 @@ const userController = {
 						'Vous ne pouvez pas réinitialiser votre propre mot de passe'
 					);
 
-			if (id === 1)
+			if (id === '1')
 				return res
 					.status(403)
 					.json(
@@ -357,13 +359,13 @@ const userController = {
 	async deleteUser(req: UserRequest, res: Response) {
 		try {
 			const userId = req.user!.id;
-			const { id } = req.body;
+			const { id } = req.params;
 
 			if (id === userId)
 				return res
 					.status(400)
 					.json('Vous ne pouvez pas supprimer votre propre compte');
-			if (id === 1)
+			if (id === '1')
 				return res
 					.status(403)
 					.json(

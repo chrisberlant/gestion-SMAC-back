@@ -101,7 +101,7 @@ const lineController = {
 	async updateLine(req: UserRequest, res: Response) {
 		try {
 			const clientData = req.body;
-			const { id, ...newInfos } = clientData;
+			const { id } = req.params;
 			const userId = req.user!.id;
 
 			const line = await Line.findByPk(id);
@@ -109,9 +109,9 @@ const lineController = {
 
 			const existingNumber = await Line.findOne({
 				where: {
-					number: newInfos.number,
+					number: clientData.number,
 					id: {
-						[Op.not]: id,
+						[Op.not]: Number(id),
 					},
 				},
 			});
@@ -134,7 +134,7 @@ const lineController = {
 				if (oldNumber !== newNumber)
 					numberChanged = `Mise à jour de la ligne ${oldNumber}, incluant un changement de numéro vers ${newNumber}`;
 
-				const updatedLine = await line.update(newInfos, {
+				const updatedLine = await line.update(clientData, {
 					transaction,
 				});
 				await History.create(
@@ -163,7 +163,7 @@ const lineController = {
 
 	async deleteLine(req: UserRequest, res: Response) {
 		try {
-			const { id } = req.body;
+			const { id } = req.params;
 			const userId = req.user!.id;
 
 			const line = await Line.findByPk(id);

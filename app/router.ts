@@ -5,13 +5,13 @@ import deviceController from './controllers/deviceController';
 import lineController from './controllers/lineController';
 import modelController from './controllers/modelController';
 import serviceController from './controllers/serviceController';
-import statsController from './controllers/statsController';
 import userController from './controllers/userController';
+import statsController from './controllers/statsController';
+import historyController from './controllers/historyController';
 import rightsMiddleware from './middlewares/rightsMiddleware';
 import dataValidation from './middlewares/dataValidationMiddleware';
 import jwtMiddleware from './middlewares/jwtMidleware';
 import requestsLimitMiddleware from './middlewares/requestsLimitMiddleware';
-import selectionSchema from './validationSchemas';
 import {
 	agentCreationSchema,
 	agentUpdateSchema,
@@ -57,246 +57,288 @@ router.post(
 router.get('/healthCheck', authController.healthCheck);
 
 /* ------------- LOGGED USER ROUTES ------------- */
-router.get('/getCurrentUser', jwtMiddleware, userController.getCurrentUser);
+// Récupérer les informations de l'utilisateur connecté
+router.get('/me', jwtMiddleware, userController.getCurrentUser);
+// Modifier les infos
 router.patch(
-	'/updateCurrentUser',
+	'/me',
 	jwtMiddleware,
 	dataValidation(currentUserUpdateSchema),
 	userController.updateCurrentUser
 );
+// Modifier le mot de passe
 router.patch(
-	'/updateCurrentUserPassword',
+	'/my-password',
 	jwtMiddleware,
 	dataValidation(currentUserPasswordUpdateSchema),
 	userController.updateCurrentUserPassword
 );
 
 /* ------------- APP USERS ROUTES (ADMIN) ------------- */
+// Récupérer tous les utilisateurs
 router.get(
-	'/getAllUsers',
+	'/users',
 	jwtMiddleware,
 	rightsMiddleware('Admin'),
 	userController.getAllUsers
 );
+// Créer un utilisateur
 router.post(
-	'/createUser',
+	'/user',
 	jwtMiddleware,
 	dataValidation(userCreationSchema),
 	rightsMiddleware('Admin'),
 	userController.createUser
 );
+// Modifier un utilisateur
 router.patch(
-	'/updateUser',
+	'/user/:id',
 	jwtMiddleware,
 	dataValidation(userUpdateSchema),
 	rightsMiddleware('Admin'),
 	userController.updateUser
 );
+// Supprimer un utilisateur
 router.delete(
-	'/deleteUser',
+	'/user/:id',
 	jwtMiddleware,
-	dataValidation(selectionSchema),
 	rightsMiddleware('Admin'),
 	userController.deleteUser
 );
+// Réinitialiser le mot de passe d'un utilisateur
 router.patch(
-	'/resetPassword',
+	'/user/password/:id',
 	jwtMiddleware,
-	dataValidation(selectionSchema),
 	rightsMiddleware('Admin'),
 	userController.resetPassword
 );
 
 /* ------------- LINES ROUTES ------------- */
-router.get('/getAllLines/', jwtMiddleware, lineController.getAllLines);
-router.get('/getLineById/:id', jwtMiddleware, lineController.getLineById);
+// Récupérer toutes les lignes
+router.get('/lines', jwtMiddleware, lineController.getAllLines);
+router.get('/line/:id', jwtMiddleware, lineController.getLineById);
+// Créer une ligne
 router.post(
-	'/createLine',
+	'/line',
 	jwtMiddleware,
 	dataValidation(lineCreationSchema),
 	rightsMiddleware('Tech'),
 	lineController.createLine
 );
+// Modifier une ligne
 router.patch(
-	'/updateLine',
+	'/line/:id',
 	jwtMiddleware,
 	dataValidation(lineUpdateSchema),
 	rightsMiddleware('Tech'),
 	lineController.updateLine
 );
+// Supprimer une ligne
 router.delete(
-	'/deleteLine',
+	'/line/:id',
 	jwtMiddleware,
-	dataValidation(selectionSchema),
 	rightsMiddleware('Tech'),
 	lineController.deleteLine
 );
+// Exporter les lignes en CSV
 router.get(
-	'/exportLinesCsvFile',
+	'/lines/csv',
 	jwtMiddleware,
 	rightsMiddleware('Tech'),
 	lineController.generateLinesCsvFile
 );
-router.get(
-	'/generateEmptyLinesCsvFile',
-	jwtMiddleware,
-	lineController.generateEmptyLinesCsvFile
-);
+// Créer des lignes à partir d'un CSV
 router.post(
-	'/importMultipleLines',
+	'/lines/csv',
 	jwtMiddleware,
 	dataValidation(linesImportSchema),
 	rightsMiddleware('Tech'),
 	lineController.importMultipleLines
 );
+// Créer un template CSV vierge
+router.get(
+	'/lines/csv-template',
+	jwtMiddleware,
+	lineController.generateEmptyLinesCsvFile
+);
 
 /* ------------- DEVICES ROUTES ------------- */
-router.get('/getAllDevices', jwtMiddleware, deviceController.getAllDevices);
-router.get('/getDeviceById/:id', jwtMiddleware, deviceController.getDeviceById);
+// Récupérer tous les appareils
+router.get('/devices', jwtMiddleware, deviceController.getAllDevices);
+router.get('/device/:id', jwtMiddleware, deviceController.getDeviceById);
+// Créer un appareil
 router.post(
-	'/createDevice',
+	'/device',
 	jwtMiddleware,
 	dataValidation(deviceCreationSchema),
 	rightsMiddleware('Tech'),
 	deviceController.createDevice
 );
+// Modifier un appareil
 router.patch(
-	'/updateDevice',
+	'/device/:id',
 	jwtMiddleware,
 	dataValidation(deviceUpdateSchema),
 	rightsMiddleware('Tech'),
 	deviceController.updateDevice
 );
+// Supprimer un appareil
 router.delete(
-	'/deleteDevice',
+	'/device/:id',
 	jwtMiddleware,
-	dataValidation(selectionSchema),
 	rightsMiddleware('Tech'),
 	deviceController.deleteDevice
 );
+// Exporter les appareils en CSV
 router.get(
-	'/exportDevicesCsvFile',
+	'/devices/csv',
 	jwtMiddleware,
 	rightsMiddleware('Tech'),
 	deviceController.exportDevicesCsvFile
 );
-router.get(
-	'/generateEmptyDevicesCsvFile',
-	jwtMiddleware,
-	deviceController.generateEmptyDevicesCsvFile
-);
+// Créer des appareils à partir d'un CSV
 router.post(
-	'/importMultipleDevices',
+	'/devices/csv',
 	jwtMiddleware,
 	dataValidation(devicesImportSchema),
 	rightsMiddleware('Tech'),
 	deviceController.importMultipleDevices
 );
+// Créer un template CSV vierge
+router.get(
+	'/devices/csv-template',
+	jwtMiddleware,
+	deviceController.generateEmptyDevicesCsvFile
+);
 
 /* ------------- MODELS ROUTES ------------- */
-router.get('/getAllModels', jwtMiddleware, modelController.getAllModels);
-
-/* ------------- MODELS ROUTES (ADMIN) ------------- */
+// Récupérer tous les modèles
+router.get('/models', jwtMiddleware, modelController.getAllModels);
+// Créer un modèle
 router.post(
-	'/createModel',
+	'/model',
 	jwtMiddleware,
 	dataValidation(modelCreationSchema),
 	rightsMiddleware('Admin'),
 	modelController.createModel
 );
+// Modifier un modèle
 router.patch(
-	'/updateModel',
+	'/model/:id',
 	jwtMiddleware,
 	dataValidation(modelUpdateSchema),
 	rightsMiddleware('Admin'),
 	modelController.updateModel
 );
+// Supprimer un modèle
 router.delete(
-	'/deleteModel',
+	'/model/:id',
 	jwtMiddleware,
-	dataValidation(selectionSchema),
 	rightsMiddleware('Admin'),
 	modelController.deleteModel
 );
 
 /* ------------- AGENTS ROUTES ------------- */
-router.get('/getAllAgents', jwtMiddleware, agentController.getAllAgents);
+// Récupérer tous les agents
+router.get('/agents', jwtMiddleware, agentController.getAllAgents);
+// Créer un agent
 router.post(
-	'/createAgent',
+	'/agent',
 	jwtMiddleware,
 	dataValidation(agentCreationSchema),
 	rightsMiddleware('Tech'),
 	agentController.createAgent
 );
+// Modifier un agent
 router.patch(
-	'/updateAgent',
+	'/agent/:id',
 	jwtMiddleware,
 	dataValidation(agentUpdateSchema),
 	rightsMiddleware('Tech'),
 	agentController.updateAgent
 );
+// Supprimer un agent
 router.delete(
-	'/deleteAgent',
+	'/agent/:id',
 	jwtMiddleware,
-	dataValidation(selectionSchema),
 	rightsMiddleware('Tech'),
 	agentController.deleteAgent
 );
+// Exporter les agents en CSV
 router.get(
-	'/exportAgentsCsvFile',
+	'/agents/csv',
 	jwtMiddleware,
 	rightsMiddleware('Tech'),
 	agentController.exportAgentsCsvFile
 );
-router.get(
-	'/generateEmptyAgentsCsvFile',
-	jwtMiddleware,
-	agentController.generateEmptyAgentsCsvFile
-);
+// Créer des agents à partir d'un CSV
 router.post(
-	'/importMultipleAgents',
+	'/agents/csv',
 	jwtMiddleware,
 	dataValidation(agentsImportSchema),
 	rightsMiddleware('Tech'),
 	agentController.importMultipleAgents
 );
+// Générer le template CSV
+router.get(
+	'/agents/csv-template',
+	jwtMiddleware,
+	agentController.generateEmptyAgentsCsvFile
+);
 
 /* ------------- SERVICES ROUTES ------------- */
-router.get('/getAllServices', jwtMiddleware, serviceController.getAllServices);
-
-/* ------------- SERVICES ROUTES (ADMIN) ------------- */
+// Récupérer tous les services
+router.get('/services', jwtMiddleware, serviceController.getAllServices);
+// Créer un service
 router.post(
-	'/createService',
+	'/service',
 	jwtMiddleware,
 	dataValidation(serviceCreationSchema),
 	rightsMiddleware('Admin'),
 	serviceController.createService
 );
-router.put(
-	'/updateService',
+// Modifier un service
+router.patch(
+	'/service/:id',
 	jwtMiddleware,
 	dataValidation(serviceUpdateSchema),
 	rightsMiddleware('Admin'),
 	serviceController.updateService
 );
+// Supprimer un service
 router.delete(
-	'/deleteService',
+	'/service/:id',
 	jwtMiddleware,
-	dataValidation(selectionSchema),
 	rightsMiddleware('Admin'),
 	serviceController.deleteService
 );
 
 /* ------------- STATS ROUTES ------------- */
+// Nombre d'agents et d'appareils par service
 router.get(
-	'/getAgentsAndDevicesPerService',
+	'/stats/agents-devices-per-service',
 	jwtMiddleware,
 	statsController.getAgentsAndDevicesPerService
 );
+// Nombre d'appareils par modèle
 router.get(
-	'/getDevicesAmountPerModel',
+	'/stats/devices-per-model',
 	jwtMiddleware,
 	statsController.getDevicesAmountPerModel
+);
+
+/* ------------- HISTORY ROUTES ------------- */
+router.get(
+	'/history',
+	jwtMiddleware,
+	rightsMiddleware('Tech'),
+	historyController.getAllHistory
+);
+router.delete(
+	'/history/:id',
+	jwtMiddleware,
+	rightsMiddleware('Admin'),
+	historyController.deleteHistory
 );
 
 export default router;

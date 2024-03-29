@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import selectionSchema from '.';
 
 export const lineCreationSchema = z.strictObject({
 	number: z
@@ -47,7 +46,7 @@ export const lineCreationSchema = z.strictObject({
 		.optional(),
 });
 
-export const lineUpdateSchema = selectionSchema.extend({
+export const lineUpdateSchema = z.strictObject({
 	number: z
 		.string({
 			required_error: 'Le numéro doit être renseigné',

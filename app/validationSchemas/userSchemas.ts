@@ -110,17 +110,6 @@ export const userCreationSchema = z.strictObject({
 });
 
 export const userUpdateSchema = z.strictObject({
-	id: z
-		.number({
-			required_error: "L'id doit être renseigné",
-			invalid_type_error: "L'id doit être un nombre",
-		})
-		.int("L'id doit être un nombre entier")
-		.positive("L'id fourni est incorrect")
-		.refine(
-			(data) => data !== 1,
-			"Vous n'avez pas les droits pour modifier cet utilisateur"
-		),
 	email: z
 		.string({
 			invalid_type_error: "Le format de l'adresse mail est incorrect",

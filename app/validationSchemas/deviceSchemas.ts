@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import selectionSchema from '.';
 
 export const deviceCreationSchema = z.strictObject({
 	imei: z
@@ -69,7 +68,7 @@ export const deviceCreationSchema = z.strictObject({
 		.positive("L'id du modèle fourni est incorrect"),
 });
 
-export const deviceUpdateSchema = selectionSchema.extend({
+export const deviceUpdateSchema = z.strictObject({
 	imei: z
 		.string({
 			invalid_type_error: "L'IMEI doit être une chaîne de caractères",

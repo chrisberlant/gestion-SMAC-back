@@ -80,7 +80,7 @@ const modelController = {
 	async updateModel(req: UserRequest, res: Response) {
 		try {
 			const clientData = req.body;
-			const { id, ...newInfos } = clientData;
+			const { id } = req.params;
 			const userId = req.user!.id;
 
 			const model = await Model.findByPk(id);
@@ -89,16 +89,16 @@ const modelController = {
 			const existingModel = await Model.findOne({
 				where: {
 					brand: {
-						[Op.iLike]: newInfos.brand,
+						[Op.iLike]: clientData.brand,
 					},
 					reference: {
-						[Op.iLike]: newInfos.reference,
+						[Op.iLike]: clientData.reference,
 					},
 					storage: {
-						[Op.iLike]: newInfos.storage,
+						[Op.iLike]: clientData.storage,
 					},
 					id: {
-						[Op.not]: id,
+						[Op.not]: Number(id),
 					},
 				},
 			});
@@ -119,7 +119,7 @@ const modelController = {
 					clientData.storage ? ` ${clientData.storage}` : ''
 				}`;
 
-				const updatedModel = await model.update(newInfos, {
+				const updatedModel = await model.update(clientData, {
 					transaction,
 				});
 				await History.create(
@@ -146,7 +146,7 @@ const modelController = {
 
 	async deleteModel(req: UserRequest, res: Response) {
 		try {
-			const { id } = req.body;
+			const { id } = req.params;
 			const userId = req.user!.id;
 
 			const model = await Model.findByPk(id);

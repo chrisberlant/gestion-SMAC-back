@@ -101,7 +101,7 @@ const agentController = {
 	async updateAgent(req: UserRequest, res: Response) {
 		try {
 			const clientData = req.body;
-			const { id, ...newInfos } = clientData;
+			const { id } = req.params;
 			const userId = req.user!.id;
 
 			const agent = await Agent.findByPk(id);
@@ -111,7 +111,7 @@ const agentController = {
 				where: {
 					email: clientData.email,
 					id: {
-						[Op.not]: id,
+						[Op.not]: Number(id),
 					},
 				},
 			});
@@ -134,7 +134,7 @@ const agentController = {
 				if (oldEmail !== newEmail)
 					emailChanged = `Mise à jour de l'agent ${oldEmail}, incluant un changement d'email vers ${newEmail}`;
 
-				const updatedAgent = await agent.update(newInfos, {
+				const updatedAgent = await agent.update(clientData, {
 					transaction,
 				});
 				await History.create(
@@ -163,7 +163,7 @@ const agentController = {
 
 	async deleteAgent(req: UserRequest, res: Response) {
 		try {
-			const { id } = req.body;
+			const { id } = req.params;
 			const userId = req.user!.id;
 
 			const agent = await Agent.findByPk(id);
