@@ -94,6 +94,7 @@ CREATE TABLE "history" (
     "operation" VARCHAR(12) NOT NULL,
     "table" VARCHAR(7) NOT NULL,
     "content" TEXT NOT NULL,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     "user_id" INT,
     FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE SET NULL,
     CHECK (
