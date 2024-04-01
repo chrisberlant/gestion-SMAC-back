@@ -84,7 +84,7 @@ export interface UserType
 		InferAttributes<UserType>,
 		InferCreationAttributes<UserType>
 	> {
-	id?: CreationOptional<number>;
+	id: CreationOptional<number>;
 	email: string;
 	firstName: string;
 	lastName: string;
@@ -97,7 +97,7 @@ export interface HistoryType
 		InferAttributes<HistoryType>,
 		InferCreationAttributes<HistoryType>
 	> {
-	id?: CreationOptional<number>;
+	id: CreationOptional<number>;
 	operation: 'Create' | 'Update' | 'Delete';
 	table: 'user' | 'service' | 'agent' | 'model' | 'device' | 'line';
 	content: string;

@@ -24,7 +24,8 @@ const History = sequelize.define<HistoryType>(
 		},
 	},
 	{
-		createdAt: true,
+		timestamps: true,
+		updatedAt: false,
 		tableName: 'history',
 	}
 );

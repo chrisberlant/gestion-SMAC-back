@@ -7,12 +7,6 @@ const historyController = {
 		try {
 			const fullHistory = await History.findAll({
 				order: [['id', 'DESC']],
-				include: [
-					{
-						association: 'user',
-						attributes: ['id', 'email'],
-					},
-				],
 			});
 			if (!fullHistory) {
 				res.status(404).json('Aucun historique trouvé');
@@ -33,7 +27,7 @@ const historyController = {
 			if (!history)
 				return res
 					.status(404)
-					.json("L'historique sélectionné n'existe pas");
+					.json("L'entrée d'historique sélectionnée n'existe pas");
 
 			await history.destroy();
 
