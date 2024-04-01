@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import { UserRequest } from '../@types';
 import { History } from '../models';
+import { Op } from 'sequelize';
 
 const historyController = {
 	async getAllHistory(_: UserRequest, res: Response) {
@@ -21,17 +22,31 @@ const historyController = {
 
 	async deleteHistory(req: UserRequest, res: Response) {
 		try {
-			const { id } = req.params;
+			const clientData: number[] = req.body;
+			console.log(clientData);
 
-			const history = await History.findByPk(id);
+			const history = await History.findAll({
+				where: {
+					id: {
+						[Op.in]: clientData,
+					},
+				},
+			});
 			if (!history)
 				return res
 					.status(404)
-					.json("L'entrée d'historique sélectionnée n'existe pas");
+					.json(
+						"Les entrées d'historique sélectionnées n'existent pas"
+					);
 
-			await history.destroy();
+			await Promise.all(
+				history.map(async (entry) => {
+					// Supprimer chaque entrée trouvée
+					await entry.destroy();
+				})
+			);
 
-			res.status(200).json(id);
+			res.status(200).json(history);
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');

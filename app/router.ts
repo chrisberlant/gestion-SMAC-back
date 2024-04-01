@@ -335,7 +335,7 @@ router.get(
 	historyController.getAllHistory
 );
 router.delete(
-	'/history/:id',
+	'/history',
 	jwtMiddleware,
 	rightsMiddleware('Admin'),
 	historyController.deleteHistory
