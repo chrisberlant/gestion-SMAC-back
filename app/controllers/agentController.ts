@@ -129,10 +129,10 @@ const agentController = {
 			try {
 				const oldEmail = agent.email;
 				const newEmail = clientData.email;
-				let emailChanged = null;
+				let content = `Mise à jour de l'agent ${oldEmail}`;
 				// Si l'email a été modifié
 				if (oldEmail !== newEmail)
-					emailChanged = `Mise à jour de l'agent ${oldEmail}, incluant un changement d'email vers ${newEmail}`;
+					content = `Mise à jour de l'agent ${oldEmail}, incluant un changement d'email vers ${newEmail}`;
 
 				const updatedAgent = await agent.update(clientData, {
 					transaction,
@@ -141,9 +141,7 @@ const agentController = {
 					{
 						operation: 'Update',
 						table: 'agent',
-						content:
-							emailChanged ??
-							`Mise à jour de l'agent ${oldEmail}`,
+						content,
 						userId,
 					},
 					{ transaction }

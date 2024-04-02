@@ -105,7 +105,7 @@ const serviceController = {
 					{
 						operation: 'Update',
 						table: 'service',
-						content: `Changement de nom du service ${service.title} vers ${title}`,
+						content: `Changement de nom du service ${service.title} vers ${clientData.title}`,
 						userId,
 					},
 					{ transaction }

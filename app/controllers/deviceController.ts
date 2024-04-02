@@ -127,10 +127,10 @@ const deviceController = {
 			try {
 				const oldImei = device.imei;
 				const newImei = clientData.imei;
-				let imeiChanged = null;
+				let content = `Mise à jour de l'appareil ${oldImei}`;
 				// Si l'IMEI a été modifié
 				if (oldImei !== newImei)
-					imeiChanged = `Mise à jour de ${oldImei}, incluant un changement d'IMEI vers ${newImei}`;
+					content = `Mise à jour de ${oldImei}, incluant un changement d'IMEI vers ${newImei}`;
 
 				const updatedDevice = await device.update(clientData, {
 					transaction,
@@ -139,9 +139,7 @@ const deviceController = {
 					{
 						operation: 'Update',
 						table: 'device',
-						content:
-							imeiChanged ??
-							`Mise à jour de l'appareil ${oldImei}`,
+						content,
 						userId,
 					},
 					{ transaction }

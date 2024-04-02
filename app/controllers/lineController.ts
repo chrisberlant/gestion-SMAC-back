@@ -129,10 +129,10 @@ const lineController = {
 			try {
 				const oldNumber = line.number;
 				const newNumber = clientData.number;
-				let numberChanged = null;
+				let content = `Mise à jour de la ligne ${oldNumber}`;
 				// Si le numéro a été modifié
 				if (oldNumber !== newNumber)
-					numberChanged = `Mise à jour de la ligne ${oldNumber}, incluant un changement de numéro vers ${newNumber}`;
+					content = `Mise à jour de la ligne ${oldNumber}, incluant un changement de numéro vers ${newNumber}`;
 
 				const updatedLine = await line.update(clientData, {
 					transaction,
@@ -141,9 +141,7 @@ const lineController = {
 					{
 						operation: 'Update',
 						table: 'line',
-						content:
-							numberChanged ??
-							`Mise à jour de la ligne ${oldNumber}`,
+						content,
 						userId,
 					},
 					{ transaction }

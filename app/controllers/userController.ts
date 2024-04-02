@@ -247,10 +247,10 @@ const userController = {
 			try {
 				const oldEmail = user.email;
 				const newEmail = clientData.email;
-				let emailChanged = null;
+				let content = `Mise à jour de l'utilisateur ${oldEmail}`;
 				// Si l'email a été modifié
 				if (oldEmail !== newEmail)
-					emailChanged = `Mise à jour de l'utilisateur ${oldEmail}, incluant un changement d'email vers ${newEmail}`;
+					content = `Mise à jour de l'utilisateur ${oldEmail}, incluant un changement d'email vers ${newEmail}`;
 
 				await user.update(clientData, {
 					transaction,
@@ -259,9 +259,7 @@ const userController = {
 					{
 						operation: 'Update',
 						table: 'user',
-						content:
-							emailChanged ??
-							`Mise à jour de l'utilisateur ${oldEmail}`,
+						content,
 						userId,
 					},
 					{ transaction }
