@@ -107,33 +107,36 @@ const lineController = {
 			const line = await Line.findByPk(id);
 			if (!line) return res.status(404).json("La ligne n'existe pas");
 
-			const existingNumber = await Line.findOne({
-				where: {
-					number: clientData.number,
-					id: {
-						[Op.not]: Number(id),
-					},
-				},
-			});
-			if (existingNumber)
-				return res
-					.status(401)
-					.json('Une ligne avec ce numéro existe déjà');
-
+			// TODO mettre à jour
 			// Si les valeurs sont identiques, pas de mise à jour en BDD
-			if (compareStoredAndReceivedValues(line, clientData))
-				return res.status(200).json(line);
+			// if (compareStoredAndReceivedValues(line, clientData))
+			// 	return res.status(200).json(line);
+
+			const oldNumber = line.number;
+			let content = `Mise à jour de la ligne ${oldNumber}`;
+
+			// Si le client souhaite changer le numéro, vérification si celui-ci n'est pas déjà utilisé
+			if (clientData.number && clientData.number !== oldNumber) {
+				const newNumber = clientData.number;
+				const existingNumber = await Line.findOne({
+					where: {
+						number: newNumber,
+						id: {
+							[Op.not]: Number(id),
+						},
+					},
+				});
+				if (existingNumber)
+					return res
+						.status(401)
+						.json('Une ligne avec ce numéro existe déjà');
+
+				content = `Mise à jour de la ligne ${oldNumber}, incluant un changement de numéro vers ${newNumber}`;
+			}
 
 			// Transaction de mise à jour
 			const transaction = await sequelize.transaction();
 			try {
-				const oldNumber = line.number;
-				const newNumber = clientData.number;
-				let content = `Mise à jour de la ligne ${oldNumber}`;
-				// Si le numéro a été modifié
-				if (oldNumber !== newNumber)
-					content = `Mise à jour de la ligne ${oldNumber}, incluant un changement de numéro vers ${newNumber}`;
-
 				const updatedLine = await line.update(clientData, {
 					transaction,
 				});

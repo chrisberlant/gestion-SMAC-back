@@ -10,6 +10,8 @@ import { Op } from 'sequelize';
 import sequelize from '../sequelize-client';
 import { compareStoredAndReceivedValues } from '../utils';
 import console from 'console';
+import _ from 'lodash';
+import transaction from 'sequelize/lib/transaction';
 
 const deviceController = {
 	async getAllDevices(_: UserRequest, res: Response) {
@@ -102,36 +104,39 @@ const deviceController = {
 			const userId = req.user!.id;
 
 			const device = await Device.findByPk(id);
-
 			if (!device) return res.status(404).json("L'appareil n'existe pas");
 
-			const existingDevice = await Device.findOne({
-				where: {
-					imei: clientData.imei,
-					id: {
-						[Op.not]: Number(id),
-					},
-				},
-			});
-			if (existingDevice)
-				return res
-					.status(401)
-					.json('Un appareil avec cet IMEI existe déjà');
+			const oldImei = device.imei;
+			let content = `Mise à jour de l'appareil ${oldImei}`;
 
+			// TODO mettre à jour
 			// Si les valeurs sont identiques, pas de mise à jour en BDD
-			if (compareStoredAndReceivedValues(device, clientData))
-				return res.status(200).json(device);
+			// if (compareStoredAndReceivedValues(device, clientData))
+			// return res.status(200).json(device);
+
+			// Si le client souhaite changer l'IMEI, vérification si celui-ci n'est pas déjà utilisé
+			if (clientData.imei && clientData.imei !== oldImei) {
+				const newImei = clientData.imei;
+
+				const existingDevice = await Device.findOne({
+					where: {
+						imei: clientData.imei,
+						id: {
+							[Op.not]: Number(id),
+						},
+					},
+				});
+				if (existingDevice)
+					return res
+						.status(401)
+						.json('Un appareil avec cet IMEI existe déjà');
+
+				content = `Mise à jour de ${oldImei}, incluant un changement d'IMEI vers ${newImei}`;
+			}
 
 			// Transaction de mise à jour
 			const transaction = await sequelize.transaction();
 			try {
-				const oldImei = device.imei;
-				const newImei = clientData.imei;
-				let content = `Mise à jour de l'appareil ${oldImei}`;
-				// Si l'IMEI a été modifié
-				if (oldImei !== newImei)
-					content = `Mise à jour de ${oldImei}, incluant un changement d'IMEI vers ${newImei}`;
-
 				const updatedDevice = await device.update(clientData, {
 					transaction,
 				});

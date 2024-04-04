@@ -107,33 +107,37 @@ const agentController = {
 			const agent = await Agent.findByPk(id);
 			if (!agent) return res.status(404).json("L'agent n'existe pas");
 
-			const existingEmail = await Agent.findOne({
-				where: {
-					email: clientData.email,
-					id: {
-						[Op.not]: Number(id),
-					},
-				},
-			});
-			if (existingEmail)
-				return res
-					.status(401)
-					.json('Un agent avec cette adresse mail existe déjà');
-
+			// TODO mettre à jour
 			// Si les valeurs sont identiques, pas de mise à jour en BDD
-			if (compareStoredAndReceivedValues(agent, clientData))
-				return res.status(200).json(agent);
+			// if (compareStoredAndReceivedValues(agent, clientData))
+			// 	return res.status(200).json(agent);
+
+			const oldEmail = agent.email;
+			let content = `Mise à jour de l'agent ${oldEmail}`;
+
+			// Si le client souhaite changer l'adresse mail, vérification si celle-ci n'est pas déjà utilisée
+			if (clientData.email && clientData.email !== oldEmail) {
+				const newEmail = clientData.email;
+
+				const existingEmail = await Agent.findOne({
+					where: {
+						email: newEmail,
+						id: {
+							[Op.not]: Number(id),
+						},
+					},
+				});
+				if (existingEmail)
+					return res
+						.status(401)
+						.json('Un agent avec cette adresse mail existe déjà');
+
+				content = `Mise à jour de l'agent ${oldEmail}, incluant un changement d'email vers ${newEmail}`;
+			}
 
 			// Transaction de mise à jour
 			const transaction = await sequelize.transaction();
 			try {
-				const oldEmail = agent.email;
-				const newEmail = clientData.email;
-				let content = `Mise à jour de l'agent ${oldEmail}`;
-				// Si l'email a été modifié
-				if (oldEmail !== newEmail)
-					content = `Mise à jour de l'agent ${oldEmail}, incluant un changement d'email vers ${newEmail}`;
-
 				const updatedAgent = await agent.update(clientData, {
 					transaction,
 				});

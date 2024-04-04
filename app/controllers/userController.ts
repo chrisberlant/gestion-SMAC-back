@@ -224,11 +224,15 @@ const userController = {
 			if (!user)
 				return res.status(404).json("L'utilisateur n'existe pas");
 
-			// Si un email est fourni, vérification si un utilisateur avec celui-ci existe
-			if (clientData.email) {
+			const oldEmail = user.email;
+			let content = `Mise à jour de l'utilisateur ${oldEmail}`;
+
+			// Si le client souhaite changer l'email, vérification si un utilisateur avec celui-ci existe
+			if (clientData.email && clientData.email !== oldEmail) {
+				const newEmail = clientData.email;
 				const existingEmail = await User.findOne({
 					where: {
-						email: clientData.email,
+						email: newEmail,
 						id: {
 							[Op.not]: Number(id),
 						},
@@ -240,19 +244,14 @@ const userController = {
 						.json(
 							'Un autre utilisateur possède déjà cette adresse mail'
 						);
+
+				content = `Mise à jour de l'utilisateur ${oldEmail}, incluant un changement d'email vers ${newEmail}`;
 			}
 
 			// Transaction de mise à jour
 			const transaction = await sequelize.transaction();
 			try {
-				const oldEmail = user.email;
-				const newEmail = clientData.email;
-				let content = `Mise à jour de l'utilisateur ${oldEmail}`;
-				// Si l'email a été modifié
-				if (oldEmail !== newEmail)
-					content = `Mise à jour de l'utilisateur ${oldEmail}, incluant un changement d'email vers ${newEmail}`;
-
-				await user.update(clientData, {
+				const updatedUser = await user.update(clientData, {
 					transaction,
 				});
 				await History.create(
@@ -267,14 +266,7 @@ const userController = {
 				await transaction.commit();
 
 				// Informations à renvoyer au client
-				const { firstName, lastName, email, role } = user;
-				const newUserInfos = {
-					id,
-					firstName,
-					lastName,
-					email,
-					role,
-				};
+				const { password, ...newUserInfos } = updatedUser.dataValues;
 
 				res.status(200).json(newUserInfos);
 			} catch (error) {

@@ -75,6 +75,10 @@ const serviceController = {
 			if (!service)
 				return res.status(404).json("Le service n'existe pas");
 
+			// Si le titre fourni est identique au titre déjà renseigné
+			if (clientData.title === service.title)
+				return res.status(200).json(service);
+
 			// Vérification si un service avec ce titre existe
 			const existingService = await Service.findOne({
 				where: {
@@ -90,10 +94,6 @@ const serviceController = {
 				return res
 					.status(403)
 					.json('Un service possédant ce titre existe déjà');
-
-			// Si le titre fourni est identique au titre déjà renseigné
-			if (clientData.title === service.title)
-				return res.status(200).json(service);
 
 			// Transaction de mise à jour
 			const transaction = await sequelize.transaction();

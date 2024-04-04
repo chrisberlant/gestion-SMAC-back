@@ -86,6 +86,12 @@ const modelController = {
 			const model = await Model.findByPk(id);
 			if (!model) return res.status(404).json("Le modèle n'existe pas");
 
+			// TODO mettre à jour
+			// Si les valeurs sont identiques, pas de mise à jour en BDD
+			// if (compareStoredAndReceivedValues(model, clientData))
+			// 	return res.status(200).json(model);
+
+			// Recherche si un modèle parfaitement identique existe déjà
 			const existingModel = await Model.findOne({
 				where: {
 					brand: {
@@ -104,10 +110,6 @@ const modelController = {
 			});
 			if (existingModel)
 				return res.status(401).json('Le modèle existe déjà');
-
-			// Si les valeurs sont identiques, pas de mise à jour en BDD
-			if (compareStoredAndReceivedValues(model, clientData))
-				return res.status(200).json(model);
 
 			// Transaction de mise à jour
 			const transaction = await sequelize.transaction();
