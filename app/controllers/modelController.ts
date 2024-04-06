@@ -57,7 +57,7 @@ const modelController = {
 				});
 				await History.create(
 					{
-						operation: 'Create',
+						operation: 'Création',
 						table: 'model',
 						content: `Création de ${value}`,
 						userId,
@@ -126,7 +126,7 @@ const modelController = {
 				});
 				await History.create(
 					{
-						operation: 'Update',
+						operation: 'Modification',
 						table: 'model',
 						content: `Mise à jour de ${oldValue} vers ${newValue}`,
 						userId,
@@ -165,7 +165,7 @@ const modelController = {
 				});
 				await History.create(
 					{
-						operation: 'Delete',
+						operation: 'Suppression',
 						table: 'model',
 						content: `Suppression du modèle ${value}`,
 						userId,

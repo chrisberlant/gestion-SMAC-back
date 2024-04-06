@@ -98,7 +98,7 @@ export interface HistoryType
 		InferCreationAttributes<HistoryType>
 	> {
 	id: CreationOptional<number>;
-	operation: 'Create' | 'Update' | 'Delete';
+	operation: 'Création' | 'Modification' | 'Suppression';
 	table: 'user' | 'service' | 'agent' | 'model' | 'device' | 'line';
 	content: string;
 	userId?: number;

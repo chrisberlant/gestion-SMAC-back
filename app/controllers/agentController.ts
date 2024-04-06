@@ -78,7 +78,7 @@ const agentController = {
 				});
 				await History.create(
 					{
-						operation: 'Create',
+						operation: 'Création',
 						table: 'agent',
 						content: `Création de l'agent ${email}`,
 						userId,
@@ -143,7 +143,7 @@ const agentController = {
 				});
 				await History.create(
 					{
-						operation: 'Update',
+						operation: 'Modification',
 						table: 'agent',
 						content,
 						userId,
@@ -177,7 +177,7 @@ const agentController = {
 				await agent.destroy({ transaction });
 				await History.create(
 					{
-						operation: 'Delete',
+						operation: 'Suppression',
 						table: 'agent',
 						content: `Suppression de l'appareil avec l'email ${agent.email}`,
 						userId,
@@ -311,7 +311,7 @@ const agentController = {
 				});
 				await History.create(
 					{
-						operation: 'Create',
+						operation: 'Création',
 						table: 'agent',
 						content: `Import d'agents via un CSV`,
 						userId,

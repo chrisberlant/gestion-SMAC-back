@@ -45,7 +45,7 @@ const serviceController = {
 				});
 				await History.create(
 					{
-						operation: 'Create',
+						operation: 'Création',
 						table: 'service',
 						content: `Création du service ${title}`,
 						userId,
@@ -103,7 +103,7 @@ const serviceController = {
 				});
 				await History.create(
 					{
-						operation: 'Update',
+						operation: 'Modification',
 						table: 'service',
 						content: `Changement de nom du service ${service.title} vers ${clientData.title}`,
 						userId,
@@ -138,7 +138,7 @@ const serviceController = {
 				await service.destroy({ transaction });
 				await History.create(
 					{
-						operation: 'Delete',
+						operation: 'Suppression',
 						table: 'service',
 						content: `Suppression du service ${service.title}`,
 						userId,

@@ -77,7 +77,7 @@ const deviceController = {
 				});
 				await History.create(
 					{
-						operation: 'Create',
+						operation: 'Création',
 						table: 'device',
 						content: `Création de l'appareil ${imei}`,
 						userId,
@@ -142,7 +142,7 @@ const deviceController = {
 				});
 				await History.create(
 					{
-						operation: 'Update',
+						operation: 'Modification',
 						table: 'device',
 						content,
 						userId,
@@ -186,7 +186,7 @@ const deviceController = {
 				await device.destroy({ transaction });
 				await History.create(
 					{
-						operation: 'Delete',
+						operation: 'Suppression',
 						table: 'device',
 						content: `Suppression de l'appareil avec l'IMEI ${device.imei}`,
 						userId,
@@ -345,7 +345,7 @@ const deviceController = {
 				});
 				await History.create(
 					{
-						operation: 'Create',
+						operation: 'Création',
 						table: 'device',
 						content: `Import d'appareils via un CSV`,
 						userId,

@@ -98,7 +98,7 @@ CREATE TABLE "history" (
     "user_id" INT,
     FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE SET NULL,
     CHECK (
-        "operation" IN ('Create', 'Update', 'Delete') AND
+        "operation" IN ('Création', 'Modification', 'Suppression') AND
         "table" IN ('user', 'service', 'agent', 'model', 'device', 'line')
     )
 );

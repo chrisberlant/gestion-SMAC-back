@@ -78,7 +78,7 @@ const lineController = {
 				const newLine = await Line.create(clientData, { transaction });
 				await History.create(
 					{
-						operation: 'Create',
+						operation: 'Création',
 						table: 'line',
 						content: `Création de la ligne ${number}`,
 						userId,
@@ -142,7 +142,7 @@ const lineController = {
 				});
 				await History.create(
 					{
-						operation: 'Update',
+						operation: 'Modification',
 						table: 'line',
 						content,
 						userId,
@@ -176,7 +176,7 @@ const lineController = {
 				await line.destroy({ transaction });
 				await History.create(
 					{
-						operation: 'Delete',
+						operation: 'Suppression',
 						table: 'line',
 						content: `Suppression de la ligne avec le numéro ${line.number}`,
 						userId,
@@ -351,7 +351,7 @@ const lineController = {
 				await Line.bulkCreate(formattedImportedLines, { transaction });
 				await History.create(
 					{
-						operation: 'Create',
+						operation: 'Création',
 						table: 'line',
 						content: 'Import de lignes via un CSV',
 						userId,

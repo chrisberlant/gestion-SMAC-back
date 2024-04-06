@@ -73,7 +73,7 @@ const userController = {
 				});
 				await History.create(
 					{
-						operation: 'Update',
+						operation: 'Modification',
 						table: 'user',
 						content:
 							emailChanged ??
@@ -178,7 +178,7 @@ const userController = {
 				});
 				await History.create(
 					{
-						operation: 'Create',
+						operation: 'Création',
 						table: 'user',
 						content: `Création de l'utilisateur ${email}`,
 						userId,
@@ -256,7 +256,7 @@ const userController = {
 				});
 				await History.create(
 					{
-						operation: 'Update',
+						operation: 'Modification',
 						table: 'user',
 						content,
 						userId,
@@ -320,7 +320,7 @@ const userController = {
 				);
 				await History.create(
 					{
-						operation: 'Update',
+						operation: 'Modification',
 						table: 'user',
 						content: `Réinitialisation du mot de passe de l'utilisateur ${user.email}`,
 						userId,
@@ -372,7 +372,7 @@ const userController = {
 				await user.destroy({ transaction });
 				await History.create(
 					{
-						operation: 'Delete',
+						operation: 'Suppression',
 						table: 'user',
 						content: `Suppression de l'utilisateur ${user.email}`,
 						userId,
