@@ -170,16 +170,6 @@ const deviceController = {
 			const device = await Device.findByPk(id);
 			if (!device) return res.status(404).json("L'appareil n'existe pas");
 
-			const associatedLine = await Line.findOne({
-				where: {
-					deviceId: id,
-				},
-			});
-			if (associatedLine)
-				return res
-					.status(409)
-					.json("L'appareil est associé à une ligne");
-
 			// Transaction de suppression
 			const transaction = await sequelize.transaction();
 			try {
