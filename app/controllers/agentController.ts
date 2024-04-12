@@ -9,19 +9,12 @@ import {
 import generateCsvFile from '../utils/csvGeneration';
 import { Op } from 'sequelize';
 import sequelize from '../sequelize-client';
-import { compareStoredAndReceivedValues } from '../utils';
 
 const agentController = {
 	async getAllAgents(_: UserRequest, res: Response) {
 		try {
 			const agents = await Agent.findAll({
 				order: [['id', 'DESC']],
-				include: [
-					{
-						association: 'devices',
-						attributes: ['id', 'imei'],
-					},
-				],
 			});
 			if (!agents) {
 				res.status(404).json('Aucun agent trouvé');

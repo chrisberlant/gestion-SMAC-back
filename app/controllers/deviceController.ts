@@ -11,7 +11,6 @@ import sequelize from '../sequelize-client';
 import { compareStoredAndReceivedValues } from '../utils';
 import console from 'console';
 import _ from 'lodash';
-import transaction from 'sequelize/lib/transaction';
 
 const deviceController = {
 	async getAllDevices(_: UserRequest, res: Response) {
