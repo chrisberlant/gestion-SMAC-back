@@ -114,16 +114,21 @@ const modelController = {
 			// Transaction de mise à jour
 			const transaction = await sequelize.transaction();
 			try {
-				const oldValue = `${model.brand} ${model.reference}${
-					model.storage ? ` ${model.storage}` : ''
-				}`;
-				const newValue = `${clientData.brand} ${clientData.reference}${
-					clientData.storage ? ` ${clientData.storage}` : ''
-				}`;
-
 				const updatedModel = await model.update(clientData, {
 					transaction,
 				});
+
+				const oldValue = `${model.brand} ${model.reference}${
+					model.storage ? ` ${model.storage}` : ''
+				}`;
+				const newValue = `${clientData.brand ?? model.brand} ${
+					clientData.reference ?? model.reference
+				}${
+					clientData.storage
+						? ` ${clientData.storage}`
+						: ` ${model.storage}`
+				}`;
+
 				await History.create(
 					{
 						operation: 'Modification',
