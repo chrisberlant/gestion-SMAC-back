@@ -117,13 +117,15 @@ const modelController = {
 				const oldValue = `${model.brand} ${model.reference}${
 					model.storage ? ` ${model.storage}` : ''
 				}`;
-				const newValue = `${clientData.brand} ${clientData.reference}${
-					clientData.storage ? ` ${clientData.storage}` : ''
-				}`;
 
 				const updatedModel = await model.update(clientData, {
 					transaction,
 				});
+
+				const newValue = `${updatedModel.brand} ${
+					updatedModel.reference
+				}${updatedModel.storage ? ` ${updatedModel.storage}` : ''}`;
+
 				await History.create(
 					{
 						operation: 'Modification',
