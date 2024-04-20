@@ -117,11 +117,9 @@ const modelController = {
 				const oldValue = `${model.brand} ${model.reference}${
 					model.storage ? ` ${model.storage}` : ''
 				}`;
-
 				const updatedModel = await model.update(clientData, {
 					transaction,
 				});
-
 				const newValue = `${updatedModel.brand} ${
 					updatedModel.reference
 				}${updatedModel.storage ? ` ${updatedModel.storage}` : ''}`;
