@@ -26,16 +26,20 @@ export const currentUserUpdateSchema = z
 			.string({
 				invalid_type_error: "Le format de l'adresse mail est incorrect",
 			})
-			.email("Le format de l'adresse mail est incorrect"),
+			.email("Le format de l'adresse mail est incorrect")
+			.optional(),
 		lastName: z
 			.string({
 				invalid_type_error:
 					'Le nom de famille doit être une chaîne de caractères',
 			})
 			.optional(),
-		firstName: z.string({
-			invalid_type_error: 'Le prénom doit être une chaîne de caractères',
-		}),
+		firstName: z
+			.string({
+				invalid_type_error:
+					'Le prénom doit être une chaîne de caractères',
+			})
+			.optional(),
 	})
 	.partial();
 

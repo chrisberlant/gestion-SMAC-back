@@ -61,7 +61,7 @@ const agentController = {
 				},
 			});
 			if (existingAgent)
-				return res.status(401).json("L'agent existe déjà");
+				return res.status(409).json("L'agent existe déjà");
 
 			// Transaction de création
 			const transaction = await sequelize.transaction();

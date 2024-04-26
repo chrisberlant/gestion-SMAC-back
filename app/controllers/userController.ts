@@ -35,28 +35,23 @@ const userController = {
 			if (!user)
 				return res.status(404).json("L'utilisateur n'existe pas");
 
-			const existingEmail = await User.findOne({
-				where: {
-					email: clientData.email,
-					id: {
-						[Op.not]: Number(userId),
+			// Si tentative de modification de l'adresse mail
+			if (clientData.email) {
+				const existingEmail = await User.findOne({
+					where: {
+						email: clientData.email,
+						id: {
+							[Op.not]: Number(userId),
+						},
 					},
-				},
-			});
-			if (existingEmail)
-				return res
-					.status(409)
-					.json(
-						'Un autre utilisateur possède déjà cette adresse mail'
-					);
-
-			const { id, firstName, lastName, email } = user;
-			const newUserInfos = {
-				id,
-				firstName,
-				lastName,
-				email,
-			};
+				});
+				if (existingEmail)
+					return res
+						.status(409)
+						.json(
+							'Un autre utilisateur possède déjà cette adresse mail'
+						);
+			}
 
 			// Transaction de mise à jour
 			const transaction = await sequelize.transaction();
@@ -84,6 +79,8 @@ const userController = {
 				);
 				await transaction.commit();
 
+				// Renvoi des informations sans le rôle ni le mot de passe
+				const { role, password, ...newUserInfos } = user.dataValues;
 				res.status(200).json(newUserInfos);
 			} catch (error) {
 				await transaction.rollback();
@@ -161,6 +158,7 @@ const userController = {
 			});
 			if (existingEmail)
 				return res.status(409).json("L'utilisateur existe déjà");
+
 			// Transaction de création
 			const transaction = await sequelize.transaction();
 			try {

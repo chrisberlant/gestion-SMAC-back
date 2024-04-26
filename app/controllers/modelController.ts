@@ -43,7 +43,7 @@ const modelController = {
 				},
 			});
 			if (existingModel)
-				return res.status(401).json('Le modèle existe déjà');
+				return res.status(409).json('Le modèle existe déjà');
 
 			// Transaction de création
 			const transaction = await sequelize.transaction();
@@ -109,7 +109,7 @@ const modelController = {
 				},
 			});
 			if (existingModel)
-				return res.status(401).json('Le modèle existe déjà');
+				return res.status(409).json('Le modèle existe déjà');
 
 			// Transaction de mise à jour
 			const transaction = await sequelize.transaction();

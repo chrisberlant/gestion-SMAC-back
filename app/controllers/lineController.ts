@@ -70,7 +70,7 @@ const lineController = {
 				},
 			});
 			if (existingLine)
-				return res.status(401).json('La ligne existe déjà');
+				return res.status(409).json('La ligne existe déjà');
 
 			// Transaction de création
 			const transaction = await sequelize.transaction();

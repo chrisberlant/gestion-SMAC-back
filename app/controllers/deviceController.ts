@@ -66,7 +66,7 @@ const deviceController = {
 				},
 			});
 			if (existingDevice)
-				return res.status(401).json("L'appareil existe déjà");
+				return res.status(409).json("L'appareil existe déjà");
 
 			// Transaction de création
 			const transaction = await sequelize.transaction();

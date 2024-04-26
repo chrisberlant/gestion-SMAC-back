@@ -91,9 +91,7 @@ const serviceController = {
 				},
 			});
 			if (existingService)
-				return res
-					.status(403)
-					.json('Un service possédant ce titre existe déjà');
+				return res.status(409).json('Le service existe déjà');
 
 			// Transaction de mise à jour
 			const transaction = await sequelize.transaction();
