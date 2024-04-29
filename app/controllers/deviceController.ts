@@ -8,9 +8,8 @@ import {
 import generateCsvFile from '../utils/csvGeneration';
 import { Op } from 'sequelize';
 import sequelize from '../sequelize-client';
-import { compareStoredAndReceivedValues } from '../utils';
 import console from 'console';
-import _ from 'lodash';
+import { receivedDataIsAlreadyExisting } from '../utils';
 
 const deviceController = {
 	async getAllDevices(_: UserRequest, res: Response) {
@@ -108,10 +107,9 @@ const deviceController = {
 			const oldImei = device.imei;
 			let content = `Mise à jour de l'appareil ${oldImei}`;
 
-			// TODO mettre à jour
 			// Si les valeurs sont identiques, pas de mise à jour en BDD
-			// if (compareStoredAndReceivedValues(device, clientData))
-			// return res.status(200).json(device);
+			if (receivedDataIsAlreadyExisting(device, clientData))
+				return res.status(200).json(device);
 
 			// Si le client souhaite changer l'IMEI, vérification si celui-ci n'est pas déjà utilisé
 			if (clientData.imei && clientData.imei !== oldImei) {

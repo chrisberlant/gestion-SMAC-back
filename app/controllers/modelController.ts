@@ -3,7 +3,7 @@ import { UserRequest } from '../@types';
 import { Model, History } from '../models';
 import { Response } from 'express';
 import sequelize from '../sequelize-client';
-import { compareStoredAndReceivedValues } from '../utils';
+import { receivedDataIsAlreadyExisting } from '../utils';
 
 const modelController = {
 	async getAllModels(_: UserRequest, res: Response) {
@@ -86,10 +86,9 @@ const modelController = {
 			const model = await Model.findByPk(id);
 			if (!model) return res.status(404).json("Le modèle n'existe pas");
 
-			// TODO mettre à jour
 			// Si les valeurs sont identiques, pas de mise à jour en BDD
-			// if (compareStoredAndReceivedValues(model, clientData))
-			// 	return res.status(200).json(model);
+			if (receivedDataIsAlreadyExisting(model, clientData))
+				return res.status(200).json(model);
 
 			// Recherche si un modèle parfaitement identique existe déjà
 			const existingModel = await Model.findOne({

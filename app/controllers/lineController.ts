@@ -9,7 +9,8 @@ import {
 import { Agent, Device, History, Line } from '../models';
 import generateCsvFile from '../utils/csvGeneration';
 import sequelize from '../sequelize-client';
-import { compareStoredAndReceivedValues } from '../utils';
+import device from '../models/device';
+import { receivedDataIsAlreadyExisting } from '../utils';
 
 const lineController = {
 	async getAllLines(_: UserRequest, res: Response) {
@@ -107,10 +108,9 @@ const lineController = {
 			const line = await Line.findByPk(id);
 			if (!line) return res.status(404).json("La ligne n'existe pas");
 
-			// TODO mettre à jour
 			// Si les valeurs sont identiques, pas de mise à jour en BDD
-			// if (compareStoredAndReceivedValues(line, clientData))
-			// 	return res.status(200).json(line);
+			if (receivedDataIsAlreadyExisting(line, clientData))
+				return res.status(200).json(line);
 
 			const oldNumber = line.number;
 			let content = `Mise à jour de la ligne ${oldNumber}`;

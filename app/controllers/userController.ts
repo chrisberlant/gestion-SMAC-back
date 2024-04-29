@@ -6,6 +6,7 @@ import bcrypt from 'bcrypt';
 import generateRandomPassword from '../utils/passwordGeneration';
 import { Op } from 'sequelize';
 import sequelize from '../sequelize-client';
+import { receivedDataIsAlreadyExisting } from '../utils';
 
 const userController = {
 	async getCurrentUser(req: UserRequest, res: Response) {
@@ -221,6 +222,10 @@ const userController = {
 			const user = await User.findByPk(id);
 			if (!user)
 				return res.status(404).json("L'utilisateur n'existe pas");
+
+			// Si les valeurs sont identiques, pas de mise à jour en BDD
+			if (receivedDataIsAlreadyExisting(user, clientData))
+				return res.status(200).json(user);
 
 			const oldEmail = user.email;
 			let content = `Mise à jour de l'utilisateur ${oldEmail}`;

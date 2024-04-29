@@ -9,6 +9,7 @@ import {
 import generateCsvFile from '../utils/csvGeneration';
 import { Op } from 'sequelize';
 import sequelize from '../sequelize-client';
+import { receivedDataIsAlreadyExisting } from '../utils';
 
 const agentController = {
 	async getAllAgents(_: UserRequest, res: Response) {
@@ -100,10 +101,9 @@ const agentController = {
 			const agent = await Agent.findByPk(id);
 			if (!agent) return res.status(404).json("L'agent n'existe pas");
 
-			// TODO mettre à jour
 			// Si les valeurs sont identiques, pas de mise à jour en BDD
-			// if (compareStoredAndReceivedValues(agent, clientData))
-			// 	return res.status(200).json(agent);
+			if (receivedDataIsAlreadyExisting(agent, clientData))
+				return res.status(200).json(agent);
 
 			const oldEmail = agent.email;
 			let content = `Mise à jour de l'agent ${oldEmail}`;
@@ -172,7 +172,7 @@ const agentController = {
 					{
 						operation: 'Suppression',
 						table: 'agent',
-						content: `Suppression de l'appareil avec l'email ${agent.email}`,
+						content: `Suppression de l'agent avec l'email ${agent.email}`,
 						userId,
 					},
 					{ transaction }
