@@ -1,11 +1,9 @@
 import { Op } from 'sequelize';
-import { UserRequest } from '../@types';
+import { UserRequest } from '../types';
 import { History, Service } from '../models';
 import { Response } from 'express';
-import { ServiceType } from '../@types/models';
+import { ServiceType } from '../types/models';
 import sequelize from '../sequelize-client';
-import service from '../models/service';
-import { title } from 'process';
 
 const serviceController = {
 	async getAllServices(_: UserRequest, res: Response) {

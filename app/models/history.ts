@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../sequelize-client';
-import { HistoryType } from '../@types/models';
+import { HistoryType } from '../types/models';
 
 const History = sequelize.define<HistoryType>(
 	'History',

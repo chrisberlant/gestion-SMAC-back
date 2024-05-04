@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../sequelize-client';
-import { ServiceType } from '../@types/models';
+import { ServiceType } from '../types/models';
 
 const Service = sequelize.define<ServiceType>(
 	'Service',

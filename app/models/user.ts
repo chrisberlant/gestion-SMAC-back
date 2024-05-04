@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import { UserType } from '../@types/models';
+import { UserType } from '../types/models';
 import sequelize from '../sequelize-client';
 
 const User = sequelize.define<UserType>(

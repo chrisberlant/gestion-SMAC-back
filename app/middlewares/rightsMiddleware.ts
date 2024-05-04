@@ -1,6 +1,6 @@
 import { NextFunction, Response } from 'express';
 import { User } from '../models';
-import { RoleType, UserRequest } from '../@types';
+import { RoleType, UserRequest } from '../types';
 
 const rightsMiddleware =
 	(requiredRole: RoleType) =>

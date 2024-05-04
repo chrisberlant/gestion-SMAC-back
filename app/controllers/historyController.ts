@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { UserRequest } from '../@types';
+import { UserRequest } from '../types';
 import { History } from '../models';
 import { Op } from 'sequelize';
 

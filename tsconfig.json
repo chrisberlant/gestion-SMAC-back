@@ -20,7 +20,11 @@
 		"importHelpers": true,
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./app/*"]
+			"@/*": ["./app/*"],
+			"@models/*": ["./app/models/*"],
+			"@utils/*": ["./app/utils/*"],
+			"@validationSchemas/*": ["./app/validationSchemas/*"],
+			"@customTypes/*": ["./app/types/*"]
 		}
 	},
 	"include": ["./**/*.ts"]

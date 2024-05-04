@@ -1,5 +1,4 @@
 import { Model } from 'sequelize';
-import util from 'util';
 
 // Convertit une string contenant une date en format date utilisable en BDD
 export const convertToDate = (dateString: string) => {

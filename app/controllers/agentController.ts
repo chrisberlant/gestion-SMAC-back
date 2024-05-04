@@ -1,11 +1,11 @@
 import { Response } from 'express';
-import { UserRequest } from '../@types';
+import { UserRequest } from '../types';
 import { Agent, History, Service } from '../models';
 import {
 	AgentType,
 	AgentWithServiceAndDevicesType,
 	AgentsImportType,
-} from '../@types/models';
+} from '../types/models';
 import generateCsvFile from '../utils/csvGeneration';
 import { Op } from 'sequelize';
 import sequelize from '../sequelize-client';

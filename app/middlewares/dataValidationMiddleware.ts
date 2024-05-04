@@ -1,6 +1,6 @@
 import { NextFunction, Response } from 'express';
 import { ZodSchema } from 'zod';
-import { UserRequest } from '../@types';
+import { UserRequest } from '../types';
 import { convertToDate } from '../utils';
 
 // Validation et formatage des données envoyées par le client avant envoi au contrôleur

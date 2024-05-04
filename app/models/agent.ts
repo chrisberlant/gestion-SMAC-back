@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import { AgentType } from '../@types/models';
+import { AgentType } from '../types/models';
 import sequelize from '../sequelize-client';
 
 const Agent = sequelize.define<AgentType>(

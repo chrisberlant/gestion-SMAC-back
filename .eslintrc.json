@@ -8,6 +8,14 @@
 			"node": {
 				"paths": ["app", "tests"],
 				"extensions": [".js", ".ts", ".d.ts"]
+			},
+			"alias": {
+				"map": [
+					["@utils", "./app/utils"],
+					["@models", "./app/models"],
+					["@validationSchemas", "./app/validationSchemas"],
+					["@customTypes", "./app/types"]
+				]
 			}
 		}
 	},

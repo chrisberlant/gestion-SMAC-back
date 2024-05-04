@@ -15,16 +15,13 @@ export default function generateRandomPassword() {
 		randomPassword += letters.charAt(randomIndex);
 	}
 
-	// Remplacement d'un des caractères par un caractère spécial
+	// Ajout d'un nombre
+	const randomNumberIndex = randomInt(0, stringLength);
+	randomPassword += numbers.charAt(randomNumberIndex);
+
+	// Ajout d'un caractère spécial
 	const randomSpecialIndex = randomInt(0, stringLength);
 	randomPassword += specialChars.charAt(randomSpecialIndex);
-
-	// Remplacement d'une des lettres par un nombre
-	let randomNumberIndex = randomInt(0, stringLength);
-	while (randomNumberIndex === randomSpecialIndex) {
-		randomNumberIndex = randomInt(0, stringLength);
-	}
-	randomPassword += numbers.charAt(randomNumberIndex);
 
 	return randomPassword;
 }

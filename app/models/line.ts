@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../sequelize-client';
-import { LineType } from '../@types/models';
+import { LineType } from '../types/models';
 
 const Line = sequelize.define<LineType>(
 	'Line',

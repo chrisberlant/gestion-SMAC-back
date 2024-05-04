@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../sequelize-client';
-import { DeviceType } from '../@types/models';
+import { DeviceType } from '../types/models';
 
 const Device = sequelize.define<DeviceType>(
 	'Device',

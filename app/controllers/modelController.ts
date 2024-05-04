@@ -1,5 +1,5 @@
 import { Op } from 'sequelize';
-import { UserRequest } from '../@types';
+import { UserRequest } from '../types';
 import { Model, History } from '../models';
 import { Response } from 'express';
 import sequelize from '../sequelize-client';

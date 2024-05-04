@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../sequelize-client';
-import { ModelType } from '../@types/models';
+import { ModelType } from '../types/models';
 
 const Model = sequelize.define<ModelType>(
 	'Model',

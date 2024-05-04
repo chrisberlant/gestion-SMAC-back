@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { History, User } from '../models';
-import { UserRequest } from '../@types';
-import { UserType } from '../@types/models';
+import { UserRequest } from '../types';
+import { UserType } from '../types/models';
 import bcrypt from 'bcrypt';
 import generateRandomPassword from '../utils/passwordGeneration';
 import { Op } from 'sequelize';
