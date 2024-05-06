@@ -1,5 +1,5 @@
-import generateRandomPassword from '@/utils/passwordGeneration';
-import { passwordRegex } from '@/validationSchemas/userSchemas';
+import generateRandomPassword from '@utils/passwordGeneration';
+import { passwordRegex } from '@validationSchemas/userSchemas';
 import { expect } from 'chai';
 
 describe('Random password generation', () => {
