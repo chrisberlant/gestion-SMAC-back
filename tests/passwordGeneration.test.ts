@@ -4,11 +4,10 @@ import { expect } from 'chai';
 
 describe('Random password generation', () => {
 	it('should generate a random password according to defined regular expression', () => {
-		const generatedPassword = generateRandomPassword();
-		expect(generatedPassword).match(passwordRegex);
-		const generatedPassword2 = generateRandomPassword();
-		expect(generatedPassword2).match(passwordRegex);
-		const generatedPassword3 = generateRandomPassword();
-		expect(generatedPassword3).match(passwordRegex);
+		for (let i = 0; i < 10; i++) {
+			const generatedPassword = generateRandomPassword();
+			console.log(generatedPassword);
+			expect(generatedPassword).match(passwordRegex);
+		}
 	});
 });
