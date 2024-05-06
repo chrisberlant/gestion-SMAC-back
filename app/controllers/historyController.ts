@@ -23,7 +23,6 @@ const historyController = {
 	async deleteHistory(req: UserRequest, res: Response) {
 		try {
 			const clientData: number[] = req.body;
-			console.log(clientData);
 
 			const history = await History.findAll({
 				where: {
