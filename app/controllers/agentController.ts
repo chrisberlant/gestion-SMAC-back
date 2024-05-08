@@ -14,9 +14,7 @@ import { receivedDataIsAlreadyExisting } from '../utils';
 const agentController = {
 	async getAllAgents(_: UserRequest, res: Response) {
 		try {
-			const agents = await Agent.findAll({
-				order: [['id', 'DESC']],
-			});
+			const agents = await Agent.findAll();
 			if (!agents) {
 				res.status(404).json('Aucun agent trouvé');
 			}
