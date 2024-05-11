@@ -312,36 +312,49 @@ const lineController = {
 				comments: line.Commentaires,
 			}));
 
-			const existingLines = await Line.findAll({ raw: true });
-			const alreadyExistingItems: string[] = [];
+			const currentLines = await Line.findAll({ raw: true });
+			const conflictItems: {
+				usedNumbers: string[];
+				usedDevices: string[];
+				unknownDevices: string[];
+				unknownAgents: string[];
+			} = {
+				usedNumbers: [],
+				usedDevices: [],
+				unknownDevices: [],
+				unknownAgents: [],
+			};
 
-			// Vérification pour chaque ligne importée qu'une ligne avec son numéro n'est pas existante ou que l'appareil n'est pas déjà affecté
-			formattedImportedLines.forEach((importedLine) => {
+			// Vérification pour chaque ligne importée
+			formattedImportedLines.forEach((importedLine, index) => {
 				if (
-					existingLines.find(
-						(existingLine) =>
-							existingLine.number === importedLine.number
+					currentLines.find(
+						(line) => line.number === importedLine.number
 					)
 				)
-					alreadyExistingItems.push(importedLine.number);
-
+					conflictItems.usedNumbers.push(importedLine.number);
 				if (
-					existingLines.find(
-						(existingLine) =>
-							existingLine.deviceId === importedLine.deviceId
+					importedLine.deviceId &&
+					currentLines.find(
+						(line) => line.deviceId === importedLine.deviceId
 					)
-				) {
-					// Recherche de l'IMEI de l'appareil déjà existant
-					const alreadyExistingImei = devices.find(
-						(device) => device.id === importedLine.deviceId
-					)!.imei;
-					alreadyExistingItems.push(alreadyExistingImei);
-				}
+				)
+					conflictItems.usedDevices.push(
+						importedLines[index].Appareil!
+					);
+				if (importedLine.deviceId === undefined)
+					conflictItems.unknownDevices.push(
+						importedLines[index].Appareil!
+					);
+				if (importedLine.agentId === undefined)
+					conflictItems.unknownAgents.push(
+						importedLines[index].Propriétaire!
+					);
 			});
 
-			// Renvoi au client des numéros déjà présents en BDD
-			if (alreadyExistingItems.length > 0)
-				return res.status(409).json(alreadyExistingItems);
+			// Renvoi au client des conflits si existants
+			if (Object.values(conflictItems).some((value) => value.length > 0))
+				return res.status(409).json(conflictItems);
 
 			// Transaction d'import
 			const transaction = await sequelize.transaction();

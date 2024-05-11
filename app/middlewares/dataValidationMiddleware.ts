@@ -13,44 +13,43 @@ const dataValidation =
 		if (Object.keys(clientData).length === 0)
 			return res.status(400).json('Aucune information fournie');
 
-		// S'il s'agit un tableau (en général import d'un fichier), itération sur chaque propriété de chaque élément
+		// S'il s'agit d'un import d'un fichier et qu'un tableau est fourni, itération sur chaque propriété de chaque élément
 		if (Array.isArray(clientData)) {
-			clientData.forEach((item) => {
-				for (const key in item) {
-					if (typeof item[key] === 'string') {
-						item[key] = item[key].trim();
+			clientData.forEach((row) => {
+				Object.entries(row).forEach(([key, value]) => {
+					if (typeof value === 'string') {
+						row[key] = value.trim();
 						// Conversion en nul de chaque string vide après le trimming
-						if (item[key] === '') item[key] = null;
+						if (row[key] === '') row[key] = null;
 						// Passage en minuscule des emails pour cohérence dans la BDD
 						if (
 							(key === 'Propriétaire' || key === 'Email') &&
-							item[key] !== null
+							row[key]
 						)
-							item[key] = item[key].toLowerCase();
+							row[key] = row[key].toLowerCase();
 						// Vérification s'il s'agit d'une string représentant une date et modification si besoin
-						item[key] = convertToDate(item[key]);
+						row[key] = convertToDate(row[key]);
 					}
-				}
+				});
 			});
 			// Sinon itération sur chaque propriété
 		} else {
-			for (const key in clientData) {
-				if (typeof clientData[key] === 'string') {
-					clientData[key] = clientData[key].trim();
+			Object.entries(clientData).forEach(([key, value]) => {
+				if (typeof value === 'string') {
+					clientData[key] = value.trim();
 					// Conversion en nul de chaque string vide après le trimming
 					if (clientData[key] === '') clientData[key] = null;
 					// Passage en minuscule des emails pour cohérence dans la BDD
-					if (key === 'email' && clientData[key] !== null)
-						clientData[key] = clientData[key].toLowerCase();
+					if (key === 'email' && clientData[key])
+						value = value.toLowerCase();
 					// Vérification s'il s'agit d'une string représentant une date et modification si besoin
 					clientData[key] = convertToDate(clientData[key]);
 				}
-			}
+			});
 		}
 
 		// Validation via un schéma
 		const result = schema.safeParse(clientData);
-
 		if (!result.success)
 			return res.status(400).json(result.error.issues[0].message);
 

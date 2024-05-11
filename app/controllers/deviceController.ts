@@ -8,7 +8,6 @@ import {
 import generateCsvFile from '../utils/csvGeneration';
 import { Op } from 'sequelize';
 import sequelize from '../sequelize-client';
-import console from 'console';
 import { receivedDataIsAlreadyExisting } from '../utils';
 
 const deviceController = {
@@ -304,23 +303,22 @@ const deviceController = {
 				comments: device.Commentaires,
 			}));
 
-			const existingDevices = await Device.findAll({ raw: true });
-			const alreadyExistingImeis: string[] = [];
+			const currentDevices = await Device.findAll({ raw: true });
+			const usedDevices: string[] = [];
 
 			// Vérification pour chaque appareil importé qu'un appareil avec son IMEI n'est pas existant
 			formattedImportedDevices.forEach((importedDevice) => {
 				if (
-					existingDevices.find(
-						(existingDevice) =>
-							existingDevice.imei === importedDevice.imei
+					currentDevices.find(
+						(device) => device.imei === importedDevice.imei
 					)
 				)
-					alreadyExistingImeis.push(importedDevice.imei);
+					usedDevices.push(importedDevice.imei);
 			});
 
 			// Renvoi au client des IMEI déjà présents en BDD
-			if (alreadyExistingImeis.length > 0)
-				return res.status(409).json(alreadyExistingImeis);
+			if (usedDevices.length > 0)
+				return res.status(409).json({ usedDevices });
 
 			// Transaction d'import
 			const transaction = await sequelize.transaction();

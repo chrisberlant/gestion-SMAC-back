@@ -238,7 +238,6 @@ const agentController = {
 				Prénom: '',
 				VIP: '',
 				Service: '',
-				Appareils: '',
 			};
 
 			// Création du fichier CSV
@@ -277,22 +276,31 @@ const agentController = {
 			}));
 
 			const currentAgents = await Agent.findAll({ raw: true });
-			const alreadyExistingEmails: string[] = [];
+			const conflictItems: {
+				usedEmails: string[];
+				unknownServices: string[];
+			} = {
+				usedEmails: [],
+				unknownServices: [],
+			};
 
-			// Vérification pour chaque agent importé qu'un agent avec son adresse mail n'est pas existant
-			formattedImportedAgents.forEach((importedAgent) => {
+			// Vérification pour chaque agent importé qu'un agent avec son adresse mail n'est pas existant, et que son service existe bien
+			formattedImportedAgents.forEach((importedAgent, index) => {
 				if (
 					currentAgents.find(
-						(currentAgent) =>
-							currentAgent.email === importedAgent.email
+						(agent) => agent.email === importedAgent.email
 					)
 				)
-					alreadyExistingEmails.push(importedAgent.email);
+					conflictItems.usedEmails.push(importedAgent.email);
+				if (!importedAgent.serviceId)
+					conflictItems.unknownServices.push(
+						importedAgents[index].Service
+					);
 			});
 
-			// Renvoi au client des adresses mail déjà présentes en BDD
-			if (alreadyExistingEmails.length > 0)
-				return res.status(409).json(alreadyExistingEmails);
+			// Renvoi au client des conflits si existants
+			if (Object.values(conflictItems).some((value) => value.length > 0))
+				return res.status(409).json(conflictItems);
 
 			// Transaction d'import
 			const transaction = await sequelize.transaction();
