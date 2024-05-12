@@ -213,7 +213,7 @@ const deviceController = {
 			// Formater les données pour que le fichier soit lisible
 			const formattedDevices = devices.map((device) => {
 				return {
-					IMEI: device.imei,
+					IMEI: "'" + device.imei,
 					Statut: device.status,
 					État: device.isNew ? 'Neuf' : 'Occasion',
 					Modèle: `${device.model.brand} ${device.model.reference}${

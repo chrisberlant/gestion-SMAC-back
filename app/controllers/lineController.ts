@@ -228,12 +228,12 @@ const lineController = {
 			// Formater les données pour que le fichier soit lisible
 			const formattedLines = lines.map((line) => {
 				return {
-					Numéro: line.number,
+					Numéro: "'" + line.number,
 					Profil: line.profile,
 					Statut: line.status,
 					Propriétaire: line.agent?.email,
 					Service: line.agent?.service.title,
-					Appareil: line.device?.imei,
+					Appareil: line.device?.imei ? "'" + line.device.imei : '',
 					Modèle: line.device
 						? `${line.device.model.brand} ${
 								line.device.model.reference
