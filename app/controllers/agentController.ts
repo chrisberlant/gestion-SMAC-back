@@ -292,7 +292,7 @@ const agentController = {
 					)
 				)
 					conflictItems.usedEmails.push(importedAgent.email);
-				if (!importedAgent.serviceId)
+				if (importedAgent.serviceId === undefined)
 					conflictItems.unknownServices.push(
 						importedAgents[index].Service
 					);

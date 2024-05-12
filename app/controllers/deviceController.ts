@@ -304,21 +304,37 @@ const deviceController = {
 			}));
 
 			const currentDevices = await Device.findAll({ raw: true });
-			const usedDevices: string[] = [];
+			const conflictItems: {
+				usedDevices: string[];
+				unknownModels: string[];
+				unknownAgents: string[];
+			} = {
+				usedDevices: [],
+				unknownModels: [],
+				unknownAgents: [],
+			};
 
 			// Vérification pour chaque appareil importé qu'un appareil avec son IMEI n'est pas existant
-			formattedImportedDevices.forEach((importedDevice) => {
+			formattedImportedDevices.forEach((importedDevice, index) => {
 				if (
 					currentDevices.find(
 						(device) => device.imei === importedDevice.imei
 					)
 				)
-					usedDevices.push(importedDevice.imei);
+					conflictItems.usedDevices.push(importedDevice.imei);
+				if (importedDevice.modelId === undefined)
+					conflictItems.unknownModels.push(
+						importedDevices[index].Modèle!
+					);
+				if (importedDevice.agentId === undefined)
+					conflictItems.unknownAgents.push(
+						importedDevices[index].Propriétaire!
+					);
 			});
 
 			// Renvoi au client des IMEI déjà présents en BDD
-			if (usedDevices.length > 0)
-				return res.status(409).json({ usedDevices });
+			if (Object.values(conflictItems).some((value) => value.length > 0))
+				return res.status(409).json(conflictItems);
 
 			// Transaction d'import
 			const transaction = await sequelize.transaction();
