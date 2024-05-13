@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { Model, Op } from 'sequelize';
+import { Op } from 'sequelize';
 import { UserRequest } from '../types';
 import {
 	LineType,
@@ -9,7 +9,6 @@ import {
 import { Agent, Device, History, Line } from '../models';
 import generateCsvFile from '../utils/csvGeneration';
 import sequelize from '../sequelize-client';
-import device from '../models/device';
 import { receivedDataIsAlreadyExisting } from '../utils';
 
 const lineController = {

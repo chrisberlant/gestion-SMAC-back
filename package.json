@@ -37,7 +37,7 @@
 		"typescript": "^5.4.5"
 	},
 	"scripts": {
-		"start": "node index.ts",
+		"start": "tsx index.ts",
 		"dev": "nodemon index.ts",
 		"test": "mocha --import=tsx tests/**/*.test.ts"
 	}
