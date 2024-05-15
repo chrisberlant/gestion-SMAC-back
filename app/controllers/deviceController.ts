@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { UserRequest } from '../types';
-import { Agent, Device, History, Line, Model } from '../models';
+import { Agent, Device, History, Model } from '../models';
 import {
 	DeviceWithModelAndAgentType,
 	DevicesImportType,

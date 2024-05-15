@@ -161,7 +161,7 @@ WHEN (pg_trigger_depth() < 1)   -- Uniquement si la mise à jour n'est pas effec
 EXECUTE FUNCTION update_line_owner();
 
 INSERT INTO "public"."user" ("last_name", "first_name", "email", "password", "role") VALUES
-('Admin', 'Super', 'super.admin@gmail.com', '$2a$10$Fk6Nl6in0E9cO6XrmTDeseOJ3mbLuULupvOp10lPmBhtnu.93alwS', 'Admin');
+('User', 'Root', 'root.user@gmail.com', '$2a$10$Fk6Nl6in0E9cO6XrmTDeseOJ3mbLuULupvOp10lPmBhtnu.93alwS', 'Admin');
 
 
 COMMIT;
