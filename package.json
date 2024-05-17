@@ -15,7 +15,6 @@
 	"devDependencies": {
 		"@types/babel__core": "^7.20.5",
 		"@types/bcrypt": "^5.0.2",
-		"@types/chai": "^4.3.16",
 		"@types/cors": "^2.8.17",
 		"@types/dotenv": "^8.2.0",
 		"@types/express": "^4.17.21",
@@ -23,24 +22,23 @@
 		"@types/jest": "^29.5.12",
 		"@types/json2csv": "^5.0.7",
 		"@types/jsonwebtoken": "^9.0.6",
-		"@types/mocha": "^10.0.6",
 		"@types/node": "^20.12.8",
 		"@types/pg": "^8.11.6",
 		"@types/sequelize": "^4.28.20",
 		"@typescript-eslint/eslint-plugin": "^7.8.0",
 		"@typescript-eslint/parser": "^7.8.0",
-		"chai": "^5.1.0",
 		"eslint": "^8.57.0",
 		"eslint-config-airbnb-base": "^15.0.0",
 		"eslint-plugin-import": "^2.29.1",
-		"mocha": "^10.4.0",
+		"ts-node": "^10.9.2",
 		"tslib": "^2.6.2",
-		"tsx": "^4.9.3",
-		"typescript": "^5.4.5"
+		"typescript": "^5.4.5",
+		"vitest": "^1.6.0"
 	},
 	"scripts": {
-		"start": "tsx index.ts",
-		"dev": "nodemon index.ts",
-		"test": "mocha --import=tsx tests/**/*.test.ts"
+		"start": "ts-node index.ts",
+		"dev": "nodemon -L index.ts",
+		"test": "vitest",
+		"test:ui": "vitest --ui"
 	}
 }
