@@ -3,18 +3,45 @@ BEGIN;
 -- Suppression des tables si existantes
 DROP TABLE IF EXISTS "user","service","agent","model","device","line","history" CASCADE;
 
+DO $$ BEGIN
+    IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_role') THEN
+        DROP TYPE user_role;
+    END IF;
+
+        IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'device_status') THEN
+        DROP TYPE device_status;
+    END IF;
+
+        IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'line_profile') THEN
+        DROP TYPE line_profile;
+    END IF;
+
+        IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'line_status') THEN
+        DROP TYPE line_status;
+    END IF;
+
+        IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'history_operation') THEN
+        DROP TYPE history_operation;
+    END IF;
+    
+        IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'history_table') THEN
+        DROP TYPE history_table;
+    END IF;
+END $$;
+
+
+CREATE TYPE user_role AS ENUM('Admin', 'Tech', 'Consultant');
 CREATE TABLE "user" (
     "id" SERIAL PRIMARY KEY,
     "last_name" TEXT NOT NULL,
     "first_name" TEXT NOT NULL,
     "email" TEXT NOT NULL UNIQUE,
-    "role" VARCHAR(10) NOT NULL,
+    "role" user_role NOT NULL,
     "password" VARCHAR(72) NOT NULL,
     CHECK (
         "last_name" <> '' AND
         "first_name" <> '' AND
         "email" <> '' AND
-        "role" IN ('Admin', 'Tech', 'Consultant') AND
         "password" <> ''
     )
 );
@@ -52,10 +79,11 @@ CREATE TABLE "model" (
     )
 );
 
+CREATE TYPE device_status AS ENUM('En stock', 'Attribué', 'Restitué', 'En attente de restitution', 'En prêt', 'En panne', 'Volé');
 CREATE TABLE "device" (
     "id" SERIAL PRIMARY KEY,
-    "imei" VARCHAR(15) NOT NULL UNIQUE,
-    "status" VARCHAR(25) NOT NULL,
+    "imei" VARCHAR(16) NOT NULL UNIQUE,
+    "status" device_status NOT NULL,
     "is_new" BOOLEAN NOT NULL,
     "preparation_date" DATE,
     "attribution_date" DATE,
@@ -66,16 +94,17 @@ CREATE TABLE "device" (
     FOREIGN KEY ("model_id") REFERENCES "model"("id"),
     CHECK (
         "imei" <> '' AND
-        "comments" <> '' AND
-        "status" IN ( 'En stock', 'Attribué', 'Restitué', 'En attente de restitution', 'En prêt', 'En panne', 'Volé')
+        "comments" <> ''
     )
 );
 
+CREATE TYPE line_profile AS ENUM('V', 'D', 'VD');
+CREATE TYPE line_status AS ENUM('Active', 'En cours', 'Résiliée');
 CREATE TABLE "line" (
     "id" SERIAL PRIMARY KEY,
     "number" TEXT NOT NULL UNIQUE,
-    "profile" VARCHAR(2) NOT NULL,
-    "status" VARCHAR(9) NOT NULL,
+    "profile" line_profile NOT NULL,
+    "status" line_status NOT NULL,
     "comments" TEXT,
     "agent_id" INT,
     "device_id" INT UNIQUE,
@@ -83,24 +112,20 @@ CREATE TABLE "line" (
     FOREIGN KEY ("device_id") REFERENCES "device"("id") ON DELETE SET NULL,
     CHECK (
         "number" <> '' AND
-        "profile" IN ('V', 'D', 'VD') AND
-        "status" IN ('Active', 'En cours', 'Résiliée') AND
         "comments" <> ''
     )
 );
 
+CREATE TYPE history_operation AS ENUM('Création', 'Modification', 'Suppression');
+CREATE TYPE history_table AS ENUM('user', 'service', 'agent', 'model', 'device', 'line');
 CREATE TABLE "history" (
     "id" SERIAL PRIMARY KEY,
-    "operation" VARCHAR(12) NOT NULL,
-    "table" VARCHAR(7) NOT NULL,
+    "operation" history_operation NOT NULL,
+    "table" history_table NOT NULL,
     "content" TEXT NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     "user_id" INT,
-    FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE SET NULL,
-    CHECK (
-        "operation" IN ('Création', 'Modification', 'Suppression') AND
-        "table" IN ('user', 'service', 'agent', 'model', 'device', 'line')
-    )
+    FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE SET NULL
 );
 
 

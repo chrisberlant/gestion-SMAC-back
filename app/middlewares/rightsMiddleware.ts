@@ -13,7 +13,7 @@ const rightsMiddleware =
 
 			if (!user) return res.status(404).json('Utilisateur introuvable');
 
-			// Admin can access routes authorized to Tech
+			// Un admin peut accéder aux routes autorisées pour les tech
 			if (
 				(requiredRole === 'Tech' &&
 					user.role !== 'Tech' &&
