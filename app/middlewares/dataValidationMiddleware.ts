@@ -16,9 +16,9 @@ const dataValidation =
 		// S'il s'agit d'un import d'un fichier et qu'un tableau est fourni, itération sur chaque propriété de chaque élément
 		if (Array.isArray(clientData)) {
 			clientData.forEach((row) => {
-				Object.entries(row).forEach(([key, value]) => {
-					if (typeof value === 'string') {
-						row[key] = value.trim();
+				Object.keys(row).forEach((key) => {
+					if (typeof row[key] === 'string') {
+						row[key] = row[key].trim();
 						// Conversion en nul de chaque string vide après le trimming
 						if (row[key] === '') row[key] = null;
 						// Passage en minuscule des emails pour cohérence dans la BDD
@@ -34,14 +34,14 @@ const dataValidation =
 			});
 			// Sinon itération sur chaque propriété
 		} else {
-			Object.entries(clientData).forEach(([key, value]) => {
-				if (typeof value === 'string') {
-					clientData[key] = value.trim();
+			Object.keys(clientData).forEach((key) => {
+				if (typeof clientData[key] === 'string') {
+					clientData[key] = clientData[key].trim();
 					// Conversion en nul de chaque string vide après le trimming
 					if (clientData[key] === '') clientData[key] = null;
 					// Passage en minuscule des emails pour cohérence dans la BDD
 					if (key === 'email' && clientData[key])
-						value = value.toLowerCase();
+						clientData[key] = clientData[key].toLowerCase();
 					// Vérification s'il s'agit d'une string représentant une date et modification si besoin
 					clientData[key] = convertToDate(clientData[key]);
 				}
