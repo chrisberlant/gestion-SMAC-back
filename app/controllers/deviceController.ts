@@ -13,7 +13,9 @@ import { receivedDataIsAlreadyExisting } from '../utils';
 const deviceController = {
 	async getAllDevices(_: UserRequest, res: Response) {
 		try {
-			const devices = await Device.findAll();
+			const devices = await Device.findAll({
+				order: [['id', 'DESC']],
+			});
 			if (!devices) {
 				res.status(404).json('Aucune ligne trouvée');
 			}

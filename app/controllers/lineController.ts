@@ -14,7 +14,9 @@ import { receivedDataIsAlreadyExisting } from '../utils';
 const lineController = {
 	async getAllLines(_: UserRequest, res: Response) {
 		try {
-			const lines = await Line.findAll();
+			const lines = await Line.findAll({
+				order: [['id', 'DESC']],
+			});
 			if (!lines) {
 				res.status(404).json('Aucune ligne trouvée');
 			}
