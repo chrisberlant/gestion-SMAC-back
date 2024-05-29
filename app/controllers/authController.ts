@@ -3,6 +3,9 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { UserRequest } from '../types';
 import { User } from '../models';
+import generateRandomPassword from '../utils/passwordGeneration';
+import { randomInt } from 'crypto';
+import demoUsers from '../utils/demoUsers';
 
 const authController = {
 	async login(req: Request, res: Response) {
@@ -45,27 +48,25 @@ const authController = {
 		}
 	},
 
-	async register(req: Request, res: Response) {
+	async demo(_: Request, res: Response) {
 		try {
-			const userToRegister = req.body;
-			const { email, password } = userToRegister;
-
-			const alreadyExistingUser = await User.findOne({
-				where: { email },
-			});
-			if (alreadyExistingUser)
-				return res.status(401).json("Une erreur s'est produite");
-
+			const generatedPassword = generateRandomPassword();
+			const randomIndex = randomInt(0, 19);
+			const generatedUserInfos = demoUsers[randomIndex];
 			const saltRounds = parseInt(process.env.SALT_ROUNDS!);
-			const hashedPassword = await bcrypt.hash(password, saltRounds); // Hashing the password provided by the user
+			const hashedPassword = await bcrypt.hash(
+				generatedPassword,
+				saltRounds
+			);
 
-			const user = await User.create({
-				...userToRegister,
+			const generatedUser = await User.create({
+				...generatedUserInfos,
 				password: hashedPassword,
 			});
-			if (!user) throw new Error("Impossible de créer l'utilisateur");
+			if (!generatedUser)
+				throw new Error("Impossible de créer l'utilisateur");
 
-			res.status(201).json('Le compte a été créé');
+			res.status(200).json(generatedUser);
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');
