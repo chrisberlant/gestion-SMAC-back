@@ -53,8 +53,8 @@ router.post(
 	authController.login
 );
 
-// Route used to check if server is online
-router.get('/healthCheck', authController.healthCheck);
+// Route utilisée pour vérifier que le serveur est en ligne
+router.get('/health-check', authController.healthCheck);
 
 /* ------------- LOGGED USER ROUTES ------------- */
 // Récupérer les informations de l'utilisateur connecté

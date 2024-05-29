@@ -45,33 +45,6 @@ const authController = {
 		}
 	},
 
-	async register(req: Request, res: Response) {
-		try {
-			const userToRegister = req.body;
-			const { email, password } = userToRegister;
-
-			const alreadyExistingUser = await User.findOne({
-				where: { email },
-			});
-			if (alreadyExistingUser)
-				return res.status(401).json("Une erreur s'est produite");
-
-			const saltRounds = parseInt(process.env.SALT_ROUNDS!);
-			const hashedPassword = await bcrypt.hash(password, saltRounds); // Hashing the password provided by the user
-
-			const user = await User.create({
-				...userToRegister,
-				password: hashedPassword,
-			});
-			if (!user) throw new Error("Impossible de créer l'utilisateur");
-
-			res.status(201).json('Le compte a été créé');
-		} catch (error) {
-			console.error(error);
-			res.status(500).json('Erreur serveur');
-		}
-	},
-
 	async healthCheck(_: Request | UserRequest, res: Response) {
 		res.status(200).json('Serveur en ligne');
 	},
