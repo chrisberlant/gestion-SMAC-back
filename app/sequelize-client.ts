@@ -1,6 +1,8 @@
 import { Sequelize } from 'sequelize';
+import * as pg from 'pg';
 
 const sequelize = new Sequelize(process.env.PG_URL!, {
+	dialectModule: pg,
 	define: {
 		timestamps: false,
 		underscored: true,
