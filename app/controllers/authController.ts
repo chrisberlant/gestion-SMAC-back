@@ -6,6 +6,8 @@ import { User } from '../models';
 import generateRandomPassword from '../utils/passwordGeneration';
 import { randomInt } from 'crypto';
 import demoUsers from '../utils/demoUsers';
+import sequelize from '../sequelize-client';
+import fs from 'fs';
 
 const authController = {
 	async login(req: Request, res: Response) {
@@ -59,12 +61,36 @@ const authController = {
 				saltRounds
 			);
 
-			const generatedUser = await User.create({
+			// Réinitialisation de la BDD à chaque test de la démo
+			const tablesCreationQuery = fs.readFileSync(
+				'./db_creation/insert_tables.sql',
+				'utf8'
+			);
+			const dataInsertQuery = fs.readFileSync(
+				'./db_creation/insert_data.sql',
+				'utf8'
+			);
+			const tablesCreation = await sequelize.query(tablesCreationQuery);
+			if (!tablesCreation)
+				throw new Error(
+					'Impossible de créer les tables de la base de données'
+				);
+			const dataInsert = await sequelize.query(dataInsertQuery);
+			if (!dataInsert)
+				throw new Error(
+					"Impossible d'insérer les données fictives dans la base de données"
+				);
+
+			const user = await User.create({
 				...generatedUserInfos,
 				password: hashedPassword,
 			});
-			if (!generatedUser)
-				throw new Error("Impossible de créer l'utilisateur");
+			if (!user) throw new Error("Impossible de créer l'utilisateur");
+
+			const generatedUser = {
+				email: user.email,
+				password: generatedPassword,
+			};
 
 			res.status(200).json(generatedUser);
 		} catch (error) {
