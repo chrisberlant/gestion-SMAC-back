@@ -57,7 +57,7 @@ router.post(
 router.get('/health-check', authController.healthCheck);
 
 // Route utilisée pour créer un utilisateur et reset la DB (démo uniquement)
-router.post('/demo', authController.demo);
+router.post('/demo', requestsLimitMiddleware, authController.demo);
 
 /* ------------- LOGGED USER ROUTES ------------- */
 // Récupérer les informations de l'utilisateur connecté
