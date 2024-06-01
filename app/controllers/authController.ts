@@ -64,9 +64,6 @@ const authController = {
 
 			// Réinitialisation de la BDD à chaque test de la démo
 			const tablesCreationFile = path.join(
-				__dirname,
-				'..',
-				'..',
 				'db_creation',
 				'insert_tables.sql'
 			);
@@ -74,13 +71,7 @@ const authController = {
 				tablesCreationFile,
 				'utf8'
 			);
-			const dataInsertFile = path.join(
-				__dirname,
-				'..',
-				'..',
-				'db_creation',
-				'insert_data.sql'
-			);
+			const dataInsertFile = path.join('db_creation', 'insert_data.sql');
 			const dataInsertQuery = fs.readFileSync(dataInsertFile, 'utf8');
 			const tablesCreation = await sequelize.query(tablesCreationQuery);
 			if (!tablesCreation)
