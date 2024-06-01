@@ -53,8 +53,8 @@ router.post(
 	authController.login
 );
 
-// Route utilisée pour vérifier que le serveur est en ligne
-router.get('/health-check', authController.healthCheck);
+// Route used to check if server is online
+router.get('/', authController.healthCheck);
 
 // Route utilisée pour créer un utilisateur et reset la DB (démo uniquement)
 router.post('/demo', requestsLimitMiddleware, authController.demo);
