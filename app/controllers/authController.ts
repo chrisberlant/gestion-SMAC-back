@@ -100,7 +100,7 @@ const authController = {
 	},
 
 	async healthCheck(_: Request | UserRequest, res: Response) {
-		res.status(200).json('Serveur en ligne');
+		res.status(200).json('Serveur de démonstration en ligne');
 	},
 };
 
