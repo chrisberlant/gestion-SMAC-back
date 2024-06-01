@@ -6,5 +6,10 @@
 		"deploymentEnabled": {
 			"development": false
 		}
+	},
+	"functions": {
+		"app/controllers/authController.ts": {
+			"includeFiles": "db_creation/*.sql"
+		}
 	}
 }
