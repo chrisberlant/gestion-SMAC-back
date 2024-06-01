@@ -8,6 +8,7 @@ import { randomInt } from 'crypto';
 import demoUsers from '../utils/demoUsers';
 import sequelize from '../sequelize-client';
 import fs from 'fs';
+import path from 'path';
 
 const authController = {
 	async login(req: Request, res: Response) {
@@ -62,14 +63,25 @@ const authController = {
 			);
 
 			// Réinitialisation de la BDD à chaque test de la démo
+			const tablesCreationFile = path.join(
+				__dirname,
+				'..',
+				'..',
+				'db_creation',
+				'insert_tables.sql'
+			);
 			const tablesCreationQuery = fs.readFileSync(
-				'./db_creation/insert_tables.sql',
+				tablesCreationFile,
 				'utf8'
 			);
-			const dataInsertQuery = fs.readFileSync(
-				'./db_creation/insert_data.sql',
-				'utf8'
+			const dataInsertFile = path.join(
+				__dirname,
+				'..',
+				'..',
+				'db_creation',
+				'insert_data.sql'
 			);
+			const dataInsertQuery = fs.readFileSync(dataInsertFile, 'utf8');
 			const tablesCreation = await sequelize.query(tablesCreationQuery);
 			if (!tablesCreation)
 				throw new Error(
