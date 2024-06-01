@@ -52,10 +52,8 @@ router.post(
 	dataValidation(userLoginSchema),
 	authController.login
 );
-
 // Route used to check if server is online
 router.get('/', authController.healthCheck);
-
 // Route utilisée pour créer un utilisateur et reset la DB (démo uniquement)
 router.post('/demo', requestsLimitMiddleware, authController.demo);
 
