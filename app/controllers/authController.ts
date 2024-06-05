@@ -67,11 +67,11 @@ const authController = {
 				process.cwd(),
 				'insert_tables.sql'
 			);
+			const dataInsertFile = path.join(process.cwd(), 'insert_data.sql');
 			const tablesCreationQuery = fs.readFileSync(
 				tablesCreationFile,
 				'utf8'
 			);
-			const dataInsertFile = path.join(process.cwd(), 'insert_data.sql');
 			const dataInsertQuery = fs.readFileSync(dataInsertFile, 'utf8');
 			const tablesCreation = await sequelize.query(tablesCreationQuery);
 			if (!tablesCreation)
