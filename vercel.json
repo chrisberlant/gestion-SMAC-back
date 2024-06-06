@@ -8,8 +8,8 @@
 		}
 	},
 	"functions": {
-		"app/controllers/authController.ts": {
-			"includeFiles": "db_creation/*.sql"
+		"api/**/*.ts": {
+			"includeFiles": "db_creation/**"
 		}
 	}
 }
