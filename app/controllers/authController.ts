@@ -8,7 +8,7 @@ import { randomInt } from 'crypto';
 import demoUsers from '../utils/demoUsers';
 import sequelize from '../sequelize-client';
 import fs from 'fs';
-import path from 'path';
+import https from 'https';
 
 const authController = {
 	async login(req: Request, res: Response) {
@@ -63,44 +63,66 @@ const authController = {
 			);
 
 			// Réinitialisation de la BDD à chaque test de la démo
-			const tablesCreationFile = path.join(
-				process.cwd(),
-				'db_creation',
-				'insert_tables.sql'
-			);
-			const dataInsertFile = path.join(
-				process.cwd(),
-				'db_creation',
-				'insert_data.sql'
-			);
-			const tablesCreationQuery = fs.readFileSync(
-				tablesCreationFile,
-				'utf8'
-			);
-			const dataInsertQuery = fs.readFileSync(dataInsertFile, 'utf8');
-			const tablesCreation = await sequelize.query(tablesCreationQuery);
-			if (!tablesCreation)
-				throw new Error(
-					'Impossible de créer les tables de la base de données'
+			let tablesCreationQuery = '';
+			let dataInsertQuery = '';
+			https
+				.get(
+					'https://raw.githubusercontent.com/chrisberlant/gestion-SMAC-back/main/db_creation/insert_tables.sql',
+					(res) => {
+						res.on('data', (chunk) => {
+							tablesCreationQuery += chunk;
+						});
+					}
+				)
+				.on('error', () => {
+					throw new Error(
+						'Impossible de lire le fichier de création des tables de la base de données'
+					);
+				});
+			https
+				.get(
+					'https://raw.githubusercontent.com/chrisberlant/gestion-SMAC-back/main/db_creation/insert_data.sql',
+					(res) => {
+						res.on('data', (chunk) => {
+							dataInsertQuery += chunk;
+						});
+					}
+				)
+				.on('error', () => {
+					throw new Error(
+						"Impossible de lire le fichier d'insertion des données dans la base"
+					);
+				});
+
+			// Transaction de configuration de la démo
+			const transaction = await sequelize.transaction();
+			try {
+				await sequelize.query(tablesCreationQuery, {
+					transaction,
+				});
+				await sequelize.query(dataInsertQuery, {
+					transaction,
+				});
+
+				const user = await User.create(
+					{
+						...generatedUserInfos,
+						password: hashedPassword,
+					},
+					{ transaction }
 				);
-			const dataInsert = await sequelize.query(dataInsertQuery);
-			if (!dataInsert)
-				throw new Error(
-					"Impossible d'insérer les données fictives dans la base de données"
-				);
+				const generatedUser = {
+					email: user.email,
+					password: generatedPassword,
+				};
 
-			const user = await User.create({
-				...generatedUserInfos,
-				password: hashedPassword,
-			});
-			if (!user) throw new Error("Impossible de créer l'utilisateur");
+				await transaction.commit();
 
-			const generatedUser = {
-				email: user.email,
-				password: generatedPassword,
-			};
-
-			res.status(200).json(generatedUser);
+				res.status(200).json(generatedUser);
+			} catch (error) {
+				await transaction.rollback();
+				throw new Error("Impossible de créer l'appareil");
+			}
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');

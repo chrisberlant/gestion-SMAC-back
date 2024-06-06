@@ -1,14 +1,10 @@
 {
 	"version": 2,
+	"builds": [{ "src": "/index.ts", "use": "@vercel/node" }],
 	"routes": [{ "src": "/(.*)", "dest": "/" }],
 	"git": {
 		"deploymentEnabled": {
 			"development": false
-		}
-	},
-	"functions": {
-		"api/**/*.ts": {
-			"includeFiles": "db_creation/**"
 		}
 	}
 }
