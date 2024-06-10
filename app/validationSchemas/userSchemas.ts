@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const passwordRegex =
-	/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[-#?!@$%^&*()+_=])/;
+	/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[$&+,:;=?@#|'<>.^*()%!_-])/;
 
 export const userLoginSchema = z.strictObject({
 	email: z
