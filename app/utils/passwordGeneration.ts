@@ -6,7 +6,7 @@ export default function generateRandomPassword() {
 	const stringLength = randomInt(8, 13);
 	const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 	const numbers = '0123456789';
-	const specialChars = '-#?!@$%^&*()+_=';
+	const specialChars = "$&+,:;=?@#|'<>.^*()%!_-";
 	let randomPassword = '';
 
 	// Ajout d'une majuscule
