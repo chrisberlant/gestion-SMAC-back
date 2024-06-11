@@ -72,6 +72,7 @@ const serviceController = {
 			const service = await Service.findByPk(id);
 			if (!service)
 				return res.status(404).json("Le service n'existe pas");
+			const oldTitle = service.title;
 
 			// Si le titre fourni est identique au titre déjà renseigné
 			if (clientData.title === service.title)
@@ -101,7 +102,7 @@ const serviceController = {
 					{
 						operation: 'Modification',
 						table: 'service',
-						content: `Changement de nom du service ${service.title} vers ${clientData.title}`,
+						content: `Changement de nom du service ${oldTitle} vers ${updatedService.title}`,
 						userId,
 					},
 					{ transaction }

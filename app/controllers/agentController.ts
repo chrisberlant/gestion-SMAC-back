@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { UserRequest } from '../types';
+import { TableType, UserRequest } from '../types';
 import { Agent, History, Service } from '../models';
 import {
 	AgentType,
@@ -12,6 +12,8 @@ import sequelize from '../sequelize-client';
 import { receivedDataIsAlreadyExisting } from '../utils';
 
 const agentController = {
+	table: 'agent' as TableType,
+
 	async getAllAgents(_: UserRequest, res: Response) {
 		try {
 			const agents = await Agent.findAll({
@@ -73,7 +75,7 @@ const agentController = {
 				await History.create(
 					{
 						operation: 'Création',
-						table: 'agent',
+						table: this.table,
 						content: `Création de l'agent ${email}`,
 						userId,
 					},
@@ -106,18 +108,14 @@ const agentController = {
 				return res.status(200).json(agent);
 
 			const oldEmail = agent.email;
+			const newEmail = clientData.email;
 			let content = `Mise à jour de l'agent ${oldEmail}`;
 
 			// Si le client souhaite changer l'adresse mail, vérification si celle-ci n'est pas déjà utilisée
-			if (clientData.email && clientData.email !== oldEmail) {
-				const newEmail = clientData.email;
-
+			if (newEmail && newEmail !== oldEmail) {
 				const existingEmail = await Agent.findOne({
 					where: {
 						email: newEmail,
-						id: {
-							[Op.not]: Number(id),
-						},
 					},
 				});
 				if (existingEmail)
@@ -137,7 +135,7 @@ const agentController = {
 				await History.create(
 					{
 						operation: 'Modification',
-						table: 'agent',
+						table: this.table,
 						content,
 						userId,
 					},
@@ -171,7 +169,7 @@ const agentController = {
 				await History.create(
 					{
 						operation: 'Suppression',
-						table: 'agent',
+						table: this.table,
 						content: `Suppression de l'agent avec l'email ${agent.email}`,
 						userId,
 					},
@@ -313,7 +311,7 @@ const agentController = {
 				await History.create(
 					{
 						operation: 'Création',
-						table: 'agent',
+						table: this.table,
 						content: `Import d'agents via un CSV`,
 						userId,
 					},

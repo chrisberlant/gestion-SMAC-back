@@ -1,6 +1,5 @@
 import { Response } from 'express';
-import { Op } from 'sequelize';
-import { UserRequest } from '../types';
+import { TableType, UserRequest } from '../types';
 import {
 	LineType,
 	LineWithAgentAndDeviceType,
@@ -12,6 +11,8 @@ import sequelize from '../sequelize-client';
 import { receivedDataIsAlreadyExisting } from '../utils';
 
 const lineController = {
+	table: 'line' as TableType,
+
 	async getAllLines(_: UserRequest, res: Response) {
 		try {
 			const lines = await Line.findAll({
@@ -79,7 +80,7 @@ const lineController = {
 				await History.create(
 					{
 						operation: 'Création',
-						table: 'line',
+						table: this.table,
 						content: `Création de la ligne ${number}`,
 						userId,
 					},
@@ -112,17 +113,14 @@ const lineController = {
 				return res.status(200).json(line);
 
 			const oldNumber = line.number;
+			const newNumber = clientData?.number;
 			let content = `Mise à jour de la ligne ${oldNumber}`;
 
 			// Si le client souhaite changer le numéro, vérification si celui-ci n'est pas déjà utilisé
-			if (clientData.number && clientData.number !== oldNumber) {
-				const newNumber = clientData.number;
+			if (newNumber && newNumber !== oldNumber) {
 				const existingNumber = await Line.findOne({
 					where: {
 						number: newNumber,
-						id: {
-							[Op.not]: Number(id),
-						},
 					},
 				});
 				if (existingNumber)
@@ -142,7 +140,7 @@ const lineController = {
 				await History.create(
 					{
 						operation: 'Modification',
-						table: 'line',
+						table: this.table,
 						content,
 						userId,
 					},
@@ -176,7 +174,7 @@ const lineController = {
 				await History.create(
 					{
 						operation: 'Suppression',
-						table: 'line',
+						table: this.table,
 						content: `Suppression de la ligne avec le numéro ${line.number}`,
 						userId,
 					},
@@ -364,7 +362,7 @@ const lineController = {
 				await History.create(
 					{
 						operation: 'Création',
-						table: 'line',
+						table: this.table,
 						content: 'Import de lignes via un CSV',
 						userId,
 					},

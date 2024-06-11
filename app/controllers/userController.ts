@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { History, User } from '../models';
-import { UserRequest } from '../types';
+import { TableType, UserRequest } from '../types';
 import { UserType } from '../types/models';
 import bcrypt from 'bcrypt';
 import generateRandomPassword from '../utils/passwordGeneration';
@@ -9,6 +9,8 @@ import sequelize from '../sequelize-client';
 import { receivedDataIsAlreadyExisting } from '../utils';
 
 const userController = {
+	table: 'user' as TableType,
+
 	async getCurrentUser(req: UserRequest, res: Response) {
 		try {
 			const userId = req.user!.id;
@@ -59,10 +61,10 @@ const userController = {
 			try {
 				const oldEmail = user.email;
 				const newEmail = clientData.email;
-				let emailChanged = null;
+				let content = `Mise à jour de l'utilisateur ${oldEmail}`;
 				// Si l'email a été modifié
 				if (oldEmail !== newEmail)
-					emailChanged = `Mise à jour de l'utilisateur ${oldEmail}, incluant un changement d'email vers ${newEmail}`;
+					content = `Mise à jour de l'utilisateur ${oldEmail}, incluant un changement d'email vers ${newEmail}`;
 
 				await user.update(clientData, {
 					transaction,
@@ -70,10 +72,8 @@ const userController = {
 				await History.create(
 					{
 						operation: 'Modification',
-						table: 'user',
-						content:
-							emailChanged ??
-							`Mise à jour de l'utilisateur ${oldEmail}`,
+						table: this.table,
+						content,
 						userId,
 					},
 					{ transaction }
@@ -178,7 +178,7 @@ const userController = {
 				await History.create(
 					{
 						operation: 'Création',
-						table: 'user',
+						table: this.table,
 						content: `Création de l'utilisateur ${email}`,
 						userId,
 					},
@@ -228,11 +228,11 @@ const userController = {
 				return res.status(200).json(user);
 
 			const oldEmail = user.email;
+			const newEmail = clientData.email;
 			let content = `Mise à jour de l'utilisateur ${oldEmail}`;
 
 			// Si le client souhaite changer l'email, vérification si un utilisateur avec celui-ci existe
-			if (clientData.email && clientData.email !== oldEmail) {
-				const newEmail = clientData.email;
+			if (newEmail && newEmail !== oldEmail) {
 				const existingEmail = await User.findOne({
 					where: {
 						email: newEmail,
@@ -260,7 +260,7 @@ const userController = {
 				await History.create(
 					{
 						operation: 'Modification',
-						table: 'user',
+						table: this.table,
 						content,
 						userId,
 					},
@@ -324,7 +324,7 @@ const userController = {
 				await History.create(
 					{
 						operation: 'Modification',
-						table: 'user',
+						table: this.table,
 						content: `Réinitialisation du mot de passe de l'utilisateur ${user.email}`,
 						userId,
 					},
@@ -376,7 +376,7 @@ const userController = {
 				await History.create(
 					{
 						operation: 'Suppression',
-						table: 'user',
+						table: this.table,
 						content: `Suppression de l'utilisateur ${user.email}`,
 						userId,
 					},

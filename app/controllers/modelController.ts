@@ -1,11 +1,13 @@
 import { Op } from 'sequelize';
-import { UserRequest } from '../types';
+import { TableType, UserRequest } from '../types';
 import { Model, History } from '../models';
 import { Response } from 'express';
 import sequelize from '../sequelize-client';
 import { receivedDataIsAlreadyExisting } from '../utils';
 
 const modelController = {
+	table: 'model' as TableType,
+
 	async getAllModels(_: UserRequest, res: Response) {
 		try {
 			const models = await Model.findAll({
@@ -126,7 +128,7 @@ const modelController = {
 				await History.create(
 					{
 						operation: 'Modification',
-						table: 'model',
+						table: this.table,
 						content: `Mise à jour de ${oldValue} vers ${newValue}`,
 						userId,
 					},
@@ -165,7 +167,7 @@ const modelController = {
 				await History.create(
 					{
 						operation: 'Suppression',
-						table: 'model',
+						table: this.table,
 						content: `Suppression du modèle ${value}`,
 						userId,
 					},
