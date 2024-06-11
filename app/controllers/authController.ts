@@ -7,7 +7,6 @@ import generateRandomPassword from '../utils/passwordGeneration';
 import { randomInt } from 'crypto';
 import demoUsers from '../utils/demoUsers';
 import sequelize from '../sequelize-client';
-import fs from 'fs';
 import https from 'https';
 
 const authController = {
