@@ -6,7 +6,6 @@ import {
 	DevicesImportType,
 } from '../types/models';
 import generateCsvFile from '../utils/csvGeneration';
-import { Op } from 'sequelize';
 import sequelize from '../sequelize-client';
 import { receivedDataIsAlreadyExisting } from '../utils';
 
@@ -103,23 +102,19 @@ const deviceController = {
 			const device = await Device.findByPk(id);
 			if (!device) return res.status(404).json("L'appareil n'existe pas");
 
-			const oldImei = device.imei;
-			let content = `Mise à jour de l'appareil ${oldImei}`;
-
 			// Si les valeurs sont identiques, pas de mise à jour en BDD
 			if (receivedDataIsAlreadyExisting(device, clientData))
 				return res.status(200).json(device);
 
-			// Si le client souhaite changer l'IMEI, vérification si celui-ci n'est pas déjà utilisé
-			if (clientData.imei && clientData.imei !== oldImei) {
-				const newImei = clientData.imei;
+			const oldImei = device.imei;
+			const newImei = clientData?.imei;
+			let content = `Mise à jour de l'appareil ${oldImei}`;
 
+			// Si le client souhaite changer l'IMEI, vérification si celui-ci n'est pas déjà utilisé
+			if (newImei && newImei !== oldImei) {
 				const existingDevice = await Device.findOne({
 					where: {
-						imei: clientData.imei,
-						id: {
-							[Op.not]: Number(id),
-						},
+						imei: newImei,
 					},
 				});
 				if (existingDevice)
@@ -127,7 +122,7 @@ const deviceController = {
 						.status(401)
 						.json('Un appareil avec cet IMEI existe déjà');
 
-				content = `Mise à jour de ${oldImei}, incluant un changement d'IMEI vers ${newImei}`;
+				content = `Mise à jour de l'appareil ${oldImei}, incluant un changement d'IMEI vers ${newImei}`;
 			}
 
 			// Transaction de mise à jour

@@ -59,10 +59,10 @@ const userController = {
 			try {
 				const oldEmail = user.email;
 				const newEmail = clientData.email;
-				let emailChanged = null;
+				let content = `Mise à jour de l'utilisateur ${oldEmail}`;
 				// Si l'email a été modifié
 				if (oldEmail !== newEmail)
-					emailChanged = `Mise à jour de l'utilisateur ${oldEmail}, incluant un changement d'email vers ${newEmail}`;
+					content = `Mise à jour de l'utilisateur ${oldEmail}, incluant un changement d'email vers ${newEmail}`;
 
 				await user.update(clientData, {
 					transaction,
@@ -71,9 +71,7 @@ const userController = {
 					{
 						operation: 'Modification',
 						table: 'user',
-						content:
-							emailChanged ??
-							`Mise à jour de l'utilisateur ${oldEmail}`,
+						content,
 						userId,
 					},
 					{ transaction }
@@ -228,11 +226,11 @@ const userController = {
 				return res.status(200).json(user);
 
 			const oldEmail = user.email;
+			const newEmail = clientData.email;
 			let content = `Mise à jour de l'utilisateur ${oldEmail}`;
 
 			// Si le client souhaite changer l'email, vérification si un utilisateur avec celui-ci existe
-			if (clientData.email && clientData.email !== oldEmail) {
-				const newEmail = clientData.email;
+			if (newEmail && newEmail !== oldEmail) {
 				const existingEmail = await User.findOne({
 					where: {
 						email: newEmail,

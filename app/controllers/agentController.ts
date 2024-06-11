@@ -106,18 +106,14 @@ const agentController = {
 				return res.status(200).json(agent);
 
 			const oldEmail = agent.email;
+			const newEmail = clientData.email;
 			let content = `Mise à jour de l'agent ${oldEmail}`;
 
 			// Si le client souhaite changer l'adresse mail, vérification si celle-ci n'est pas déjà utilisée
-			if (clientData.email && clientData.email !== oldEmail) {
-				const newEmail = clientData.email;
-
+			if (newEmail && newEmail !== oldEmail) {
 				const existingEmail = await Agent.findOne({
 					where: {
 						email: newEmail,
-						id: {
-							[Op.not]: Number(id),
-						},
 					},
 				});
 				if (existingEmail)

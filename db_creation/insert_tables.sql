@@ -8,23 +8,23 @@ DO $$ BEGIN
         DROP TYPE user_role;
     END IF;
 
-        IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'device_status') THEN
+    IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'device_status') THEN
         DROP TYPE device_status;
     END IF;
 
-        IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'line_profile') THEN
+    IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'line_profile') THEN
         DROP TYPE line_profile;
     END IF;
 
-        IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'line_status') THEN
+    IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'line_status') THEN
         DROP TYPE line_status;
     END IF;
 
-        IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'history_operation') THEN
+    IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'history_operation') THEN
         DROP TYPE history_operation;
     END IF;
     
-        IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'history_table') THEN
+    IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'history_table') THEN
         DROP TYPE history_table;
     END IF;
 END $$;

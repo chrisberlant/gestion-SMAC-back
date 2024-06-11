@@ -11,11 +11,18 @@ const History = sequelize.define<HistoryType>(
 			autoIncrement: true,
 		},
 		operation: {
-			type: DataTypes.TEXT,
+			type: DataTypes.ENUM('Création', 'Modification', 'Suppression'),
 			allowNull: false,
 		},
 		table: {
-			type: DataTypes.TEXT,
+			type: DataTypes.ENUM(
+				'user',
+				'service',
+				'agent',
+				'model',
+				'device',
+				'line'
+			),
 			allowNull: false,
 		},
 		content: {

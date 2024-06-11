@@ -1,5 +1,4 @@
 import { Response } from 'express';
-import { Op } from 'sequelize';
 import { UserRequest } from '../types';
 import {
 	LineType,
@@ -112,17 +111,14 @@ const lineController = {
 				return res.status(200).json(line);
 
 			const oldNumber = line.number;
+			const newNumber = clientData?.number;
 			let content = `Mise à jour de la ligne ${oldNumber}`;
 
 			// Si le client souhaite changer le numéro, vérification si celui-ci n'est pas déjà utilisé
-			if (clientData.number && clientData.number !== oldNumber) {
-				const newNumber = clientData.number;
+			if (newNumber && newNumber !== oldNumber) {
 				const existingNumber = await Line.findOne({
 					where: {
 						number: newNumber,
-						id: {
-							[Op.not]: Number(id),
-						},
 					},
 				});
 				if (existingNumber)
