@@ -33,32 +33,6 @@ INSERT INTO "public"."device" ("imei", "status", "is_new", "preparation_date", "
 ('123321456654789', 'En panne', 'f', '2023-01-05', '2023-01-19', NULL, 10, 1),
 ('123987456321654', 'Restitué', 't', '2023-01-08', '2023-01-22', NULL, 8, 4);
 
--- INSERT INTO "public"."device" ("imei", "status", "is_new", "preparation_date", "attribution_date", "comments", "agent_id", "model_id") VALUES
--- ('111222333444666', 'En stock', 't', '2023-01-01', '2023-01-15', 'Comment 11', NULL, 1),
--- ('222333444555777', 'Restitué', 't', '2023-01-02', '2023-01-16', 'Comment 12', NULL, 2),
--- ('333444555666888', 'En prêt', 't', '2023-01-04', '2023-01-18', 'Comment 13', NULL, 4),
--- ('444555666777999', 'Volé', 't', '2023-01-06', '2023-01-20', 'Comment 14', NULL, 2),
--- ('555666777888111', 'Attribué', 'f', '2023-01-07', '2023-01-21', 'Comment 15', NULL, 3),
--- ('666777888999222', 'En attente de restitution', 'f', '2023-01-09', '2023-01-23', 'Comment 16', NULL, 1),
--- ('777888999000333', 'En prêt', 't', '2023-01-10', '2023-01-24', 'Comment 17', NULL, 2),
--- ('888999000111444', 'En attente de restitution', 'f', '2023-01-03', '2023-01-17', NULL, NULL, 3),
--- ('999000111222555', 'En panne', 'f', '2023-01-05', '2023-01-19', NULL, NULL, 1),
--- ('000111222333666', 'Restitué', 't', '2023-01-08', '2023-01-22', NULL, NULL, 4),
--- ('111222333444777', 'En stock', 't', '2023-01-01', '2023-01-15', 'Comment 21', NULL, 1),
--- ('222333444555888', 'Restitué', 't', '2023-01-02', '2023-01-16', 'Comment 22', NULL, 2),
--- ('333444555666999', 'En prêt', 't', '2023-01-04', '2023-01-18', 'Comment 23', NULL, 4),
--- ('444555666777000', 'Volé', 't', '2023-01-06', '2023-01-20', 'Comment 24', NULL, 2),
--- ('555666777888112', 'Attribué', 'f', '2023-01-07', '2023-01-21', 'Comment 25', NULL, 3),
--- ('666777888999223', 'En attente de restitution', 'f', '2023-01-09', '2023-01-23', 'Comment 26', NULL, 1),
--- ('777888999000334', 'En prêt', 't', '2023-01-10', '2023-01-24', 'Comment 27', NULL, 2),
--- ('888999000111445', 'En attente de restitution', 'f', '2023-01-03', '2023-01-17', NULL, NULL, 3),
--- ('999000111222556', 'En panne', 'f', '2023-01-05', '2023-01-19', NULL, NULL, 1),
--- ('000111222333667', 'Restitué', 't', '2023-01-08', '2023-01-22', NULL, NULL, 4);
-
-
-
-
-
 INSERT INTO "public"."line" ("number", "profile", "status", "comments", "agent_id", "device_id") VALUES
 ('0102040829', 'V', 'Active', 'No comments', 2, 4),
 ('0123456789', 'D', 'En cours', 'Some comments', 1, 1),
