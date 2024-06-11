@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { TableType, UserRequest } from '../types';
+import { UserRequest } from '../types';
 import { Agent, History, Service } from '../models';
 import {
 	AgentType,
@@ -12,8 +12,6 @@ import sequelize from '../sequelize-client';
 import { receivedDataIsAlreadyExisting } from '../utils';
 
 const agentController = {
-	table: 'agent' as TableType,
-
 	async getAllAgents(_: UserRequest, res: Response) {
 		try {
 			const agents = await Agent.findAll({
@@ -75,7 +73,7 @@ const agentController = {
 				await History.create(
 					{
 						operation: 'Création',
-						table: this.table,
+						table: 'agent',
 						content: `Création de l'agent ${email}`,
 						userId,
 					},
@@ -135,7 +133,7 @@ const agentController = {
 				await History.create(
 					{
 						operation: 'Modification',
-						table: this.table,
+						table: 'agent',
 						content,
 						userId,
 					},
@@ -169,7 +167,7 @@ const agentController = {
 				await History.create(
 					{
 						operation: 'Suppression',
-						table: this.table,
+						table: 'agent',
 						content: `Suppression de l'agent avec l'email ${agent.email}`,
 						userId,
 					},
@@ -311,7 +309,7 @@ const agentController = {
 				await History.create(
 					{
 						operation: 'Création',
-						table: this.table,
+						table: 'agent',
 						content: `Import d'agents via un CSV`,
 						userId,
 					},

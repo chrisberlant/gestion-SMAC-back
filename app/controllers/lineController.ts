@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { TableType, UserRequest } from '../types';
+import { UserRequest } from '../types';
 import {
 	LineType,
 	LineWithAgentAndDeviceType,
@@ -11,8 +11,6 @@ import sequelize from '../sequelize-client';
 import { receivedDataIsAlreadyExisting } from '../utils';
 
 const lineController = {
-	table: 'line' as TableType,
-
 	async getAllLines(_: UserRequest, res: Response) {
 		try {
 			const lines = await Line.findAll({
@@ -80,7 +78,7 @@ const lineController = {
 				await History.create(
 					{
 						operation: 'Création',
-						table: this.table,
+						table: 'line',
 						content: `Création de la ligne ${number}`,
 						userId,
 					},
@@ -140,7 +138,7 @@ const lineController = {
 				await History.create(
 					{
 						operation: 'Modification',
-						table: this.table,
+						table: 'line',
 						content,
 						userId,
 					},
@@ -174,7 +172,7 @@ const lineController = {
 				await History.create(
 					{
 						operation: 'Suppression',
-						table: this.table,
+						table: 'line',
 						content: `Suppression de la ligne avec le numéro ${line.number}`,
 						userId,
 					},
@@ -362,7 +360,7 @@ const lineController = {
 				await History.create(
 					{
 						operation: 'Création',
-						table: this.table,
+						table: 'line',
 						content: 'Import de lignes via un CSV',
 						userId,
 					},

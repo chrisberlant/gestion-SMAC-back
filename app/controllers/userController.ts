@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { History, User } from '../models';
-import { TableType, UserRequest } from '../types';
+import { UserRequest } from '../types';
 import { UserType } from '../types/models';
 import bcrypt from 'bcrypt';
 import generateRandomPassword from '../utils/passwordGeneration';
@@ -9,8 +9,6 @@ import sequelize from '../sequelize-client';
 import { receivedDataIsAlreadyExisting } from '../utils';
 
 const userController = {
-	table: 'user' as TableType,
-
 	async getCurrentUser(req: UserRequest, res: Response) {
 		try {
 			const userId = req.user!.id;
@@ -72,7 +70,7 @@ const userController = {
 				await History.create(
 					{
 						operation: 'Modification',
-						table: this.table,
+						table: 'user',
 						content,
 						userId,
 					},
@@ -178,7 +176,7 @@ const userController = {
 				await History.create(
 					{
 						operation: 'Création',
-						table: this.table,
+						table: 'user',
 						content: `Création de l'utilisateur ${email}`,
 						userId,
 					},
@@ -260,7 +258,7 @@ const userController = {
 				await History.create(
 					{
 						operation: 'Modification',
-						table: this.table,
+						table: 'user',
 						content,
 						userId,
 					},
@@ -324,7 +322,7 @@ const userController = {
 				await History.create(
 					{
 						operation: 'Modification',
-						table: this.table,
+						table: 'user',
 						content: `Réinitialisation du mot de passe de l'utilisateur ${user.email}`,
 						userId,
 					},
@@ -376,7 +374,7 @@ const userController = {
 				await History.create(
 					{
 						operation: 'Suppression',
-						table: this.table,
+						table: 'user',
 						content: `Suppression de l'utilisateur ${user.email}`,
 						userId,
 					},

@@ -22,7 +22,15 @@ const Device = sequelize.define<DeviceType>(
 			type: DataTypes.DATEONLY,
 		},
 		status: {
-			type: DataTypes.TEXT,
+			type: DataTypes.ENUM(
+				'En stock',
+				'Attribué',
+				'Restitué',
+				'En attente de restitution',
+				'En prêt',
+				'En panne',
+				'Volé'
+			),
 			allowNull: false,
 		},
 		isNew: {

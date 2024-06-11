@@ -15,11 +15,11 @@ const Line = sequelize.define<LineType>(
 			allowNull: false,
 		},
 		profile: {
-			type: DataTypes.TEXT,
+			type: DataTypes.ENUM('V', 'D', 'VD'),
 			allowNull: false,
 		},
 		status: {
-			type: DataTypes.TEXT,
+			type: DataTypes.ENUM('Active', 'En cours', 'Résiliée'),
 			allowNull: false,
 		},
 		comments: {

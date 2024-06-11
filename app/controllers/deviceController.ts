@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { TableType, UserRequest } from '../types';
+import { UserRequest } from '../types';
 import { Agent, Device, History, Model } from '../models';
 import {
 	DeviceWithModelAndAgentType,
@@ -10,8 +10,6 @@ import sequelize from '../sequelize-client';
 import { receivedDataIsAlreadyExisting } from '../utils';
 
 const deviceController = {
-	table: 'device' as TableType,
-
 	async getAllDevices(_: UserRequest, res: Response) {
 		try {
 			const devices = await Device.findAll({
@@ -76,7 +74,7 @@ const deviceController = {
 				await History.create(
 					{
 						operation: 'Création',
-						table: this.table,
+						table: 'device',
 						content: `Création de l'appareil ${imei}`,
 						userId,
 					},
@@ -136,7 +134,7 @@ const deviceController = {
 				await History.create(
 					{
 						operation: 'Modification',
-						table: this.table,
+						table: 'device',
 						content,
 						userId,
 					},
@@ -170,7 +168,7 @@ const deviceController = {
 				await History.create(
 					{
 						operation: 'Suppression',
-						table: this.table,
+						table: 'device',
 						content: `Suppression de l'appareil avec l'IMEI ${device.imei}`,
 						userId,
 					},
@@ -344,7 +342,7 @@ const deviceController = {
 				await History.create(
 					{
 						operation: 'Création',
-						table: this.table,
+						table: 'device',
 						content: `Import d'appareils via un CSV`,
 						userId,
 					},
