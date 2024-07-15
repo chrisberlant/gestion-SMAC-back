@@ -104,6 +104,10 @@ export interface HistoryType
 	userId?: number;
 }
 
+export interface ServiceWithUser extends ServiceType {
+	agents?: AgentType[];
+}
+
 // Interfaces utilisées pour les exports en CSV
 export interface AgentWithServiceAndDevicesType extends AgentType {
 	service: {

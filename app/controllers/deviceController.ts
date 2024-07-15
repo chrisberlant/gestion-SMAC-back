@@ -15,9 +15,7 @@ const deviceController = {
 			const devices = await Device.findAll({
 				order: [['id', 'DESC']],
 			});
-			if (!devices) {
-				res.status(404).json('Aucune ligne trouvée');
-			}
+			if (!devices) res.status(404).json('Aucune ligne trouvée');
 
 			res.status(200).json(devices);
 		} catch (error) {
@@ -32,12 +30,10 @@ const deviceController = {
 
 			const device = await Device.findByPk(id, {
 				include: [
-					{
-						association: 'model',
-					},
+					'model',
 					{
 						association: 'agent',
-						include: [{ association: 'service' }],
+						include: ['service'],
 					},
 				],
 			});

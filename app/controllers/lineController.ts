@@ -35,14 +35,14 @@ const lineController = {
 				include: [
 					{
 						association: 'agent',
-						include: [{ association: 'service' }],
+						include: ['service'],
 					},
 					{
 						association: 'device',
 						attributes: {
 							exclude: ['agentId'],
 						},
-						include: [{ association: 'model' }],
+						include: ['model'],
 					},
 				],
 			});
