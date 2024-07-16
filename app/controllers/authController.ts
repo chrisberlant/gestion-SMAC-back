@@ -27,7 +27,7 @@ const authController = {
 
 			// We set a variable containing the token that will be sent to the browser
 			const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY!, {
-				expiresIn: '12h',
+				expiresIn: process.env.JWT_EXPIRY,
 			});
 
 			const { firstName, lastName, role } = user;
