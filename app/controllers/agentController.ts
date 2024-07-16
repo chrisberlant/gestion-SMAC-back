@@ -33,11 +33,7 @@ const agentController = {
 			const { id } = req.params;
 
 			const agent = await Agent.findByPk(id, {
-				include: [
-					{
-						association: 'service',
-					},
-				],
+				include: ['service'],
 			});
 			if (!agent) {
 				res.status(404).json('Aucun agent trouvé');

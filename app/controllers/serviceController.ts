@@ -1,8 +1,8 @@
 import { Op } from 'sequelize';
 import { UserRequest } from '../types';
-import { History, Service } from '../models';
+import { Agent, History, Service } from '../models';
 import { Response } from 'express';
-import { ServiceType } from '../types/models';
+import { ServiceType, ServiceWithUser } from '../types/models';
 import sequelize from '../sequelize-client';
 
 const serviceController = {
@@ -125,9 +125,17 @@ const serviceController = {
 			const { id } = req.params;
 			const userId = req.user!.id;
 
-			const service = await Service.findByPk(id);
+			const service: ServiceWithUser | null = await Service.findByPk(id, {
+				include: ['agents'],
+			});
 			if (!service)
 				return res.status(404).json("Le service n'existe pas");
+			if (service.agents?.length)
+				return res
+					.status(403)
+					.json(
+						'Suppression impossible, des agents sont affectés au service'
+					);
 
 			// Transaction de suppression
 			const transaction = await sequelize.transaction();
@@ -147,7 +155,7 @@ const serviceController = {
 				res.status(200).json(id);
 			} catch (error) {
 				await transaction.rollback();
-				throw new Error("Impossible de supprimer l'agent");
+				throw new Error('Impossible de supprimer le service');
 			}
 		} catch (error) {
 			console.error(error);
