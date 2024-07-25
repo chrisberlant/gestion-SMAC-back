@@ -22,30 +22,23 @@ const historyController = {
 
 	async deleteHistory(req: UserRequest, res: Response) {
 		try {
-			const clientData: number[] = req.body;
+			const historyToDelete: number[] = req.body;
 
-			const history = await History.findAll({
+			const deletedHistory = await History.destroy({
 				where: {
 					id: {
-						[Op.in]: clientData,
+						[Op.in]: historyToDelete,
 					},
 				},
 			});
-			if (!history)
+
+			if (deletedHistory === 0) {
 				return res
 					.status(404)
-					.json(
-						"Les entrées d'historique sélectionnées n'existent pas"
-					);
+					.json("Aucune suppression d'historique n'a été effectuée");
+			}
 
-			await Promise.all(
-				history.map(async (entry) => {
-					// Supprimer chaque entrée trouvée
-					await entry.destroy();
-				})
-			);
-
-			res.status(200).json(history);
+			res.status(200).json(historyToDelete);
 		} catch (error) {
 			console.error(error);
 			res.status(500).json('Erreur serveur');

@@ -311,12 +311,12 @@ const lineController = {
 
 			const currentLines = await Line.findAll({ raw: true });
 			const conflictItems: {
-				usedNumbers: string[];
+				existingNumbers: string[];
 				usedDevices: string[];
 				unknownDevices: string[];
 				unknownAgents: string[];
 			} = {
-				usedNumbers: [],
+				existingNumbers: [],
 				usedDevices: [],
 				unknownDevices: [],
 				unknownAgents: [],
@@ -329,7 +329,9 @@ const lineController = {
 						(line) => line.number === importedLine.number
 					)
 				)
-					conflictItems.usedNumbers.push(importedLine.number);
+					conflictItems.existingNumbers.push(
+						importedLines[index].Numéro
+					);
 				if (
 					importedLine.deviceId &&
 					currentLines.find(

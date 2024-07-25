@@ -37,6 +37,15 @@ const statsController = {
 					],
 				],
 				group: ['Service.id'],
+				// Récupérer uniquement les services ayant au moins un agent
+				having: sequelize.where(
+					sequelize.fn(
+						'COUNT',
+						sequelize.fn('DISTINCT', sequelize.col('agents.id'))
+					),
+					'>',
+					0
+				),
 			});
 
 			res.status(200).json(agentsAndDevicesPerService);
@@ -69,6 +78,15 @@ const statsController = {
 					['reference', 'ASC'],
 				],
 				group: ['Model.id'],
+				// Récupérer uniquement les modèles ayant au moins un appareil
+				having: sequelize.where(
+					sequelize.fn(
+						'COUNT',
+						sequelize.fn('DISTINCT', sequelize.col('devices.id'))
+					),
+					'>',
+					0
+				),
 			});
 
 			res.status(200).json(devicesAmountPerModel);
