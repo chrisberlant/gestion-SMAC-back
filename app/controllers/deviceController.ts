@@ -298,11 +298,11 @@ const deviceController = {
 
 			const currentDevices = await Device.findAll({ raw: true });
 			const conflictItems: {
-				usedDevices: string[];
+				existingDevices: string[];
 				unknownModels: string[];
 				unknownAgents: string[];
 			} = {
-				usedDevices: [],
+				existingDevices: [],
 				unknownModels: [],
 				unknownAgents: [],
 			};
@@ -314,7 +314,9 @@ const deviceController = {
 						(device) => device.imei === importedDevice.imei
 					)
 				)
-					conflictItems.usedDevices.push(importedDevice.imei);
+					conflictItems.existingDevices.push(
+						importedDevices[index].IMEI
+					);
 				if (importedDevice.modelId === undefined)
 					conflictItems.unknownModels.push(
 						importedDevices[index].Modèle!

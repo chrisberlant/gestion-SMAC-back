@@ -7,7 +7,6 @@ import {
 	AgentsImportType,
 } from '../types/models';
 import generateCsvFile from '../utils/csvGeneration';
-import { Op } from 'sequelize';
 import sequelize from '../sequelize-client';
 import { receivedDataIsAlreadyExisting } from '../utils';
 
@@ -271,10 +270,10 @@ const agentController = {
 
 			const currentAgents = await Agent.findAll({ raw: true });
 			const conflictItems: {
-				usedEmails: string[];
+				existingEmails: string[];
 				unknownServices: string[];
 			} = {
-				usedEmails: [],
+				existingEmails: [],
 				unknownServices: [],
 			};
 
@@ -285,7 +284,9 @@ const agentController = {
 						(agent) => agent.email === importedAgent.email
 					)
 				)
-					conflictItems.usedEmails.push(importedAgent.email);
+					conflictItems.existingEmails.push(
+						importedAgents[index].Email
+					);
 				if (importedAgent.serviceId === undefined)
 					conflictItems.unknownServices.push(
 						importedAgents[index].Service
